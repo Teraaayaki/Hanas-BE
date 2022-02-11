@@ -11,6 +11,7 @@ npm install --save
 ```
 
 Initial Packages Installed: 
+ - nodemon
  - express
  - express-async-handler
  - express-validator
@@ -18,7 +19,6 @@ Initial Packages Installed:
  - dotenv
  - bcrypt
  - uuid
- - nodemon
  
 ### 4. Command to run server
 
