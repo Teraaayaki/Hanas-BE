@@ -30,3 +30,9 @@ npm run server
 ```
 http://localhost:8000/api/client/register
 ```
+Required inputs to pass validation:
+ - firstname
+ - middlename
+ - lastname
+ - email
+ - password 
