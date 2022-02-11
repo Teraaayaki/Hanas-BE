@@ -46,7 +46,7 @@ Sample:
 
 ### 1. Install MongoDB Compass
 
-_Link: https://www.mongodb.com/try/download/compass
+_link: https://www.mongodb.com/try/download/compass
 
 ### 2. Open MongoDB Compass and connect to Hanas Database by using this connection string
  
