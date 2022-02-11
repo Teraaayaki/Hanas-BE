@@ -42,7 +42,7 @@ Sample:
 > ![image](https://user-images.githubusercontent.com/51246035/153532232-aff988d7-6a76-465e-a274-4270b6bda7ee.png)
 
 
-# Setup MongoDB Compass in your local machines and connect to our database:
+# Setup MongoDB Compass in your local machines and connect to Hanas database:
 
 ### 1. Install MongoDB Compass
 
