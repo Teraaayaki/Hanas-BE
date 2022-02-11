@@ -53,7 +53,7 @@ _Link: https://www.mongodb.com/try/download/compass
 ```
 mongodb+srv://Hanas:Hanas1234@hanascluster.cw7en.mongodb.net/Hanas
 ```
-### 3. You should be able to see the list of DBs once succesful
+### 3. You should be able to see the list of DBs once successful
 
 > ![image](https://user-images.githubusercontent.com/51246035/153533507-3ba17289-cf5e-4cc4-8229-e6fc9f36bff7.png)
 
