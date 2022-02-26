@@ -1,24 +1,21 @@
-const { body } = require('express-validator/check');
+import { body } from 'express-validator';
+import { validationResult } from 'express-validator';
 
-exports.validate = (method) => {
+export const validate = (method) => {
   switch (method) {
-    case 'registerClient': {
-      return [
-        body('firstname', 'First name is required.').exists(),
-        body('middlename', 'Middle name is required.').exists(),
-        body('lastname', 'Last name is required.').exists(),
-        body('email', 'Invalid email address.').isEmail(),
-        body('password', 'Password must contain at least 8 characters.').isLength({
-          min: 8
-        })
-      ];
-    }
-
     case 'loginClient': {
       return [
         body('email', 'Email is required.').exists(),
         body('password', 'Password is required.').exists()
       ];
     }
+  }
+};
+
+export const validationErrors = (res, req) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    res.status(422).json({ errors: errors.array() });
   }
 };

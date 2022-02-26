@@ -1,17 +1,17 @@
-const express = require('express');
+import express from 'express';
+import { validate } from '../middleware/validations.js';
+
 const router = express.Router();
 
-const { validate } = require('../middleware/validations');
-
-const {
+import {
   loginClient,
   registerClient,
   logoutClient
-} = require('../controllers/authController');
+} from '../controllers/ClientControllers/authController.js';
 
 //AUTH ROUTES
 router.post('/login', validate('loginClient'), loginClient);
-router.post('/register', validate('registerClient'), registerClient);
+router.post('/register', registerClient);
 router.delete('/logout', logoutClient);
 
-module.exports = router;
+export default router;
