@@ -14,7 +14,7 @@ const sampleWorkModel = mongoose.Schema(
     },
     image: {
       type: String,
-      required: [true, 'Please provide an image of your sample work.']
+      required: [true, 'Please upload an image of your sample work.']
     }
   },
   {

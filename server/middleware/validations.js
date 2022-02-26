@@ -12,7 +12,7 @@ export const validate = (method) => {
   }
 };
 
-export const validationErrors = (res, req) => {
+export const validationErrors = (req, res) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {

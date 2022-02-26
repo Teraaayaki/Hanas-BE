@@ -24,8 +24,8 @@ const userSchema = mongoose.Schema(
     },
     email: {
       type: String,
-      unique: [true, '{VALUE} has already been taken.']
-      // required: [true, 'Please enter a valid email address.']
+      unique: [true, '{VALUE} is already taken.'],
+      required: [true, 'Please enter a valid email address.']
     },
     password: {
       type: String,
@@ -33,12 +33,13 @@ const userSchema = mongoose.Schema(
         true,
         'Please enter a strong password, minimum of 8 characters.'
       ],
-      min: [8, 'Password must contain at least 8 characters']
+      min: [8, 'Password must contain at least 8 characters.']
     },
     mobile_no: {
       type: Number,
+      unique: [true, '{VALUE} is already taken.'],
       required: [true, 'Please enter your mobile number.'],
-      min: [11, 'Must be at least 11 digits']
+      min: [11, 'Must be at least 11 digits.']
     },
     telephone: {
       type: String
@@ -51,7 +52,7 @@ const userSchema = mongoose.Schema(
       type: Date,
       required: [true, 'Please enter your birthdate.']
     },
-    gender: {
+    sex: {
       type: String,
       enum: {
         values: ['Female', 'Male'],
