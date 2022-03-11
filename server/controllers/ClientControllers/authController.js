@@ -44,7 +44,6 @@ export const registerClient = async (req, res) => {
     //   is_worker: data.isWorker,
     // });
     // res.status(200).json({ success: true });
-    console.data
   } catch (err) {
     res.status(422).send({ success: false, err });
   }

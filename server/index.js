@@ -20,4 +20,6 @@ app.get("/", (req, res) => {
 
 app.use("/api/client", clientRoutes);
 
-app.listen(port, () => console.log(`Server running on port ${port}`));
+app.listen(process.env.PORT, () =>
+  console.log(`Server running on port ${port}`)
+);
