@@ -43,7 +43,7 @@ export const registerClient = async (req, res) => {
     //   gender: data.gender,
     //   is_worker: data.isWorker,
     // });
-    // res.status(200).json({ success: true });
+    res.status(200).json({ success: true });
   } catch (err) {
     res.status(422).json({ success: false, err });
   }
