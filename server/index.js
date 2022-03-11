@@ -15,7 +15,6 @@ app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 
 app.get("/", (req, res) => {
-  console.log("Works");
   res.send("API Working");
 });
 
