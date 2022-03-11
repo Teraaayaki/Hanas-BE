@@ -14,8 +14,8 @@ app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 
-app.get("/work", (req, res) => {
-  res.send("API Working");
+app.get("/", (req, res) => {
+  res.status(200).json({ mess: "Opaw" });
 });
 
 app.use("/api/client", clientRoutes);
