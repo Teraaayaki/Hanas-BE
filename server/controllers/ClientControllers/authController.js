@@ -1,8 +1,8 @@
-import { validationErrors } from '../../middleware/validations.js';
-import { v4 } from 'uuid';
-import bcrypt from 'bcrypt';
+import { validationErrors } from "../../middleware/validations.js";
+import { v4 } from "uuid";
+import bcrypt from "bcrypt";
 
-import User from '../../models/userModel.js';
+import User from "../../models/userModel.js";
 
 export const loginClient = async (req, res) => {
   validationErrors(res, req);
@@ -26,26 +26,28 @@ export const loginClient = async (req, res) => {
 
 export const registerClient = async (req, res) => {
   const data = req.body;
+  const hashedPass = await bcrypt.hash(data.password, 10);
 
-  const hashedPass = await bcrypt.hash(req.body.password, 10);
-
-  const client = await User.create({
-    user_id: v4(),
-    first_name: data.first_name,
-    middle_name: data.middle_name,
-    family_name: data.family_name,
-    suffix: data.suffix,
-    email: data.email,
-    password: hashedPass,
-    mobile_no: data.mobile_no,
-    telephone: data.telephone,
-    address: data.address,
-    birthdate: data.birthdate,
-    gender: data.gender,
-    is_worker: data.is_worker
-  }).catch((err) => res.status(422).json({ error: err }));
-
-  res.status(200).json({ data: client });
+  try {
+    // await User.create({
+    //   user_id: v4(),
+    //   first_name: data.firstName,
+    //   middle_name: data.middleName,
+    //   family_name: data.lastName,
+    //   suffix: data.suffix,
+    //   email: data.email,
+    //   password: hashedPass,
+    //   mobile_no: data.mobileNo,
+    //   address: data.address,
+    //   birthdate: data.dob,
+    //   gender: data.gender,
+    //   is_worker: data.isWorker,
+    // });
+    // res.status(200).json({ success: true });
+    console.data
+  } catch (err) {
+    res.status(422).send({ success: false, err });
+  }
 };
 
 export const logoutClient = async (req, res) => {
