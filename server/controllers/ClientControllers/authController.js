@@ -45,7 +45,7 @@ export const registerClient = async (req, res) => {
     // });
     // res.status(200).json({ success: true });
   } catch (err) {
-    res.status(422).send({ success: false, err });
+    res.status(422).json({ success: false, err });
   }
 };
 
