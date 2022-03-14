@@ -1,6 +1,5 @@
 import express from "express";
-import { validate } from "../middleware/validations.js";
-import { validationErrors } from "../../middleware/validations.js";
+import { validate, validationErrors } from "../middleware/validations.js";
 const router = express.Router();
 
 import {
