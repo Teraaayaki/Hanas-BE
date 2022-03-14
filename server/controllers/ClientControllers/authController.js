@@ -1,6 +1,6 @@
 import { v4 } from "uuid";
 import bcrypt from "bcrypt";
-
+import jwt from "jsonwebtoken";
 import User from "../../models/userModel.js";
 
 export const loginClient = async (req, res) => {
@@ -15,7 +15,11 @@ export const loginClient = async (req, res) => {
     if (!success) {
       return res.status(422).json({ error: `Incorrect password` });
     } else {
-      return res.status(200).json({ data: client });
+      const token = jwt.sign(
+        { user_id: client.user_id },
+        process.env.MY_SECRET_ACCESS_TOKEN
+      );
+      return res.status(200).json({ token });
     }
   });
 };
