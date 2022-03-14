@@ -5,11 +5,10 @@ import User from "../../models/userModel.js";
 
 export const loginClient = async (req, res) => {
   const { email, password } = req.body;
-
   const client = await User.findOne({ email });
 
   if (!client) {
-    return res.status(422).json({ error: `Incorrect email` });
+    return res.status(422).json({ error: `Email not found` });
   }
 
   bcrypt.compare(password, client.password, (err, success) => {
