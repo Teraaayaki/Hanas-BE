@@ -1,12 +1,9 @@
-import { validationErrors } from "../../middleware/validations.js";
 import { v4 } from "uuid";
 import bcrypt from "bcrypt";
 
 import User from "../../models/userModel.js";
 
 export const loginClient = async (req, res) => {
-  validationErrors(res, req);
-
   const { email, password } = req.body;
 
   const client = await User.findOne({ email });
@@ -29,20 +26,20 @@ export const registerClient = async (req, res) => {
   const hashedPass = await bcrypt.hash(data.password, 10);
 
   try {
-    // await User.create({
-    //   user_id: v4(),
-    //   first_name: data.firstName,
-    //   middle_name: data.middleName,
-    //   family_name: data.lastName,
-    //   suffix: data.suffix,
-    //   email: data.email,
-    //   password: hashedPass,
-    //   mobile_no: data.mobileNo,
-    //   address: data.address,
-    //   birthdate: data.dob,
-    //   gender: data.gender,
-    //   is_worker: data.isWorker,
-    // });
+    await User.create({
+      user_id: v4(),
+      first_name: data.firstName,
+      middle_name: data.middleName,
+      family_name: data.lastName,
+      suffix: data.suffix,
+      email: data.email,
+      password: hashedPass,
+      mobile_no: data.mobileNo,
+      address: data.address,
+      birthdate: data.dob,
+      gender: data.gender,
+      is_worker: data.isWorker,
+    });
     res.status(200).json({ success: true });
   } catch (err) {
     res.status(422).json({ success: false, err });

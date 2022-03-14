@@ -15,7 +15,7 @@ app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 
 app.get("/", (req, res) => {
-  res.status(200).json({ mess: "Opaw" });
+  res.status(200).send("Hanas API Working 14/03/22 Soy Leb");
 });
 
 app.use("/api/client", clientRoutes);
