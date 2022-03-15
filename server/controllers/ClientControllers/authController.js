@@ -19,7 +19,7 @@ export const loginClient = async (req, res) => {
         { user_id: client.user_id },
         process.env.MY_SECRET_ACCESS_TOKEN
       );
-      return res.status(200).json({ token });
+      return res.status(200).json({ token, user_id: client.user_id });
     }
   });
 };
