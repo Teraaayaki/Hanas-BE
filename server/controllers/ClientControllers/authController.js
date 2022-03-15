@@ -8,12 +8,12 @@ export const loginClient = async (req, res) => {
   const client = await User.findOne({ email });
 
   if (!client) {
-    return res.status(422).json({ error: `Email not found` });
+    return res.status(422).send("Email and Password not found");
   }
 
   bcrypt.compare(password, client.password, (err, success) => {
     if (!success) {
-      return res.status(422).json({ error: `Incorrect password` });
+      return res.status(422).send("Email and Password not found");
     } else {
       const token = jwt.sign(
         { user_id: client.user_id },
@@ -45,7 +45,7 @@ export const registerClient = async (req, res) => {
     });
     res.status(200).json({ success: true });
   } catch (err) {
-    res.status(422).json({ success: false, err });
+    res.status(422).send("Error Creating User");
   }
 };
 
