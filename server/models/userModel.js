@@ -49,13 +49,13 @@ const userSchema = mongoose.Schema(
       type: Date,
       required: [true, "Please enter your birthdate."],
     },
-    gender: {
+    sex: {
       type: String,
       enum: {
         values: ["Female", "Male"],
         message: "{VALUE} is not supported.",
       },
-      required: [true, "Please choose your gender."],
+      required: [true, "Please choose your sex."],
     },
     is_worker: {
       type: Boolean,

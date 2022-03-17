@@ -9,8 +9,13 @@ import {
 } from "../controllers/ClientControllers/authController.js";
 
 //AUTH ROUTES
-router.post("/login", validate("loginClient"), validationErrors, loginClient);
-router.post("/register", registerClient);
+router.post("/login", validate("login"), validationErrors, loginClient);
+router.post(
+  "/register",
+  validate("register"),
+  validationErrors,
+  registerClient
+);
 router.delete("/logout", logoutClient);
 
 export default router;

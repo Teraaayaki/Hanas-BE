@@ -19,18 +19,27 @@ export const loginClient = async (req, res) => {
         { user_id: client.user_id },
         process.env.MY_SECRET_ACCESS_TOKEN
       );
-      return res.status(200).json({ token, user_id: client.user_id });
+      return res
+        .status(200)
+        .json({ token, user_id: client.user_id, is_worker: client.is_worker });
     }
   });
 };
 
 export const registerClient = async (req, res) => {
   const data = req.body;
+  let uuid = v4();
+
+  const userFound = await User.findOne({ email: data.email });
+
+  if (userFound) {
+    return res.status(422).send({ error: "Email already in use" });
+  }
   const hashedPass = await bcrypt.hash(data.password, 10);
 
   try {
     await User.create({
-      user_id: v4(),
+      user_id: uuid,
       first_name: data.firstName,
       middle_name: data.middleName,
       family_name: data.lastName,
@@ -40,12 +49,19 @@ export const registerClient = async (req, res) => {
       mobile_no: data.mobileNo,
       address: data.address,
       birthdate: data.dob,
-      gender: data.gender,
+      sex: data.sex,
       is_worker: data.isWorker,
+      is_verified: false,
     });
-    res.status(200).json({ success: true });
+    const token = jwt.sign(
+      { user_id: uuid },
+      process.env.MY_SECRET_ACCESS_TOKEN
+    );
+    return res
+      .status(200)
+      .json({ token, user_id: uuid, is_worker: data.isWorker });
   } catch (err) {
-    res.status(422).send("Error Creating User");
+    return res.status(422).send({ error: "Error Creating User" });
   }
 };
 
