@@ -1,21 +1,38 @@
-import { body } from 'express-validator';
-import { validationResult } from 'express-validator';
+import { body, validationResult } from "express-validator";
 
 export const validate = (method) => {
   switch (method) {
-    case 'loginClient': {
+    case "login":
       return [
-        body('email', 'Email is required.').exists(),
-        body('password', 'Password is required.').exists()
+        body("email", "Invalid Email").isEmail(),
+        body("password", "Password must be atleast 8 characters").isLength({
+          min: 8,
+        }),
       ];
-    }
+    case "register":
+      return [
+        body("email", "Invalid Email").isEmail(),
+        body("password", "Password must be atleast 8 characters").isLength({
+          min: 8,
+        }),
+        body("mobileNo", "Incomplete Data Inputted").exists(),
+        body("firstName", "Incomplete Data Inputted").exists(),
+        body("lastName", "Incomplete Data Inputted").exists(),
+        body("middleName", "Incomplete Data Inputted").exists(),
+        body("dob", "Incomplete Data Inputted").exists(),
+        body("sex", "Incomplete Data Inputted").exists(),
+        body("address", "Incomplete Data Inputted").exists(),
+        body("isWorker", "Incomplete Data Inputted").exists(),
+      ];
   }
 };
 
-export const validationErrors = (req, res) => {
+export const validationErrors = (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    res.status(422).json({ errors: errors.array() });
+    return res.status(422).send({ error: errors.array()[0].msg });
   }
+
+  next();
 };
