@@ -40,12 +40,25 @@ export const verifyNumberClient = async (req, res) => {
         otp,
         number,
       });
-      res.status(200).send({ success: true });
+      // send otp to number logic here
+      res.status(200).json({ success: true });
     } catch (error) {
       res.status(409).send({ error: "Maximum allowable request reached" });
     }
   } else {
     res.status(401).send({ error: "Number already registered" });
+  }
+};
+
+export const verifyNumberOtpClient = async (req, res) => {
+  let { otp, number } = req.body;
+  const verified = await OtpNumber.findOne({ otp, number });
+
+  if (!verified) {
+    res.status(401).send({ error: "Incorrect OTP submitted" });
+  } else {
+    await OtpNumber.deleteOne({ number });
+    res.status(200).json({ success: true });
   }
 };
 

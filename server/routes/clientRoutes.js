@@ -7,6 +7,7 @@ import {
   verifyNumberClient,
   registerClient,
   logoutClient,
+  verifyNumberOtpClient,
 } from "../controllers/ClientControllers/authController.js";
 
 //AUTH ROUTES
@@ -22,6 +23,12 @@ router.post(
   validate("number"),
   validationErrors,
   verifyNumberClient
+);
+router.post(
+  "/verify-number-otp",
+  validate("otp-number"),
+  validationErrors,
+  verifyNumberOtpClient
 );
 router.delete("/logout", logoutClient);
 

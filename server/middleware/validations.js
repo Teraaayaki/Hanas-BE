@@ -26,6 +26,11 @@ export const validate = (method) => {
       ];
     case "number":
       return [body("number", "Invalid Number").isInt().exists()];
+    case "otp-number":
+      return [
+        body("number", "Invalid Number").isInt().exists(),
+        body("otp", "Invalid OTP").isInt().exists(),
+      ];
   }
 };
 
