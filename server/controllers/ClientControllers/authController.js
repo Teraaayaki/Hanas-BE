@@ -26,6 +26,17 @@ export const loginClient = async (req, res) => {
   });
 };
 
+export const verifyNumberClient = async (req, res) => {
+  let { number } = req.body;
+  const client = await User.findOne({ mobile_no: number });
+
+  if (!client) {
+    res.status(200).send({ success: true });
+  } else {
+    res.status(401).send({ error: "Number already registered" });
+  }
+};
+
 export const registerClient = async (req, res) => {
   const data = req.body;
   let uuid = v4();
