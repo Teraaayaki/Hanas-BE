@@ -25,12 +25,7 @@ export const validate = (method) => {
         body("isWorker", "Incomplete Data Inputted").exists(),
       ];
     case "number":
-      return [
-        body("number", "Invalid Number")
-          .isInt()
-          .isMobilePhone("en-PH")
-          .exists(),
-      ];
+      return [body("number", "Invalid Number").isInt().exists()];
   }
 };
 
