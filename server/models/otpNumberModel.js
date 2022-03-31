@@ -4,7 +4,7 @@ const otpNumberSchema = mongoose.Schema({
   expiresAt: {
     type: Date,
     required: true,
-    expires: 10,
+    expires: 300,
   },
   otp: {
     type: Number,
