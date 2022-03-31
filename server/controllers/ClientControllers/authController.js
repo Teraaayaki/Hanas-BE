@@ -2,6 +2,7 @@ import { v4 } from "uuid";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../../models/userModel.js";
+import OtpNumber from "../../models/otpNumberModel.js";
 
 export const loginClient = async (req, res) => {
   const { email, password } = req.body;
@@ -30,8 +31,19 @@ export const verifyNumberClient = async (req, res) => {
   let { number } = req.body;
   const client = await User.findOne({ mobile_no: number });
 
+  const otp = Math.floor(Math.random() * 8999 + 1000);
+
   if (!client) {
-    res.status(200).send({ success: true });
+    try {
+      await OtpNumber.create({
+        expiresAt: new Date(),
+        otp,
+        number,
+      });
+      res.status(200).send({ success: true });
+    } catch (error) {
+      res.status(409).send({ error: "Maximum allowable request reached" });
+    }
   } else {
     res.status(401).send({ error: "Number already registered" });
   }
