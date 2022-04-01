@@ -3,6 +3,10 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../../models/userModel.js";
 import OtpNumber from "../../models/otpNumberModel.js";
+import twilio from "../../helpers/twilio.js";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export const loginClient = async (req, res) => {
   const { email, password } = req.body;
@@ -40,10 +44,28 @@ export const verifyNumberClient = async (req, res) => {
         otp,
         number,
       });
+
+      twilio.messages.create(
+        {
+          body: `YOUR OTP CODE: ${otp}`,
+          messagingServiceSid: process.env.TWILIO_MESSAGING_SERVICE_SID,
+          to: `+63${number}`,
+        }
+        // (err) => {
+        //   console.log("No error found");
+        //   if (err) {
+        //     console.log(err);
+        //   }
+        // }
+      );
+
       // send otp to number logic here
-      res.status(200).json({ success: true });
+      return res.status(200).json({ success: true });
     } catch (error) {
-      res.status(409).send({ error: "Maximum allowable request reached" });
+      console.log(error);
+      return res
+        .status(409)
+        .send({ error: "Maximum allowable request reached" });
     }
   } else {
     res.status(401).send({ error: "Number already registered" });
