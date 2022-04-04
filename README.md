@@ -26,6 +26,10 @@ Initial Packages Installed:
 NODE_ENV = development
 PORT = 8000
 MONGO_URI = mongodb+srv://Hanas:Hanas1234@hanascluster.cw7en.mongodb.net/Hanas?retryWrites=true&w=majority
+MY_SECRET_ACCESS_TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9_eyJzdWIiOiI2OTY5NjkiLCJuYW1lIjoiU295IEd3YXBvIiwiaWF0IjoxNTE2MjM5MDIyfQ_MxYPoabA4HNaaswJSl993lUwhVYOjfs3-G6BEm6Ufe8
+TWILIO_ACCOUNT_SID=AC16b9ab8c719a64a2c95d7ce74da913e9
+TWILIO_ACCOUNT_TOKEN=3614c210aac66df116a1adbaa97b1e4d
+TWILIO_MESSAGING_SERVICE_SID=MG143a7c3a65466fbb2e7984883e00029b
 ```
 
 ### 4. Command to run server
