@@ -4,8 +4,10 @@ const router = express.Router();
 
 import {
   loginClient,
+  verifyNumberClient,
   registerClient,
   logoutClient,
+  verifyNumberOtpClient,
 } from "../controllers/ClientControllers/authController.js";
 
 //AUTH ROUTES
@@ -15,6 +17,18 @@ router.post(
   validate("register"),
   validationErrors,
   registerClient
+);
+router.post(
+  "/verify-number",
+  validate("number"),
+  validationErrors,
+  verifyNumberClient
+);
+router.post(
+  "/verify-number-otp",
+  validate("otp-number"),
+  validationErrors,
+  verifyNumberOtpClient
 );
 router.delete("/logout", logoutClient);
 

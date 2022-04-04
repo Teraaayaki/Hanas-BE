@@ -24,6 +24,13 @@ export const validate = (method) => {
         body("address", "Incomplete Data Inputted").exists(),
         body("isWorker", "Incomplete Data Inputted").exists(),
       ];
+    case "number":
+      return [body("number", "Invalid Number").isInt().exists()];
+    case "otp-number":
+      return [
+        body("number", "Invalid Number").isInt().exists(),
+        body("otp", "Invalid OTP").isInt().exists(),
+      ];
   }
 };
 

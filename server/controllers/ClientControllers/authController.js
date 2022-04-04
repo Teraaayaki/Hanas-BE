@@ -2,6 +2,11 @@ import { v4 } from "uuid";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../../models/userModel.js";
+import OtpNumber from "../../models/otpNumberModel.js";
+import twilio from "../../helpers/twilio.js";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export const loginClient = async (req, res) => {
   const { email, password } = req.body;
@@ -24,6 +29,59 @@ export const loginClient = async (req, res) => {
         .json({ token, user_id: client.user_id, is_worker: client.is_worker });
     }
   });
+};
+
+export const verifyNumberClient = async (req, res) => {
+  let { number } = req.body;
+  const client = await User.findOne({ mobile_no: number });
+
+  const otp = Math.floor(Math.random() * 8999 + 1000);
+
+  if (!client) {
+    try {
+      await OtpNumber.create({
+        expiresAt: new Date(),
+        otp,
+        number,
+      });
+
+      twilio.messages.create(
+        {
+          body: `YOUR OTP CODE: ${otp}`,
+          messagingServiceSid: process.env.TWILIO_MESSAGING_SERVICE_SID,
+          to: `+63${number}`,
+        }
+        // (err) => {
+        //   console.log("No error found");
+        //   if (err) {
+        //     console.log(err);
+        //   }
+        // }
+      );
+
+      // send otp to number logic here
+      return res.status(200).json({ success: true });
+    } catch (error) {
+      console.log(error);
+      return res
+        .status(409)
+        .send({ error: "Maximum allowable request reached" });
+    }
+  } else {
+    res.status(401).send({ error: "Number already registered" });
+  }
+};
+
+export const verifyNumberOtpClient = async (req, res) => {
+  let { otp, number } = req.body;
+  const verified = await OtpNumber.findOne({ otp, number });
+
+  if (!verified) {
+    res.status(401).send({ error: "Incorrect OTP submitted" });
+  } else {
+    await OtpNumber.deleteOne({ number });
+    res.status(200).json({ success: true });
+  }
 };
 
 export const registerClient = async (req, res) => {
