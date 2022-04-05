@@ -10,5 +10,5 @@ export const getDetails = async (req, res) => {
     birthdate: req.user.birthdate,
     sex: req.user.sex,
   };
-  res.status(200).json({ user });
+  return res.status(200).json({ user });
 };
