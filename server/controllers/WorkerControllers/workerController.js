@@ -1,4 +1,3 @@
-// No use for now
 export const getDetails = async (req, res) => {
   if (req.user) {
     const user = {
