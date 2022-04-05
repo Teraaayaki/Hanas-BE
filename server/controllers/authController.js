@@ -1,9 +1,9 @@
 import { v4 } from "uuid";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import User from "../../models/userModel.js";
-import OtpNumber from "../../models/otpNumberModel.js";
-import twilio from "../../helpers/twilio.js";
+import User from "../models/userModel.js";
+import OtpNumber from "../models/otpNumberModel.js";
+import twilio from "../helpers/twilio.js";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -11,6 +11,20 @@ dotenv.config();
 export const loginClient = async (req, res) => {
   const { email, password } = req.body;
   const client = await User.findOne({ email });
+  let user = {};
+  if (client) {
+    user = {
+      first_name: client.first_name,
+      middle_name: client.middle_name,
+      last_name: client.family_name,
+      suffix: client.suffix,
+      email: client.email,
+      mobile_no: client.mobile_no,
+      address: client.address,
+      birthdate: client.birthdate,
+      sex: client.sex,
+    };
+  }
 
   if (!client) {
     return res.status(422).send({ error: "Invalid Email or Password" });
@@ -24,9 +38,12 @@ export const loginClient = async (req, res) => {
         { user_id: client.user_id },
         process.env.MY_SECRET_ACCESS_TOKEN
       );
-      return res
-        .status(200)
-        .json({ token, user_id: client.user_id, is_worker: client.is_worker });
+      return res.status(200).json({
+        token,
+        is_verified: client.is_verified,
+        is_worker: client.is_worker,
+        user,
+      });
     }
   });
 };
@@ -68,7 +85,7 @@ export const verifyNumberClient = async (req, res) => {
         .send({ error: "Maximum allowable request reached" });
     }
   } else {
-    res.status(401).send({ error: "Number already registered" });
+    return res.status(401).send({ error: "Number already registered" });
   }
 };
 
@@ -77,10 +94,10 @@ export const verifyNumberOtpClient = async (req, res) => {
   const verified = await OtpNumber.findOne({ otp, number });
 
   if (!verified) {
-    res.status(401).send({ error: "Incorrect OTP submitted" });
+    return res.status(401).send({ error: "Incorrect OTP submitted" });
   } else {
     await OtpNumber.deleteOne({ number });
-    res.status(200).json({ success: true });
+    return res.status(200).json({ success: true });
   }
 };
 
@@ -117,12 +134,14 @@ export const registerClient = async (req, res) => {
     );
     return res
       .status(200)
-      .json({ token, user_id: uuid, is_worker: data.isWorker });
+      .json({ token, is_verified: false, is_worker: data.isWorker });
   } catch (err) {
     return res.status(422).send({ error: "Error Creating User" });
   }
 };
 
 export const logoutClient = async (req, res) => {
-  res.status(200).json({ message: `Logout user with ID: ${req.params.id}` });
+  return res
+    .status(200)
+    .json({ message: `Logout user with ID: ${req.params.id}` });
 };

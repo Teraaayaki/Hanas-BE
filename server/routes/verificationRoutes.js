@@ -8,7 +8,7 @@ import {
   registerClient,
   logoutClient,
   verifyNumberOtpClient,
-} from "../controllers/ClientControllers/authController.js";
+} from "../controllers/authController.js";
 
 //AUTH ROUTES
 router.post("/login", validate("login"), validationErrors, loginClient);
