@@ -7,7 +7,9 @@
   "scripts": {
     "start": "node server/index.js",
     "server": "nodemon server/index.js",
-    "tunnel": "ngrok http 8080"
+    "tunnel": "ngrok http 8080",
+    "data:import": "node server/seeder",
+    "data:destroy": "node server/seeder -d"
   },
   "repository": {
     "type": "git",
