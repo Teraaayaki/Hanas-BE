@@ -11,6 +11,17 @@ dotenv.config();
 export const loginClient = async (req, res) => {
   const { email, password } = req.body;
   const client = await User.findOne({ email });
+  const user = {
+    first_name: client.first_name,
+    middle_name: client.middle_name,
+    last_name: client.family_name,
+    suffix: client.suffix,
+    email: client.email,
+    mobile_no: client.mobile_no,
+    address: client.address,
+    birthdate: client.birthdate,
+    sex: client.sex,
+  };
 
   if (!client) {
     return res.status(422).send({ error: "Invalid Email or Password" });
@@ -28,6 +39,7 @@ export const loginClient = async (req, res) => {
         token,
         is_verified: client.is_verified,
         is_worker: client.is_worker,
+        user,
       });
     }
   });

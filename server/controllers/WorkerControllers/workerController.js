@@ -1,3 +1,4 @@
+// No use for now
 export const getDetails = async (req, res) => {
   const user = {
     first_name: req.user.first_name,
