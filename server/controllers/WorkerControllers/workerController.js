@@ -12,5 +12,7 @@ export const getDetails = async (req, res) => {
       sex: req.user.sex,
     };
     return res.status(200).json({ user });
+  } else {
+    return res.status(422).send({ error: "Invalid Data" });
   }
 };
