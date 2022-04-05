@@ -145,3 +145,22 @@ export const logoutClient = async (req, res) => {
     .status(200)
     .json({ message: `Logout user with ID: ${req.params.id}` });
 };
+
+export const getDetails = async (req, res) => {
+  if (req.user) {
+    const user = {
+      first_name: req.user.first_name,
+      middle_name: req.user.middle_name,
+      last_name: req.user.family_name,
+      suffix: req.user.suffix,
+      email: req.user.email,
+      mobile_no: req.user.mobile_no,
+      address: req.user.address,
+      birthdate: req.user.birthdate,
+      sex: req.user.sex,
+    };
+    return res.status(200).json({ user });
+  } else {
+    return res.status(422).send({ error: "Invalid Data" });
+  }
+};

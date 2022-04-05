@@ -1,5 +1,6 @@
 import express from "express";
 import { validate, validationErrors } from "../middleware/validations.js";
+import requireAuth from "../middleware/requireAuth.js";
 const router = express.Router();
 
 import {
@@ -8,9 +9,11 @@ import {
   registerClient,
   logoutClient,
   verifyNumberOtpClient,
+  getDetails,
 } from "../controllers/authController.js";
 
 //AUTH ROUTES
+router.get("/get-details", requireAuth, getDetails);
 router.post("/login", validate("login"), validationErrors, loginClient);
 router.post(
   "/register",
