@@ -1,9 +1,9 @@
 import { v4 } from "uuid";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import User from "../../models/userModel.js";
-import OtpNumber from "../../models/otpNumberModel.js";
-import twilio from "../../helpers/twilio.js";
+import User from "../models/userModel.js";
+import OtpNumber from "../models/otpNumberModel.js";
+import twilio from "../helpers/twilio.js";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -24,9 +24,11 @@ export const loginClient = async (req, res) => {
         { user_id: client.user_id },
         process.env.MY_SECRET_ACCESS_TOKEN
       );
-      return res
-        .status(200)
-        .json({ token, user_id: client.user_id, is_worker: client.is_worker });
+      return res.status(200).json({
+        token,
+        is_verified: client.is_verified,
+        is_worker: client.is_worker,
+      });
     }
   });
 };
@@ -117,7 +119,7 @@ export const registerClient = async (req, res) => {
     );
     return res
       .status(200)
-      .json({ token, user_id: uuid, is_worker: data.isWorker });
+      .json({ token, is_verified: false, is_worker: data.isWorker });
   } catch (err) {
     return res.status(422).send({ error: "Error Creating User" });
   }
