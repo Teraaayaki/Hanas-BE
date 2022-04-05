@@ -11,17 +11,20 @@ dotenv.config();
 export const loginClient = async (req, res) => {
   const { email, password } = req.body;
   const client = await User.findOne({ email });
-  const user = {
-    first_name: client.first_name,
-    middle_name: client.middle_name,
-    last_name: client.family_name,
-    suffix: client.suffix,
-    email: client.email,
-    mobile_no: client.mobile_no,
-    address: client.address,
-    birthdate: client.birthdate,
-    sex: client.sex,
-  };
+  let user = {};
+  if (client) {
+    user = {
+      first_name: client.first_name,
+      middle_name: client.middle_name,
+      last_name: client.family_name,
+      suffix: client.suffix,
+      email: client.email,
+      mobile_no: client.mobile_no,
+      address: client.address,
+      birthdate: client.birthdate,
+      sex: client.sex,
+    };
+  }
 
   if (!client) {
     return res.status(422).send({ error: "Invalid Email or Password" });
@@ -82,7 +85,7 @@ export const verifyNumberClient = async (req, res) => {
         .send({ error: "Maximum allowable request reached" });
     }
   } else {
-    res.status(401).send({ error: "Number already registered" });
+    return res.status(401).send({ error: "Number already registered" });
   }
 };
 
@@ -91,10 +94,10 @@ export const verifyNumberOtpClient = async (req, res) => {
   const verified = await OtpNumber.findOne({ otp, number });
 
   if (!verified) {
-    res.status(401).send({ error: "Incorrect OTP submitted" });
+    return res.status(401).send({ error: "Incorrect OTP submitted" });
   } else {
     await OtpNumber.deleteOne({ number });
-    res.status(200).json({ success: true });
+    return res.status(200).json({ success: true });
   }
 };
 
@@ -138,5 +141,7 @@ export const registerClient = async (req, res) => {
 };
 
 export const logoutClient = async (req, res) => {
-  res.status(200).json({ message: `Logout user with ID: ${req.params.id}` });
+  return res
+    .status(200)
+    .json({ message: `Logout user with ID: ${req.params.id}` });
 };
