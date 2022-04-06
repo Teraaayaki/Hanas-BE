@@ -1,4 +1,5 @@
 import Services from "../../models/serviceModel.js";
+import bucket from "../../helpers/googleCloudStorage.js";
 
 export const getServices = async (req, res) => {
   if (req.user) {
@@ -8,4 +9,9 @@ export const getServices = async (req, res) => {
   } else {
     return res.status();
   }
+};
+// prettier-ignore
+export const uploadImageService = async (req, res) => {
+  console.log(req.file);
+  // console.log(bucket);
 };
