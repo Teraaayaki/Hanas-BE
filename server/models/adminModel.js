@@ -7,11 +7,6 @@ const adminSchema = mongoose.Schema(
       unique: true,
       required: true
     },
-    employee_id: {
-      type: String,
-      unique: true,
-      required: true
-    },
     first_name: {
       type: String,
       required: [true, 'Please enter your first name.']
@@ -39,15 +34,6 @@ const adminSchema = mongoose.Schema(
         'Please enter a strong password, minimum of 8 characters.'
       ],
       min: [8, 'Password must contain at least 8 characters.']
-    },
-    mobile_no: {
-      type: Number,
-      unique: [true, '{VALUE} is already taken.'],
-      required: [true, 'Please enter your mobile number.'],
-      min: [11, 'Must be at least 11 digits']
-    },
-    telephone: {
-      type: String
     }
   },
   {
