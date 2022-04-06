@@ -16,7 +16,6 @@ import {
 //AUTH ROUTES
 router.get('/get-details', requireAuth, getDetails);
 router.post('/login', validate('login'), validationErrors, loginClient);
-router.post('/loginAdmin', validate('login'), validationErrors, loginAdmin);
 router.post(
   '/register',
   validate('register'),
@@ -36,5 +35,8 @@ router.post(
   verifyNumberOtpClient
 );
 router.delete('/logout', logoutClient);
+
+//ADMIN AUTH ROUTES
+router.post('/admin-login', validate('login'), validationErrors, loginAdmin);
 
 export default router;
