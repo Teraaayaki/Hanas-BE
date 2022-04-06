@@ -15,6 +15,7 @@ export const getServices = async (req, res) => {
 };
 
 export const uploadImageService = async (req, res) => {
+  console.log(req.file);
   if (!req.file) {
     return res.status(422).send({ error: "Error uploading file" });
   }
@@ -26,6 +27,7 @@ export const uploadImageService = async (req, res) => {
   });
 
   blobStream.on("error", (error) => {
+    console.log(error);
     return res.status(422).send({ error });
   });
 
