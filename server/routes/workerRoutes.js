@@ -2,8 +2,8 @@ import express from "express";
 import requireAuth from "../middleware/requireAuth.js";
 const router = express.Router();
 
-import { worker } from "../controllers/WorkerControllers/workerController.js";
+import { getServices } from "../controllers/WorkerControllers/workerController.js";
 
-router.get("/", requireAuth, worker);
+router.get("/get-services", requireAuth, getServices);
 
 export default router;
