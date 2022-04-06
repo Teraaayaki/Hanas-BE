@@ -12,7 +12,8 @@ export const getServices = async (req, res) => {
 };
 
 export const uploadImageService = async (req, res) => {
-  console.log(req.file);
+  console.log(req);
+  console.log("File is: ", req.file);
 
   res.status(200).send("ok");
 };
