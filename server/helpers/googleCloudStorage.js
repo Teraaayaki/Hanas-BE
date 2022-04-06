@@ -8,7 +8,7 @@ const storage = new Storage({
   projectId: process.env.GCLOUD_PROJECT,
   credentials: {
     client_email: process.env.GCLOUD_CLIENT_EMAIL,
-    private_key: process.env.gcloud_private_key,
+    private_key: gcloud_private_key,
   },
 });
 
