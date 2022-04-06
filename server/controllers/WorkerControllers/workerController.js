@@ -19,7 +19,6 @@ export const uploadImageService = async (req, res) => {
     return res.status(422).send({ error: "Error uploading file" });
   }
 
-  console.log("File is: ", req.file);
   const blob = bucket.file("sample-work-images/" + req.file.originalname);
   const blobStream = blob.createWriteStream({
     resumable: false,
@@ -31,8 +30,10 @@ export const uploadImageService = async (req, res) => {
   });
 
   blobStream.on("finish", () => {
-    const publicUrl = `https://storage.googleapis.com/${process.env.GCLOUD_BUCKET}/sample-work-images/${blob.name}`;
+    const publicUrl = `https://storage.googleapis.com/${process.env.GCLOUD_BUCKET}/${blob.name}`;
 
     return res.status(200).json({ publicUrl });
   });
+
+  blobStream.end(req.file.buffer);
 };
