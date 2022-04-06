@@ -10,8 +10,9 @@ export const getServices = async (req, res) => {
     return res.status();
   }
 };
-// prettier-ignore
+
 export const uploadImageService = async (req, res) => {
   console.log(req.file);
-  // console.log(bucket);
+
+  res.status(200).send("ok");
 };
