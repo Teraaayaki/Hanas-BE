@@ -1,5 +1,8 @@
 import Services from "../../models/serviceModel.js";
 import bucket from "../../helpers/googleCloudStorage.js";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export const getServices = async (req, res) => {
   if (req.user) {
@@ -12,7 +15,24 @@ export const getServices = async (req, res) => {
 };
 
 export const uploadImageService = async (req, res) => {
-  console.log("File is: ", req.file);
+  if (!req.file) {
+    return res.status(422).send({ error: "Error uploading file" });
+  }
 
-  res.status(200).send("ok");
+  console.log("File is: ", req.file);
+  const blob = bucket.file("sample-work-images/" + req.file.originalname);
+  const blobStream = blob.createWriteStream({
+    resumable: false,
+    gzip: true,
+  });
+
+  blobStream.on("error", (error) => {
+    return res.status(422).send({ error });
+  });
+
+  blobStream.on("finish", () => {
+    const publicUrl = `https://storage.googleapis.com/${process.env.GCLOUD_BUCKET}/sample-work-images/${blob.name}`;
+
+    return res.status(200).json({ publicUrl });
+  });
 };
