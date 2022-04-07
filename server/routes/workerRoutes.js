@@ -5,13 +5,18 @@ const router = express.Router();
 
 import {
   getServices,
+  addService,
   uploadImageService,
   deleteImageService,
   uploadImageCertificate,
   deleteImageCertificate,
-} from "../controllers/WorkerControllers/workerController.js";
+} from "../controllers/WorkerControllers/serviceController.js";
 
+// Worker Routes
+
+// Services Routes
 router.get("/get-services", requireAuth, getServices);
+router.post("/add-service", requireAuth, addService);
 router.post(
   "/upload-image-service",
   requireAuth,
@@ -26,4 +31,5 @@ router.post(
 );
 router.post("/delete-image-service", requireAuth, deleteImageService);
 router.post("/delete-image-certificate", requireAuth, deleteImageCertificate);
+
 export default router;
