@@ -5,6 +5,7 @@ const router = express.Router();
 
 import {
   getServices,
+  getMyServices,
   addService,
   uploadImageService,
   deleteImageService,
@@ -16,6 +17,7 @@ import {
 
 // Services Routes
 router.get("/get-services", requireAuth, getServices);
+router.get("/get-my-services", requireAuth, getMyServices);
 router.post("/add-service", requireAuth, addService);
 router.post(
   "/upload-image-service",

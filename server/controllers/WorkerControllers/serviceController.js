@@ -16,6 +16,12 @@ export const getServices = async (req, res) => {
   }
 };
 
+export const getMyServices = async (req, res) => {
+  let my_services = await MyService.find({ _id: req.user._id });
+
+  return res.status(200).json({ my_services });
+};
+
 export const addService = async (req, res) => {
   if (!req.body) {
     return res.status(422).send({ error: "Error adding service" });
