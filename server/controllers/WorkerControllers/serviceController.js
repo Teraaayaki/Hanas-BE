@@ -2,6 +2,7 @@ import Services from "../../models/serviceModel.js";
 import MyService from "../../models/myServiceModel.js";
 import bucket from "../../helpers/googleCloudStorage.js";
 import dotenv from "dotenv";
+import { v4 } from "uuid";
 
 dotenv.config();
 
@@ -19,7 +20,28 @@ export const addService = async (req, res) => {
   if (!req.body) {
     return res.status(422).send({ error: "Error adding service" });
   }
-  console.log(req.user);
+  console.log(req.body);
+  let service = await Services.findOne({ service_type: req.body.service });
+  let user_id = req.user._id;
+  let uuid = v4();
+  // Create myservice object
+  const myService = {
+    my_service_id: uuid,
+    worker: user_id,
+    service: service._id,
+    hourly_rate: req.body.ratePerHourValue,
+    sample_works: req.body.sampleWorkImgUrl,
+    certificates: req.body.certificateImgUrl,
+    last_updated: req.body.lastUpdated,
+  };
+  //   insertIntoMyservice
+  try {
+    await MyService.create({ ...myService });
+    return res.status(200).json({ success: true });
+  } catch (err) {
+    console.log(err);
+    return res.status(422).send({ error: "Error adding service" });
+  }
 };
 
 export const uploadImageService = async (req, res) => {
