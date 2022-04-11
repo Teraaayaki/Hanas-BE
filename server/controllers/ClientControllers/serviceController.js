@@ -29,6 +29,9 @@ export const getTopRatedWorkers = async (req, res) => {
         as: "FeedbackData",
       },
     },
+    {
+      $sort: { "FeedbackData.rate": -1 },
+    },
     { $project: { password: 0 } },
   ]);
 
