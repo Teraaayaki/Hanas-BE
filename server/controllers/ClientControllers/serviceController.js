@@ -2,7 +2,7 @@ import User from "../../models/userModel.js";
 
 export const getTopRatedWorkers = async (req, res) => {
   let top_rated_worker = await await User.aggregate([
-    { $match: { is_worker: true } },
+    { $match: { is_worker: true, is_verified: true } },
     {
       $lookup: {
         from: "myservices", // other table name
