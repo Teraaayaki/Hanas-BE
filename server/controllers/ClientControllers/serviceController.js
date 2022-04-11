@@ -26,7 +26,7 @@ export const getTopRatedWorkers = async (req, res) => {
               foreignField: "my_service_id",
               as: "FeedbackData",
               pipeline: [
-                { $project: { rateAvg: { $avg: "$rate" } } },
+                { $project: { $avg: "$rate" } },
                 { $sort: { rateAvg: -1 } },
               ],
             },
