@@ -9,20 +9,15 @@ export const getTopRatedWorkers = async(req, res) => {
         {
             $lookup : {
                 from: "myservices",       // other table name
-                localField: "worker",   // primary key kung asa gikan na table
-                foreignField: "user_id", // foreign key niya sa other table nga need i join
-                as: "MyServicesData"         // nickname sa results
+                let: {userID: "_id", workerID: "worker"},
+                pipeline: [{ "$match": { $expr: {$eq: ["$workerID", "$userID"]}}}],
+                as: "MyServicesData",
+                // localField: "worker",   // primary key kung asa gikan na table
+                // foreignField: "user_id", // foreign key niya sa other table nga need i join
+                // as: "MyServicesData"         // nickname sa results
             },
         },
-        {
-            $lookup : {
-                from: "services",
-                localField: "service_id",
-                foreignField: "service",
-                as: "ServicesData"
-            }
-        },
-        { "$match": { "is_worker": true} },
+        { "$match" : {"is_worker" : true}},
         { "$project" : { "password": 0 } },
         // { $unwind : "$MyServicesData"},
         
