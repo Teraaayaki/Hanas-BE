@@ -4,6 +4,7 @@ import connectDB from "./config/db.js";
 import cors from "cors";
 import verificationRoutes from "./routes/verificationRoutes.js";
 import workerRoutes from "./routes/workerRoutes.js";
+import clientRoutes from "./routes/clientRoutes.js";
 dotenv.config();
 connectDB();
 
@@ -20,6 +21,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth", verificationRoutes);
 app.use("/api/worker", workerRoutes);
+app.use("/api/client", clientRoutes);
 
 app.listen(process.env.PORT, () =>
   console.log(`Server running on port ${port}`)

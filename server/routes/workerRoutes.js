@@ -3,6 +3,8 @@ import requireAuth from "../middleware/requireAuth.js";
 import multer from "../helpers/multer.js";
 const router = express.Router();
 
+import { getFeedback } from "../controllers/WorkerControllers/workerController.js";
+
 import {
   getServices,
   getMyServices,
@@ -14,6 +16,7 @@ import {
 } from "../controllers/WorkerControllers/serviceController.js";
 
 // Worker Routes
+router.get("/get-feedback", requireAuth, getFeedback);
 
 // Services Routes
 router.get("/get-services", requireAuth, getServices);

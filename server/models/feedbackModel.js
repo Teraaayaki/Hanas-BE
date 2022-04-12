@@ -1,34 +1,34 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const feedbackModel = mongoose.Schema(
   {
-    feedback_id: {
-      type: String,
-      unique: true,
-      required: true
-    },
     worker: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: 'User'
+      ref: "User",
     },
     client: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: 'User'
+      ref: "User",
+    },
+    my_service_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "MyService",
     },
     rate: {
       type: Number,
-      required: true
+      required: true,
     },
     comment: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   {
-    timestamps: true
+    timestamps: true,
   }
 );
 
-export default mongoose.model('Feedback', feedbackModel);
+export default mongoose.model("Feedback", feedbackModel);
