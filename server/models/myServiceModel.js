@@ -1,37 +1,39 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const myServiceModel = mongoose.Schema(
   {
     my_service_id: {
       type: String,
       unique: true,
-      required: true
+      required: true,
     },
     worker: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: 'User'
+      ref: "User",
     },
     service: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: 'Service'
+      ref: "Service",
     },
     hourly_rate: {
       type: Number,
-      required: [true, 'Please enter your hourly rate.'],
-      default: 0
+      required: [true, "Please enter your hourly rate."],
+      default: 0,
     },
     description: {
-      type: String
+      type: String,
     },
+    sample_works: [String],
+    certificates: [String],
     last_updated: {
-      type: Date
-    }
+      type: Date,
+    },
   },
   {
-    timestamps: true
+    timestamps: true,
   }
 );
 
-export default mongoose.model('MyService', myServiceModel);
+export default mongoose.model("MyService", myServiceModel);

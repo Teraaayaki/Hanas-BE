@@ -1,1 +1,1 @@
-export const worker = async (req, res) => {};
+import Services from "../../models/serviceModel.js";
