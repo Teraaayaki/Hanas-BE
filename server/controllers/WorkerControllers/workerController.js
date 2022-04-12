@@ -40,17 +40,26 @@ export const getFeedback = async (req, res) => {
               from: "services",
               localField: "service",
               foreignField: "_id",
-              as: "ServiceNameData",
+              as: "serviceNameData",
               pipeline: [{ $project: { service_type: 1 } }],
             },
           },
           {
             $project: {
               hourly_rate: 1,
-              ServiceNameData: 1,
+              serviceNameData: 1,
             },
           },
         ],
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        comment: 1,
+        rate: 1,
+        clientNameData: 1,
+        myServicesData: 1,
       },
     },
   ]);

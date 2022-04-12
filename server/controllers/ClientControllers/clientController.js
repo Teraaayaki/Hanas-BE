@@ -2,6 +2,7 @@ import Feedback from "../../models/feedbackModel.js";
 
 export const bookWorker = async (req, res) => {};
 
+// not yet used
 export const getFeedback = async (req, res) => {
   let client_id = req.user._id;
 

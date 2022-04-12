@@ -6,7 +6,9 @@ import { getFeedback } from "../controllers/ClientControllers/clientController.j
 
 import { getTopRatedWorkers } from "../controllers/ClientControllers/serviceController.js";
 
+// not yet used
 router.get("/get-feedback", requireAuth, getFeedback);
+
 router.get("/get-top-rated-workers", requireAuth, getTopRatedWorkers);
 
 export default router;
