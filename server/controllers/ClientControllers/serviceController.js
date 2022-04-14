@@ -1,4 +1,5 @@
 import User from "../../models/userModel.js";
+import MyService from "../../models/myServiceModel.js";
 
 export const getTopRatedWorkers = async (req, res) => {
   let top_rated_worker = await User.aggregate([
@@ -34,13 +35,7 @@ export const getTopRatedWorkers = async (req, res) => {
     {
       $project: {
         name: {
-          $concat: [
-            "$first_name",
-            " ",
-            "$middle_name",
-            " ",
-            "$family_name",
-          ],
+          $concat: ["$first_name", " ", "$middle_name", " ", "$family_name"],
         },
         feedbackData: 1,
         serviceNameData: 1,
@@ -53,19 +48,35 @@ export const getTopRatedWorkers = async (req, res) => {
 };
 
 export const getSkilledWorkerDetails = async (req, res) => {
+  let { worker_id, service_id } = req.body;
 
-  let {worker_id, service_id} = req.body;
-  console.log(worker_id);
+  const user = await User.findOne({ _id: worker_id });
+  const myService = await MyService.findOne({ _id: service_id });
+  const workerId = user._id;
+  const myServiceId = myService._id;
+
   let skilled_worker_details = await User.aggregate([
-    { $match: { _id: worker_id}},
+    { $match: { _id: workerId } },
     {
       $lookup: {
         from: "myservices", // other table name
         localField: "_id", // primary key kung asa gikan na table
         foreignField: "worker", // foreign key niya sa other table nga need i join
         as: "myServicesData", // nickname sa results
+        pipeline: [
+          { $match: { _id: myServiceId } },
+          {
+            $lookup: {
+              from: "feedbacks", // other table name
+              localField: "_id", // primary key kung asa gikan na table
+              foreignField: "my_service_id", // foreign key niya sa other table nga need i join
+              as: "feedbacksData", // nickname sa result
+            },
+          },
+        ],
       },
     },
+    { $project: { password: 0 } },
   ]);
 
   return res.status(200).json({ worker_details: skilled_worker_details });
