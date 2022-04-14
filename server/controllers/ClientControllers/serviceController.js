@@ -51,3 +51,22 @@ export const getTopRatedWorkers = async (req, res) => {
 
   return res.status(200).json({ user: top_rated_worker });
 };
+
+export const getSkilledWorkerDetails = async (req, res) => {
+
+  let {worker_id, service_id} = req.body;
+  console.log(worker_id);
+  let skilled_worker_details = await User.aggregate([
+    { $match: { _id: worker_id}},
+    {
+      $lookup: {
+        from: "myservices", // other table name
+        localField: "_id", // primary key kung asa gikan na table
+        foreignField: "worker", // foreign key niya sa other table nga need i join
+        as: "myServicesData", // nickname sa results
+      },
+    },
+  ]);
+
+  return res.status(200).json({ worker_details: skilled_worker_details });
+};
