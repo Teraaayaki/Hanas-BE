@@ -9,6 +9,7 @@ import {
   getServices,
   getMyServices,
   addService,
+  editServices,
   uploadImageService,
   deleteImageService,
   uploadImageCertificate,
@@ -21,6 +22,7 @@ router.get("/get-feedback", requireAuth, getFeedback);
 // Services Routes
 router.get("/get-services", requireAuth, getServices);
 router.get("/get-my-services", requireAuth, getMyServices);
+router.post("/edit-service", requireAuth, editServices);
 router.post("/add-service", requireAuth, addService);
 router.post(
   "/upload-image-service",

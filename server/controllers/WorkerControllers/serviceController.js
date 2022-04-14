@@ -17,7 +17,17 @@ export const getServices = async (req, res) => {
 };
 
 export const getMyServices = async (req, res) => {
-  let my_services = await MyService.find({ _id: req.user._id });
+  let my_services = await MyService.aggregate([
+    { $match: { worker: req.user._id } },
+    {
+      $lookup: {
+        from: "services",
+        localField: "service",
+        foreignField: "_id",
+        as: "serviceNameData",
+      },
+    },
+  ]);
 
   return res.status(200).json({ my_services });
 };
@@ -35,6 +45,7 @@ export const addService = async (req, res) => {
     my_service_id: uuid,
     worker: user_id,
     service: service._id,
+    description: req.body.description,
     hourly_rate: req.body.ratePerHourValue,
     sample_works: req.body.sampleWorkImgUrl,
     certificates: req.body.certificateImgUrl,
@@ -43,6 +54,29 @@ export const addService = async (req, res) => {
   //   insertIntoMyservice
   try {
     await MyService.create({ ...myService });
+    return res.status(200).json({ success: true });
+  } catch (err) {
+    console.log(err);
+    return res.status(422).send({ error: "Error adding service" });
+  }
+};
+
+export const editServices = async (req, res) => {
+  if (!req.body) {
+    return res.status(422).send({ error: "Error adding service" });
+  }
+  console.log(req.body);
+  // Create myservice object
+  const myService = {
+    description: req.body.description,
+    hourly_rate: req.body.ratePerHourValue,
+    sample_works: req.body.sampleWorkImgUrl,
+    certificates: req.body.certificateImgUrl,
+    last_updated: req.body.lastUpdated,
+  };
+  //   insertIntoMyservice
+  try {
+    await MyService.updateOne({ _id: req.body.service_id }, { ...myService });
     return res.status(200).json({ success: true });
   } catch (err) {
     console.log(err);
