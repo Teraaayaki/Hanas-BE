@@ -71,6 +71,29 @@ export const getSkilledWorkerDetails = async (req, res) => {
               localField: "_id", // primary key kung asa gikan na table
               foreignField: "my_service_id", // foreign key niya sa other table nga need i join
               as: "feedbacksData", // nickname sa result
+              pipeline: [
+                {
+                  $lookup: {
+                    from: "users",
+                    localField: "client",
+                    foreignField: "_id",
+                    as: "nameData",
+                    pipeline : [
+                      {$project: {
+                        name: {
+                          $concat: [
+                            "$first_name",
+                            " ",
+                            "$middle_name",
+                            " ",
+                            "$family_name",
+                          ],
+                        },},
+                      },
+                    ],
+                  },
+                },
+              ]
             },
           },
         ],
