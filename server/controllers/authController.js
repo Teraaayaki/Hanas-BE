@@ -1,11 +1,11 @@
-import { v4 } from 'uuid';
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import User from '../models/userModel.js';
-import Admin from '../models/adminModel.js';
-import OtpNumber from '../models/otpNumberModel.js';
-import twilio from '../helpers/twilio.js';
-import dotenv from 'dotenv';
+import { v4 } from "uuid";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import User from "../models/userModel.js";
+import Admin from "../models/adminModel.js";
+import OtpNumber from "../models/otpNumberModel.js";
+import twilio from "../helpers/twilio.js";
+import dotenv from "dotenv";
 
 dotenv.config();
 
@@ -15,6 +15,7 @@ export const loginClient = async (req, res) => {
   let user = {};
   if (client) {
     user = {
+      id: client._id,
       first_name: client.first_name,
       middle_name: client.middle_name,
       last_name: client.family_name,
@@ -23,17 +24,17 @@ export const loginClient = async (req, res) => {
       mobile_no: client.mobile_no,
       address: client.address,
       birthdate: client.birthdate,
-      sex: client.sex
+      sex: client.sex,
     };
   }
 
   if (!client) {
-    return res.status(422).send({ error: 'Invalid Email or Password' });
+    return res.status(422).send({ error: "Invalid Email or Password" });
   }
 
   bcrypt.compare(password, client.password, (err, success) => {
     if (!success) {
-      return res.status(422).send({ error: 'Invalid Email or Password' });
+      return res.status(422).send({ error: "Invalid Email or Password" });
     } else {
       const token = jwt.sign(
         { user_id: client.user_id },
@@ -43,7 +44,7 @@ export const loginClient = async (req, res) => {
         token,
         is_verified: client.is_verified,
         is_worker: client.is_worker,
-        user
+        user,
       });
     }
   });
@@ -60,14 +61,14 @@ export const verifyNumberClient = async (req, res) => {
       await OtpNumber.create({
         expiresAt: new Date(),
         otp,
-        number
+        number,
       });
 
       twilio.messages.create(
         {
           body: `YOUR OTP CODE: ${otp}`,
           messagingServiceSid: process.env.TWILIO_MESSAGING_SERVICE_SID,
-          to: `+63${number}`
+          to: `+63${number}`,
         }
         // (err) => {
         //   console.log("No error found");
@@ -83,10 +84,10 @@ export const verifyNumberClient = async (req, res) => {
       console.log(error);
       return res
         .status(409)
-        .send({ error: 'Maximum allowable request reached' });
+        .send({ error: "Maximum allowable request reached" });
     }
   } else {
-    return res.status(401).send({ error: 'Number already registered' });
+    return res.status(401).send({ error: "Number already registered" });
   }
 };
 
@@ -95,7 +96,7 @@ export const verifyNumberOtpClient = async (req, res) => {
   const verified = await OtpNumber.findOne({ otp, number });
 
   if (!verified) {
-    return res.status(401).send({ error: 'Incorrect OTP submitted' });
+    return res.status(401).send({ error: "Incorrect OTP submitted" });
   } else {
     await OtpNumber.deleteOne({ number });
     return res.status(200).json({ success: true });
@@ -109,7 +110,7 @@ export const registerClient = async (req, res) => {
   const userFound = await User.findOne({ email: data.email });
 
   if (userFound) {
-    return res.status(422).send({ error: 'Email already in use' });
+    return res.status(422).send({ error: "Email already in use" });
   }
   const hashedPass = await bcrypt.hash(data.password, 10);
 
@@ -127,7 +128,7 @@ export const registerClient = async (req, res) => {
       birthdate: data.dob,
       sex: data.sex,
       is_worker: data.isWorker,
-      is_verified: false
+      is_verified: false,
     });
     const token = jwt.sign(
       { user_id: uuid },
@@ -137,7 +138,7 @@ export const registerClient = async (req, res) => {
       .status(200)
       .json({ token, is_verified: false, is_worker: data.isWorker });
   } catch (err) {
-    return res.status(422).send({ error: 'Error Creating User' });
+    return res.status(422).send({ error: "Error Creating User" });
   }
 };
 
@@ -150,6 +151,7 @@ export const logoutClient = async (req, res) => {
 export const getDetails = async (req, res) => {
   if (req.user) {
     const user = {
+      id: req.user._id,
       first_name: req.user.first_name,
       middle_name: req.user.middle_name,
       last_name: req.user.family_name,
@@ -158,11 +160,11 @@ export const getDetails = async (req, res) => {
       mobile_no: req.user.mobile_no,
       address: req.user.address,
       birthdate: req.user.birthdate,
-      sex: req.user.sex
+      sex: req.user.sex,
     };
     return res.status(200).json({ user });
   } else {
-    return res.status(422).send({ error: 'Invalid Data' });
+    return res.status(422).send({ error: "Invalid Data" });
   }
 };
 
@@ -172,19 +174,19 @@ export const loginAdmin = async (req, res) => {
   let admin_info = {};
 
   if (!admin) {
-    return res.status(422).send({ error: 'Invalid Email or Password' });
+    return res.status(422).send({ error: "Invalid Email or Password" });
   } else {
     const { first_name, middle_name, family_name } = admin;
 
     admin_info = {
       email,
-      name: `${first_name} ${middle_name} ${family_name}`
+      name: `${first_name} ${middle_name} ${family_name}`,
     };
   }
 
   bcrypt.compare(password, admin.password, (err, success) => {
     if (!success) {
-      return res.status(422).send({ error: 'Invalid Email or Password' });
+      return res.status(422).send({ error: "Invalid Email or Password" });
     } else {
       const token = jwt.sign(
         { admin_id: admin.user_id },

@@ -1,6 +1,14 @@
 import Feedback from "../../models/feedbackModel.js";
+import Booking from "../../models/bookingModel.js";
 
-export const bookWorker = async (req, res) => {};
+export const bookSkilledWorker = async (req, res) => {
+  if (!req.body.DATA) {
+    return res.status(403).send({ error: "Must input some data" });
+  }
+  let booking_details = await Booking.create({ ...req.body.DATA });
+
+  return res.status(200).json({ booking_details });
+};
 
 // not yet used
 export const getFeedback = async (req, res) => {
