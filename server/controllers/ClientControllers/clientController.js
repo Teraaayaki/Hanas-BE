@@ -7,7 +7,42 @@ export const bookSkilledWorker = async (req, res) => {
   }
   let booking_details = await Booking.create({ ...req.body.DATA });
 
-  return res.status(200).json({ booking_id: booking_details._id });
+  let booking_data = await Booking.aggregate([
+    { $match: { _id: booking_details._id } },
+    {
+      $lookup: {
+        from: "users",
+        localField: "worker",
+        foreignField: "_id",
+        as: "workerData",
+        pipeline: [{ $project: { password: 0 } }],
+      },
+    },
+    {
+      $lookup: {
+        from: "myservices",
+        localField: "service_availed",
+        foreignField: "_id",
+        as: "workerServiceData",
+        pipeline: [
+          {
+            $lookup: {
+              from: "services",
+              localField: "service",
+              foreignField: "_id",
+              as: "serviceNameData",
+              pipeline: [{ $project: { service_type: 1 } }],
+            },
+          },
+          { $project: { password: 0 } },
+        ],
+      },
+    },
+  ]);
+
+  console.log(booking_data);
+
+  return res.status(200).json({ booking_data: booking_data[0] });
 };
 
 export const getBookings = async (req, res) => {
