@@ -17,7 +17,7 @@ const monitorDBChanges = (server) => {
         const newData =
           data.updateDescription.updatedFields[`messages.${index}`];
 
-        io.of('/api/socket').emit('updatedConversation', newData);
+        io.of('/api/socket').emit('conversationUpdate', newData);
       });
   });
 };
