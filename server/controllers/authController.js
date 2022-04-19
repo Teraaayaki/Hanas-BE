@@ -13,6 +13,7 @@ export const loginClient = async (req, res) => {
   const { email, password } = req.body;
   const client = await User.findOne({ email });
   let user = {};
+
   if (client) {
     user = {
       id: client._id,
