@@ -78,22 +78,32 @@ export const getSkilledWorkerDetails = async (req, res) => {
                     localField: "client",
                     foreignField: "_id",
                     as: "nameData",
-                    pipeline : [
-                      {$project: {
-                        name: {
-                          $concat: [
-                            "$first_name",
-                            " ",
-                            "$middle_name",
-                            " ",
-                            "$family_name",
-                          ],
-                        },},
+                    pipeline: [
+                      {
+                        $project: {
+                          name: {
+                            $concat: [
+                              "$first_name",
+                              " ",
+                              "$middle_name",
+                              " ",
+                              "$family_name",
+                            ],
+                          },
+                        },
                       },
                     ],
                   },
                 },
-              ]
+              ],
+            },
+          },
+          {
+            $lookup: {
+              from: "bookings",
+              localField: "_id",
+              foreignField: "service_availed",
+              as: "bookingsData",
             },
           },
         ],
