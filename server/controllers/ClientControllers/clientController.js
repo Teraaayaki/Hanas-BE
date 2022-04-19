@@ -1,6 +1,86 @@
 import Feedback from "../../models/feedbackModel.js";
+import Booking from "../../models/bookingModel.js";
 
-export const bookWorker = async (req, res) => {};
+export const bookSkilledWorker = async (req, res) => {
+  if (!req.body.DATA) {
+    return res.status(403).send({ error: "Must input some data" });
+  }
+  let booking_details = await Booking.create({ ...req.body.DATA });
+
+  let booking_data = await Booking.aggregate([
+    { $match: { _id: booking_details._id } },
+    {
+      $lookup: {
+        from: "users",
+        localField: "worker",
+        foreignField: "_id",
+        as: "workerData",
+        pipeline: [{ $project: { password: 0 } }],
+      },
+    },
+    {
+      $lookup: {
+        from: "myservices",
+        localField: "service_availed",
+        foreignField: "_id",
+        as: "workerServiceData",
+        pipeline: [
+          {
+            $lookup: {
+              from: "services",
+              localField: "service",
+              foreignField: "_id",
+              as: "serviceNameData",
+              pipeline: [{ $project: { service_type: 1 } }],
+            },
+          },
+          { $project: { password: 0 } },
+        ],
+      },
+    },
+  ]);
+
+  console.log(booking_data);
+
+  return res.status(200).json({ booking_data: booking_data[0] });
+};
+
+export const getBookings = async (req, res) => {
+  let bookings = await Booking.aggregate([
+    { $match: { client: req.user._id } },
+    { $sort: { createdAt: -1 } },
+    {
+      $lookup: {
+        from: "users",
+        localField: "worker",
+        foreignField: "_id",
+        as: "workerData",
+        pipeline: [{ $project: { password: 0 } }],
+      },
+    },
+    {
+      $lookup: {
+        from: "myservices",
+        localField: "service_availed",
+        foreignField: "_id",
+        as: "workerServiceData",
+        pipeline: [
+          {
+            $lookup: {
+              from: "services",
+              localField: "service",
+              foreignField: "_id",
+              as: "serviceNameData",
+              pipeline: [{ $project: { service_type: 1 } }],
+            },
+          },
+          { $project: { password: 0 } },
+        ],
+      },
+    },
+  ]);
+  return res.status(200).json({ bookings });
+};
 
 // not yet used
 export const getFeedback = async (req, res) => {
