@@ -14,7 +14,7 @@ const socketConnection = (io) => {
     socket.on('message', (newMessage, receiverID) => {
       const receiver = getReceiverSocketInfo(receiverID);
 
-      io.to(receiver?.socketID).emit('message', newMessage);
+      io.of('/api/socket').to(receiver?.socketID).emit('message', newMessage);
     });
 
     socket.on('disconnect', () => {
