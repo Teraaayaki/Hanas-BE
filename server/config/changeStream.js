@@ -7,7 +7,7 @@ const monitorDBChanges = (server) => {
   socketConnection(io);
 
   mongoose.connection.once('open', () => {
-    console.log('Change Stream');
+    console.log('Connected Change Stream');
 
     mongoose.connection
       .collection('conversations')
