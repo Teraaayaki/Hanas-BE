@@ -1,3 +1,89 @@
-import Feedback from "../../models/feedbackModel.js";
+import User from "../../models/userModel.js";
+import Booking from "../../models/bookingModel.js";
+import Report from "../../models/reportModel.js";
+import Service from "../../models/serviceModel.js";
 
-export const bookWorker = async (req, res) => {};
+// not yet used
+export const getRequests = async (req, res) => {
+  const requests = await User.find({}).select(
+    "first_name",
+    "middle_name",
+    "family_name",
+    "suffix",
+    "is_verified"
+  );
+
+  return res.status(200).json({ requests });
+};
+
+export const getClients = async (req, res) => {
+  const clients = await User.find({ isWorker: false }).select(
+    "first_name",
+    "middle_name",
+    "family_name",
+    "suffix",
+    "createdAt"
+  );
+
+  return res.status(200).json({ clients });
+};
+
+export const getWorkers = async (req, res) => {
+  const workers = await User.find({ isWorker: true }).select(
+    "first_name",
+    "middle_name",
+    "family_name",
+    "suffix",
+    "createdAt"
+  );
+
+  return res.status(200).json({ workers });
+};
+
+export const getTransactions = async (req, res) => {
+  const transactions = await Booking.aggregate([
+    { $match: { book_status: "Finished" } },
+    {
+      $lookup: {
+        from: "users",
+        localField: "client",
+        foreignField: "_id",
+        as: "clientData",
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "worker",
+        foreignField: "_id",
+        as: "workerData",
+      },
+    },
+  ]);
+
+  return res.status(200).json({ transactions });
+};
+
+export const getReports = async (req, res) => {
+  const reports = await Report.aggregate([
+    { $match: { book_status: "Finished" } },
+    {
+      $lookup: {
+        from: "users",
+        localField: "client",
+        foreignField: "_id",
+        as: "clientData",
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "worker",
+        foreignField: "_id",
+        as: "workerData",
+      },
+    },
+  ]);
+
+  return res.status(200).json({ workers });
+};
