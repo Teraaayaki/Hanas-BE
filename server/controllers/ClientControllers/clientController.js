@@ -48,7 +48,7 @@ export const bookSkilledWorker = async (req, res) => {
 export const getBookings = async (req, res) => {
   let bookings = await Booking.aggregate([
     { $match: { client: req.user._id } },
-    { $sort: { createdAt: -1 } },
+    { $sort: { booked_dateTimeStart: -1 } },
     {
       $lookup: {
         from: "users",
