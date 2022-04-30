@@ -1,71 +1,71 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-const bookingSchema = mongoose.Schema(
+const bookingModel = mongoose.Schema(
   {
     booking_id: {
       type: String,
       unique: true,
-      required: true
+      required: true,
     },
     service_availed: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: 'MyService'
+      ref: "MyService",
     },
     worker: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: 'User'
+      ref: "User",
     },
     client: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: 'User'
+      ref: "User",
     },
     post_date_time: {
       type: Date,
-      required: true
+      required: true,
     },
     booked_dateStart: {
       type: Date,
-      required: true
+      required: true,
     },
     booked_dateEnd: {
       type: Date,
-      required: true
+      required: true,
     },
     booked_timeStart: {
       type: Date,
-      required: true
+      required: true,
     },
     booked_timeEnd: {
       type: Date,
-      required: true
+      required: true,
     },
     date_paid: {
       type: Date,
-      required: true
+      required: true,
     },
     total_price: {
       type: Number,
-      required: true
+      required: true,
     },
     book_status: {
       type: String,
       enum: {
-        values: ['On Going', 'Finished', 'Accepted', 'Pending', 'Declined'],
-        message: '{VALUE} is not supported.'
+        values: ["On Going", "Finished", "Accepted", "Pending", "Declined"],
+        message: "{VALUE} is not supported.",
       },
-      required: true
+      required: true,
     },
     conv_fee: {
       type: Number,
-      required: true
-    }
+      required: true,
+    },
   },
   {
-    timestamps: true
+    timestamps: true,
   }
 );
 
-export default mongoose.model('Booking', bookingModel);
+export default mongoose.model("Booking", bookingModel);
