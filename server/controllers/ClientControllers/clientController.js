@@ -1,5 +1,21 @@
 import Feedback from "../../models/feedbackModel.js";
 import Booking from "../../models/bookingModel.js";
+import e from "cors";
+
+export const removeScheduleClient = async (req, res) => {
+
+  if(!req.body) {
+    return res.status(403).send({ error: "Unhandled Remove Error"});
+  }
+
+  try{
+    let schedule_details = await Booking.updateOne({ _id : req.body.DATA._id }, {$set: { isRemovedClient : 'true' }}); 
+    return res.status(200).json("Successful update");
+  }catch(err){
+    console.log(err);
+  }
+
+}
 
 export const bookSkilledWorker = async (req, res) => {
   if (!req.body.DATA) {
