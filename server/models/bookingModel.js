@@ -56,7 +56,6 @@ const bookingModel = mongoose.Schema(
       type: Number,
       required: true,
     },
-<<<<<<< HEAD
     isRemovedClient: {
       type: Boolean,
       required: true,
@@ -65,12 +64,6 @@ const bookingModel = mongoose.Schema(
       type: Boolean,
       required: true,
     }
-=======
-    isRemoved: {
-      type: Boolean,
-      default: false,
-    },
->>>>>>> 25590d7f0984e34c66b08833a837270b3ca1922c
   },
   {
     timestamps: true,
