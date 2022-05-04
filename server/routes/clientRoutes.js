@@ -6,6 +6,7 @@ import {
   getFeedback,
   bookSkilledWorker,
   getBookings,
+  removeBooking,
 } from "../controllers/ClientControllers/clientController.js";
 
 import {
@@ -20,5 +21,5 @@ router.get("/get-top-rated-workers", requireAuth, getTopRatedWorkers);
 
 router.post("/get-worker-details", requireAuth, getSkilledWorkerDetails);
 router.post("/book-skilled-worker", requireAuth, bookSkilledWorker);
-
+router.post("/remove-booking", requireAuth, removeBooking);
 export default router;
