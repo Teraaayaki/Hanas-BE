@@ -1,6 +1,7 @@
 import Feedback from "../../models/feedbackModel.js";
 import Booking from "../../models/bookingModel.js";
 import Favorites from "../../models/favoritesModel.js";
+import MyService from "../../models/myServiceModel.js";
 
 export const bookSkilledWorker = async (req, res) => {
   if (!req.body.DATA) {
@@ -143,42 +144,83 @@ export const getFeedback = async (req, res) => {
 };
 
 export const addToFavorites = async (req, res) => {
-  if(!req.body){
+  if (!req.body) {
     return res.status(403).send("Unable to add to Favorites");
   }
 
   console.log(req.body);
 
-  Favorites.findOneAndUpdate({client_id: req.body.DATA.client_id}, {$push : {favorite_workers: req.body.DATA.favorite_workers}}, {upsert: true}, (error, success) => {
-    if(error){
-      console.log(error);
-    }else{
-      console.log(success);
-    }
-  });
+  // Array
 
-    return res.status(200).json("Added Worker to Favorites");
+  Favorites.findOneAndUpdate(
+    { client_id: req.body.DATA.client_id },
+    { $push: { favorite_services: req.body.DATA.favorite_workers } },
+    { upsert: true },
+    (error, success) => {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(success);
+      }
+    }
+  );
+
+  return res.status(200).json("Added Worker to Favorites");
+};
+
+const aggregateFavourites = async (my_service_id) => {
+  let myService = await MyService.aggregate([
+    {
+      $match: {
+        _id: my_service_id,
+      },
+    },
+    {
+      $lookup: {
+        from: "myservices",
+        localField: "my_service_id",
+        foreignField: "_id",
+        as: "myServicesData",
+        pipeline: [
+          {
+            $lookup: {
+              from: "services",
+              localField: "service",
+              foreignField: "_id",
+              as: "serviceNameData",
+              pipeline: [{ $project: { service_type: 1 } }],
+            },
+          },
+          {
+            $project: {
+              hourly_rate: 1,
+              serviceNameData: 1,
+            },
+          },
+        ],
+      },
+    },
+  ]);
+  console.log("aggregateFavourites", myService);
+  return myService[0];
 };
 
 export const getFavorites = async (req, res) => {
-  
-  try{
-    let favorites = await Favorites.find({client_id : req.user._id}); 
-    let favoritesArray = favorites.favorite_workers.map(favorite_worker => await favorite_worker.aggregate({
+  try {
+    let favorites = await Favorites.findOne({ client_id: req.user._id });
+    console.log(favorites.favorite_services);
+    let favoritesArray = favorites.favorite_services.map((my_service_id) =>
+      aggregateFavourites(my_service_id).then((myService) =>
+        console.log("getFavorites", myService)
+      )
+    );
 
-    }))
-
-    
-
+    console.log("favoritesArray", favoritesArray);
 
     return res.status(200).json({ favorites });
-
-  
-
-  }catch(err){
+  } catch (err) {
     console.log(err);
 
-    return res.status(403).send({err});
+    return res.status(403).send({ err });
   }
-  
-}
+};
