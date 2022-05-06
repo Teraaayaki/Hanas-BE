@@ -1,5 +1,6 @@
 import Feedback from "../../models/feedbackModel.js";
 import Booking from "../../models/bookingModel.js";
+import Favorites from "../../models/favoritesModel.js";
 
 export const bookSkilledWorker = async (req, res) => {
   if (!req.body.DATA) {
@@ -140,3 +141,44 @@ export const getFeedback = async (req, res) => {
 
   return res.status(200).json({ feedback });
 };
+
+export const addToFavorites = async (req, res) => {
+  if(!req.body){
+    return res.status(403).send("Unable to add to Favorites");
+  }
+
+  console.log(req.body);
+
+  Favorites.findOneAndUpdate({client_id: req.body.DATA.client_id}, {$push : {favorite_workers: req.body.DATA.favorite_workers}}, {upsert: true}, (error, success) => {
+    if(error){
+      console.log(error);
+    }else{
+      console.log(success);
+    }
+  });
+
+    return res.status(200).json("Added Worker to Favorites");
+};
+
+export const getFavorites = async (req, res) => {
+  
+  try{
+    let favorites = await Favorites.find({client_id : req.user._id}); 
+    let favoritesArray = favorites.favorite_workers.map(favorite_worker => await favorite_worker.aggregate({
+
+    }))
+
+    
+
+
+    return res.status(200).json({ favorites });
+
+  
+
+  }catch(err){
+    console.log(err);
+
+    return res.status(403).send({err});
+  }
+  
+}
