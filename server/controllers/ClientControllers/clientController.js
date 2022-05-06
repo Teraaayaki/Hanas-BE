@@ -1,6 +1,7 @@
 import Feedback from "../../models/feedbackModel.js";
 import Booking from "../../models/bookingModel.js";
 import Favorites from "../../models/favoritesModel.js";
+import MyService from "../../models/myServiceModel.js";
 
 export const bookSkilledWorker = async (req, res) => {
   if (!req.body.DATA) {
@@ -169,7 +170,7 @@ export const addToFavorites = async (req, res) => {
         console.log("Success", success);
       }
     }
-  });
+  );
 
     return res.status(200).json("Added Worker to Favorites");
 };
@@ -232,11 +233,13 @@ const aggregateFavourites = (favorite_services) => {
 };
 
 export const getFavorites = async (req, res) => {
+
   try {
     let favorites = await Favorites.findOne({ client_id: req.user._id });
-    console.log(favorites.favorite_services);
+    // console.log("FAVORITES", favorites);
     let favoritesArray = await aggregateFavourites(favorites.favorite_services);
 
+    // console.log("FAVORITES ARRAY", favoritesArray);
     return res.status(200).json({ favoritesArray });
   } catch (err) {
     console.log(err);
