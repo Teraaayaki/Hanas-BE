@@ -150,17 +150,24 @@ export const addToFavorites = async (req, res) => {
 
   console.log(req.body);
 
-  // Array
+  let counterHolder = await Favorites.count({
+    client_id: req.body.DATA.client_id,
+    favorite_services: { $in: [req.body.DATA.favorite_services] },
+  });
+
+  if (counterHolder != 0) {
+    return res.status(422).send({ error: "Worker already added" });
+  }
 
   Favorites.findOneAndUpdate(
     { client_id: req.body.DATA.client_id },
-    { $push: { favorite_services: req.body.DATA.favorite_workers } },
+    { $push: { favorite_services: req.body.DATA.favorite_services } },
     { upsert: true },
     (error, success) => {
       if (error) {
-        console.log(error);
+        console.log("Error", error);
       } else {
-        console.log(success);
+        console.log("Success", success);
       }
     }
   );
