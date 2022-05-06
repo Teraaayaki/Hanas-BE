@@ -1,7 +1,6 @@
 import Feedback from "../../models/feedbackModel.js";
 import Booking from "../../models/bookingModel.js";
 import Favorites from "../../models/favoritesModel.js";
-import MyService from "../../models/myServiceModel.js";
 
 export const bookSkilledWorker = async (req, res) => {
   if (!req.body.DATA) {
@@ -144,7 +143,7 @@ export const getFeedback = async (req, res) => {
 };
 
 export const addToFavorites = async (req, res) => {
-  if (!req.body) {
+  if(!req.body){
     return res.status(403).send("Unable to add to Favorites");
   }
 
@@ -170,9 +169,9 @@ export const addToFavorites = async (req, res) => {
         console.log("Success", success);
       }
     }
-  );
+  });
 
-  return res.status(200).json("Added Worker to Favorites");
+    return res.status(200).json("Added Worker to Favorites");
 };
 
 const aggregateFavourites = (favorite_services) => {
@@ -242,6 +241,7 @@ export const getFavorites = async (req, res) => {
   } catch (err) {
     console.log(err);
 
-    return res.status(403).send({ err });
+    return res.status(403).send({err});
   }
-};
+  
+}
