@@ -2,11 +2,6 @@ import mongoose from "mongoose";
 
 const bookingModel = mongoose.Schema(
   {
-    booking_id: {
-      type: String,
-      unique: true,
-      required: true,
-    },
     service_availed: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
@@ -22,44 +17,51 @@ const bookingModel = mongoose.Schema(
       required: true,
       ref: "User",
     },
-    post_date_time: {
+    book_type: {
+      type: String,
+      enum: {
+        values: ["Single", "Multiple"],
+        message: "{VALUE} is not supported.",
+      },
+      required: true,
+    },
+    booked_dateTimeStart: {
       type: Date,
       required: true,
     },
-    booked_dateStart: {
-      type: Date,
-      required: true,
-    },
-    booked_dateEnd: {
-      type: Date,
-      required: true,
-    },
-    booked_timeStart: {
-      type: Date,
-      required: true,
-    },
-    booked_timeEnd: {
+    booked_dateTimeEnd: {
       type: Date,
       required: true,
     },
     date_paid: {
       type: Date,
+    },
+    total_cost: {
+      type: Number,
       required: true,
     },
-    total_price: {
+    total_hours: {
       type: Number,
       required: true,
     },
     book_status: {
       type: String,
       enum: {
-        values: ["On Going", "Finished", "Accepted", "Pending", "Declined"],
+        values: ["Ongoing", "Finished", "Accepted", "Pending", "Declined"],
         message: "{VALUE} is not supported.",
       },
       required: true,
     },
     conv_fee: {
       type: Number,
+      required: true,
+    },
+    isRemovedClient: {
+      type: Boolean,
+      required: true,
+    },
+    isRemovedWorker: {
+      type: Boolean,
       required: true,
     },
   },
