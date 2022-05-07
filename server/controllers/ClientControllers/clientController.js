@@ -189,3 +189,12 @@ export const getFeedback = async (req, res) => {
 
   return res.status(200).json({ feedback });
 };
+
+export const removeBooking = async (req, res) => {
+  const booking = await Booking.findOne({ _id: req.body.id });
+
+  booking.isRemovedClient = true;
+  await booking.save();
+
+  return res.status(200).json({ booking });
+};
