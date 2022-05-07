@@ -6,10 +6,9 @@ import Service from "../../models/serviceModel.js";
 // not yet used
 
 //Verifications----------------------------------------
-export const getRequests = async (req, res) => {
-  const requests = await User.find({
+export const getVerifications = async (req, res) => {
+  const verifications = await User.find({
     is_verified: false,
-    is_worker: true,
   }).select([
     "_id",
     "first_name",
@@ -17,12 +16,62 @@ export const getRequests = async (req, res) => {
     "family_name",
     "suffix",
     "address",
-    "createdAt",
+    "updatedAt",
     "is_worker",
     "is_verified",
   ]);
 
-  return res.status(200).json({ requests });
+  return res.status(200).json({ verifications });
+};
+
+export const getVerification = async (req, res) => {
+  try {
+    const verification = await User.find({
+      _id: req.params.id,
+      is_verified: false,
+    }).select([
+      "_id",
+      "first_name",
+      "middle_name",
+      "family_name",
+      "suffix",
+      "address",
+      "updatedAt",
+      "is_worker",
+      "is_verified",
+    ]);
+
+    return res.status(200).json({ verification });
+  } catch (err) {
+    console.log(err.message);
+  }
+};
+
+export const getCertifications = async (req, res) => {
+  const certifications = await User.find({
+    is_certified: false,
+  }).select(["_id", "service_type", "is_certified", "updatedAt"]);
+
+  return res.status(200).json({ verifications });
+};
+
+export const getCertification = async (req, res) => {
+  try {
+    const verification = await User.find({
+      _id: req.params.id,
+      is_certified: false,
+    }).select([
+      "_id",
+      "service_id",
+      "service_type",
+      "is_certified",
+      "updatedAt",
+    ]);
+
+    return res.status(200).json({ verification });
+  } catch (err) {
+    console.log(err.message);
+  }
 };
 
 //Clients----------------------------------------
@@ -39,6 +88,15 @@ export const getClients = async (req, res) => {
   ]);
 
   return res.status(200).json({ clients });
+};
+
+export const getClient = async (req, res) => {
+  try {
+    const client = User.find({ _id: req.params.id, isWorker: false });
+    return res.status(200).json({ client });
+  } catch (err) {
+    console.log(err.message);
+  }
 };
 
 //Skilled Workers----------------------------------------
@@ -87,6 +145,15 @@ export const getWorkers = async (req, res) => {
   ]);
 
   return res.status(200).json({ workers });
+};
+
+export const getWorker = async (req, res) => {
+  try {
+    const worker = User.find({ _id: req.params.id, isWorker: true });
+    return res.status(200).json({ worker });
+  } catch (err) {
+    console.log(err.message);
+  }
 };
 
 //Transactions----------------------------------------
@@ -172,7 +239,14 @@ export const getTransactions = async (req, res) => {
   return res.status(200).json({ transactions });
 };
 
+export const getTransaction = async (req, res) => {
+  const transaction = await Booking.aggregate([
+    { $match: { _id: req.params.id, book_status: "Finished" } },
+  ]);
+};
+
 //Reports----------------------------------------
+//Still no testable data
 export const getReports = async (req, res) => {
   // const reports = await Report.aggregate([
   //   { $match: { book_status: "Finished" } },
