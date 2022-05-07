@@ -1,8 +1,8 @@
 import User from "../../models/userModel.js";
 import Booking from "../../models/bookingModel.js";
 import Report from "../../models/reportModel.js";
-import Service from "../../models/serviceModel.js";
 
+import { ObjectId } from "mongodb";
 // not yet used
 
 //Verifications----------------------------------------
@@ -92,7 +92,19 @@ export const getClients = async (req, res) => {
 
 export const getClient = async (req, res) => {
   try {
-    const client = User.find({ _id: req.params.id, isWorker: false });
+    const client = await User.aggregate([
+      {
+        $match: {
+          _id: new ObjectId(req.params.id),
+          is_worker: false,
+        },
+      },
+      {
+        $project: {
+          password: 0,
+        },
+      },
+    ]);
     return res.status(200).json({ client });
   } catch (err) {
     console.log(err.message);
@@ -149,7 +161,19 @@ export const getWorkers = async (req, res) => {
 
 export const getWorker = async (req, res) => {
   try {
-    const worker = User.find({ _id: req.params.id, isWorker: true });
+    const worker = await User.aggregate([
+      {
+        $match: {
+          _id: new ObjectId(req.params.id),
+          is_worker: true,
+        },
+      },
+      {
+        $project: {
+          password: 0,
+        },
+      },
+    ]);
     return res.status(200).json({ worker });
   } catch (err) {
     console.log(err.message);
@@ -246,7 +270,7 @@ export const getTransaction = async (req, res) => {
 };
 
 //Reports----------------------------------------
-//Still no testable data
+//Still no ERD & testable data
 export const getReports = async (req, res) => {
   // const reports = await Report.aggregate([
   //   { $match: { book_status: "Finished" } },
