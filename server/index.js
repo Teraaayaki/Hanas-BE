@@ -1,14 +1,15 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import connectDB from './config/db.js';
-import monitorDBChanges from './config/changeStream.js';
-import http from 'http';
-import cors from 'cors';
+import express from "express";
+import dotenv from "dotenv";
+import connectDB from "./config/db.js";
+import monitorDBChanges from "./config/changeStream.js";
+import http from "http";
+import cors from "cors";
 
-import verificationRoutes from './routes/verificationRoutes.js';
-import workerRoutes from './routes/workerRoutes.js';
-import clientRoutes from './routes/clientRoutes.js';
-import conversationRoutes from './routes/conversationRoutes.js';
+import verificationRoutes from "./routes/verificationRoutes.js";
+import clientRoutes from "./routes/clientRoutes.js";
+import workerRoutes from "./routes/workerRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
+import conversationRoutes from "./routes/conversationRoutes.js";
 
 dotenv.config();
 connectDB();
@@ -22,14 +23,15 @@ app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 
-app.get('/', (req, res) => {
-  res.status(200).send('Hanas API Working 14/03/22 Soy Leb');
+app.get("/", (req, res) => {
+  res.status(200).send("Hanas API Working 14/03/22 Soy Leb");
 });
 
-app.use('/api/auth', verificationRoutes);
-app.use('/api/worker', workerRoutes);
-app.use('/api/client', clientRoutes);
-app.use('/api/conversations', conversationRoutes);
+app.use("/api/auth", verificationRoutes);
+app.use("/api/worker", workerRoutes);
+app.use("/api/client", clientRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/conversations", conversationRoutes);
 
 server.listen(process.env.PORT, () =>
   console.log(`Server running on port ${port}`)
