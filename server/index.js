@@ -6,8 +6,9 @@ import http from "http";
 import cors from "cors";
 
 import verificationRoutes from "./routes/verificationRoutes.js";
-import workerRoutes from "./routes/workerRoutes.js";
 import clientRoutes from "./routes/clientRoutes.js";
+import workerRoutes from "./routes/workerRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
 import conversationRoutes from "./routes/conversationRoutes.js";
 
 dotenv.config();
@@ -29,6 +30,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", verificationRoutes);
 app.use("/api/worker", workerRoutes);
 app.use("/api/client", clientRoutes);
+app.use("/api/admin", adminRoutes);
 app.use("/api/conversations", conversationRoutes);
 
 server.listen(process.env.PORT, () =>
