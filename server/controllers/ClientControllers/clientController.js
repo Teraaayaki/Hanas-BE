@@ -249,13 +249,12 @@ export const getFavorites = async (req, res) => {
     if(favorites){
       favoritesArray = await aggregateFavourites(favorites.favorite_services);
     }else if(favorites === null){
-      console.log("FAVORITES ONLY", favorites);
-      return res.status(422).json({favorites});
+      return res.status(422).json("Empty Favorites");
     }
 
+    console.log("FAVORITES ARRAY NANI", favoritesArray);
     
     if(favoritesArray){
-      console.log("FAVORITES ARRAY", favoritesArray);
       return res.status(200).json({ favoritesArray });
     }else{
       return res.status(422).json("Empty Favorites");
