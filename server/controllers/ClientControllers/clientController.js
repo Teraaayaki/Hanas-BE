@@ -225,6 +225,15 @@ const aggregateFavourites = (favorite_services) => {
           clientNameData: 1,
         },
       },
+      {
+        $lookup: {
+          from: "feedbacks",
+          localField: "_id",
+          foreignField: "my_service_id",
+          as: "feedbackData",
+          pipeline: [{ $group: { _id: null, jobs: { $sum: 1 }, rateAvg: { $avg: "$rate" } } }],
+        },
+      },
     ]);
     return myService[0];
   });
@@ -233,14 +242,25 @@ const aggregateFavourites = (favorite_services) => {
 };
 
 export const getFavorites = async (req, res) => {
-
+  let favoritesArray;
   try {
     let favorites = await Favorites.findOne({ client_id: req.user._id });
-    // console.log("FAVORITES", favorites);
-    let favoritesArray = await aggregateFavourites(favorites.favorite_services);
+    
+    if(favorites){
+      favoritesArray = await aggregateFavourites(favorites.favorite_services);
+    }else if(favorites === null){
+      console.log("FAVORITES ONLY", favorites);
+      return res.status(422).json({favorites});
+    }
 
-    // console.log("FAVORITES ARRAY", favoritesArray);
-    return res.status(200).json({ favoritesArray });
+    
+    if(favoritesArray){
+      console.log("FAVORITES ARRAY", favoritesArray);
+      return res.status(200).json({ favoritesArray });
+    }else{
+      return res.status(422).json("Empty Favorites");
+    }
+
   } catch (err) {
     console.log(err);
 
