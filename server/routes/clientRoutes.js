@@ -6,9 +6,12 @@ import {
   getFeedback,
   bookSkilledWorker,
   getBookings,
+} from "../controllers/ClientControllers/clientController.js";
+
+import {
   addToFavorites,
   getFavorites,
-} from "../controllers/ClientControllers/clientController.js";
+} from "../controllers/ClientControllers/favoritesController.js";
 
 import {
   getTopRatedWorkers,
