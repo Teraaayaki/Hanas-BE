@@ -8,13 +8,12 @@ export const addToFavorites = async (req, res) => {
       return res.status(403).send("Unable to add to Favorites");
     }
   
-    console.log(req.body);
-  
     let counterHolder = await Favorites.count({
       client_id: req.body.DATA.client_id,
       favorite_services: { $in: [req.body.DATA.favorite_services] },
     });
-  
+    
+    //if counterHolder is not 0 meaning naa na ang kato na worker
     if (counterHolder != 0) {
       return res.status(422).send({ error: "Worker already added" });
     }
@@ -128,4 +127,22 @@ export const addToFavorites = async (req, res) => {
       return res.status(403).send({err});
     }
     
+  }
+
+  export const removeFromFavorites = async (req, res) => {
+    if(!req.body){
+      return res.status(403).send("Unable to remove from favorites");
+    }
+
+    console.log(req.body);
+
+    try{
+      let deletedFavorites = await Favorites.findOneAndDelete({ client_id: req.body.DATA.client_id, $match: {favorite_services: req.body.DATA.favorite_services}})
+
+      console.log(deletedFavorites);
+
+    }catch(err){
+      console.log(err);
+      return res.status(403).send({err});
+    }
   }

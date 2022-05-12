@@ -11,6 +11,7 @@ import {
 import {
   addToFavorites,
   getFavorites,
+  removeFromFavorites,
 } from "../controllers/ClientControllers/favoritesController.js";
 
 import {
@@ -30,4 +31,5 @@ router.post("/book-skilled-worker", requireAuth, bookSkilledWorker);
 
 
 router.post("/add-to-favorites", requireAuth, addToFavorites);
+router.post("/remove-from-favorites", requireAuth, removeFromFavorites);
 export default router;
