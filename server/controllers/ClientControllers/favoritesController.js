@@ -137,10 +137,7 @@ export const addToFavorites = async (req, res) => {
     console.log(req.body);
 
     try{
-      let deletedFavorites = await Favorites.findOneAndDelete({ client_id: req.body.DATA.client_id, $match: {favorite_services: req.body.DATA.favorite_services}})
-
-      console.log(deletedFavorites);
-
+      let deletedFavorites = await Favorites.findOneAndDelete({ client_id: req.body.client_id, $match: {favorite_services: req.body.favorite_services}})
     }catch(err){
       console.log(err);
       return res.status(403).send({err});
