@@ -143,12 +143,18 @@ export const removeFromFavorites = async (req, res) => {
   console.log(req.body);
   console.log("Deleting");
   try {
-    let deletedFavorites = await Favorites.findOneAndDelete({
-      client_id: req.body.DATA.client_id,
-      $match: { favorite_services: req.body.DATA.favorite_services },
-    });
-
-    console.log(deletedFavorites);
+    Favorites.findOneAndUpdate(
+      { client_id: req.body.DATA.client_id },
+      { $pull: { favorite_services: req.body.DATA.favorite_services } },
+      (error, success) => {
+        if (error) {
+          console.log("Error", error);
+        } else {
+          console.log("Success", success);
+        }
+      }
+    );
+  
   } catch (err) {
     console.log(err);
     return res.status(403).send({ err });
