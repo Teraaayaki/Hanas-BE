@@ -154,7 +154,7 @@ export const removeFromFavorites = async (req, res) => {
         }
       }
     );
-  
+    return res.status(200).json({ message: "Successful deletion" });
   } catch (err) {
     console.log(err);
     return res.status(403).send({ err });
