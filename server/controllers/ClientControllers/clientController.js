@@ -1,7 +1,53 @@
 import Feedback from "../../models/feedbackModel.js";
 import Booking from "../../models/bookingModel.js";
-import Favorites from "../../models/favoritesModel.js";
-import MyService from "../../models/myServiceModel.js";
+
+export const removeScheduleClient = async (req, res) => {
+  if (!req.body) {
+    return res.status(403).send({ error: "Unhandled Remove Error" });
+  }
+
+  try {
+    let schedule_details = await Booking.updateOne(
+      { _id: req.body.DATA._id },
+      { $set: { isRemovedClient: "true" } }
+    );
+    return res.status(200).json("Successful update");
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const removeCancelledBooking = async (req, res) => {
+  if (!req.body) {
+    return res.status(403).send({ error: "Unhandled Remove Error" });
+  }
+
+  try {
+    let cancelled_details = await Booking.updateOne(
+      { _id: req.body.DATA._id },
+      { $set: { isRemovedClient: "true" } }
+    );
+    return res.status(200).json("Successful update");
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const cancelBookingSchedule = async (req, res) => {
+  if (!req.body) {
+    return res.status(403).send({ error: "Unhandled Cancellation Error" });
+  }
+
+  try {
+    let cancelled_schedule = await Booking.updateOne(
+      { _id: req.body.DATA._id },
+      { $set: { book_status: "Declined" } }
+    );
+    return res.status(200).json("Successful cancellation");
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 export const bookSkilledWorker = async (req, res) => {
   if (!req.body.DATA) {
@@ -50,7 +96,7 @@ export const bookSkilledWorker = async (req, res) => {
 export const getBookings = async (req, res) => {
   let bookings = await Booking.aggregate([
     { $match: { client: req.user._id } },
-    { $sort: { createdAt: -1 } },
+    { $sort: { booked_dateTimeStart: -1 } },
     {
       $lookup: {
         from: "users",
@@ -143,3 +189,11 @@ export const getFeedback = async (req, res) => {
   return res.status(200).json({ feedback });
 };
 
+export const removeBooking = async (req, res) => {
+  const booking = await Booking.findOne({ _id: req.body.id });
+
+  booking.isRemovedClient = true;
+  await booking.save();
+
+  return res.status(200).json({ booking });
+};

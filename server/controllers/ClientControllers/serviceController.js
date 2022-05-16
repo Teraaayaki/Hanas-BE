@@ -104,6 +104,9 @@ export const getSkilledWorkerDetails = async (req, res) => {
               localField: "_id",
               foreignField: "service_availed",
               as: "bookingsData",
+              pipeline: [
+                { $match: {$or: [ {book_status: "Accepted"} , {book_status: "Ongoing"}  ]} }
+              ]
             },
           },
         ],

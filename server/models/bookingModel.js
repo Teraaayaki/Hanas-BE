@@ -47,13 +47,21 @@ const bookingModel = mongoose.Schema(
     book_status: {
       type: String,
       enum: {
-        values: ["On Going", "Finished", "Accepted", "Pending", "Declined"],
+        values: ["Ongoing", "Finished", "Accepted", "Pending", "Declined"],
         message: "{VALUE} is not supported.",
       },
       required: true,
     },
     conv_fee: {
       type: Number,
+      required: true,
+    },
+    isRemovedClient: {
+      type: Boolean,
+      required: true,
+    },
+    isRemovedWorker: {
+      type: Boolean,
       required: true,
     },
   },
