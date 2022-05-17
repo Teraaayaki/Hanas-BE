@@ -50,7 +50,7 @@ export const getTopRatedWorkers = async (req, res) => {
 
 export const getTopServices = async (req, res) => {
   let top_rated_services = await Service.aggregate([
-    { $limit : 20},
+    
     {
       $lookup: {
         from: "myservices",
@@ -66,7 +66,7 @@ export const getTopServices = async (req, res) => {
       $match: { servicesCount : {$gt: 0}}
     },
     { $sort: { servicesCount : -1}},
-   
+    { $limit : 6},
   ]);
 
   return res.status(200).json({ top_rated_services });
