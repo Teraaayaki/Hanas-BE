@@ -1,5 +1,6 @@
 import User from "../../models/userModel.js";
 import MyService from "../../models/myServiceModel.js";
+import Service from "../../models/serviceModel.js";
 
 export const getTopRatedWorkers = async (req, res) => {
   let top_rated_worker = await User.aggregate([
@@ -45,6 +46,33 @@ export const getTopRatedWorkers = async (req, res) => {
   ]);
 
   return res.status(200).json({ user: top_rated_worker });
+};
+
+export const getTopServices = async (req, res) => {
+  let top_rated_services = await Service.aggregate([
+    { $limit : 6 },
+    {
+      $lookup: {
+        from: "myservices",
+        localField: "_id",
+        foreignField: "service",
+        as: "myServicesData",
+        pipeline: [
+          {
+            $group: {_id: null, servicesCount: { $sum: 1}},
+          },
+        ],
+      }
+    },
+    {
+      $project: {service_type: 1, image: 1, myServicesData: 1}
+    },
+    {
+      $sort: { servicesCount: -1}
+    }
+  ]);
+
+  return res.status(200).json({ top_rated_services });
 };
 
 export const getSkilledWorkerDetails = async (req, res) => {

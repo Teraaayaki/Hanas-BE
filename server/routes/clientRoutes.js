@@ -20,6 +20,7 @@ import {
 import {
   getTopRatedWorkers,
   getSkilledWorkerDetails,
+  getTopServices,
 } from "../controllers/ClientControllers/serviceController.js";
 
 // not yet used
@@ -27,6 +28,7 @@ router.get("/get-feedback", requireAuth, getFeedback);
 router.get("/get-bookings", requireAuth, getBookings);
 router.get("/get-top-rated-workers", requireAuth, getTopRatedWorkers);
 router.get("/get-favorites", requireAuth, getFavorites);
+router.get("/get-top-services", requireAuth, getTopServices);
 
 router.post("/get-worker-details", requireAuth, getSkilledWorkerDetails);
 router.post("/book-skilled-worker", requireAuth, bookSkilledWorker);
