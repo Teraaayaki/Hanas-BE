@@ -5,22 +5,39 @@ const router = express.Router();
 import {
   getVerifications,
   getVerification,
+} from "../controllers/AdminControllers/verificationController.js";
+import {
+  getCertifications,
+  getCertification,
+} from "../controllers/AdminControllers/certificationController.js";
+import {
   getClients,
   getClient,
+} from "../controllers/AdminControllers/clientController.js";
+import {
   getWorkers,
   getWorker,
+} from "../controllers/AdminControllers/workerController.js";
+import {
   getTransactions,
+  getTransaction,
+} from "../controllers/AdminControllers/transactionController.js";
+import {
   getReports,
-} from "../controllers/AdminControllers/adminController.js";
+  getReport,
+} from "../controllers/AdminControllers/reportController.js";
 
-// // not yet used
 router.get("/get-verifications", requireAuth, getVerifications);
 router.get("/get-verification/:id", requireAuth, getVerification);
+router.get("/get-certifications", requireAuth, getCertifications);
+router.get("/get-certification/:id", requireAuth, getCertification);
 router.get("/get-clients", requireAuth, getClients);
 router.get("/get-client/:id", requireAuth, getClient);
 router.get("/get-workers", requireAuth, getWorkers);
 router.get("/get-worker/:id", requireAuth, getWorker);
 router.get("/get-transactions", requireAuth, getTransactions);
+router.get("/get-transaction/:id", requireAuth, getTransaction);
 router.get("/get-reports", requireAuth, getReports);
+router.get("/get-report/:id", requireAuth, getReport);
 
 export default router;

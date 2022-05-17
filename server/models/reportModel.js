@@ -1,39 +1,35 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const reportModel = mongoose.Schema(
   {
     report_id: {
       type: String,
       unique: true,
-      required: true
+      required: true,
     },
     reporter: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: 'User'
+      ref: "User",
     },
     reportedUser: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: 'User'
-    },
-    type: {
-      type: String,
-      required: true
+      ref: "User",
     },
     message: {
       type: String,
-      required: true
+      required: true,
     },
     resolved: {
       type: Boolean,
       default: false,
-      required: true
-    }
+      required: true,
+    },
   },
   {
-    timestamps: true
+    timestamps: true,
   }
 );
 
-export default mongoose.model('Report', reportModel);
+export default mongoose.model("Report", reportModel);

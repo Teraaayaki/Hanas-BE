@@ -27,8 +27,9 @@ const myServiceModel = mongoose.Schema(
     },
     sample_works: [String],
     certificates: [String],
-    last_updated: {
-      type: Date,
+    is_certified: {
+      type: Boolean,
+      default: false,
     },
   },
   {
