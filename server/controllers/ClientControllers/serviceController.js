@@ -26,7 +26,7 @@ export const getTopRatedWorkers = async (req, res) => {
               localField: "_id",
               foreignField: "my_service_id",
               as: "feedbackData",
-              pipeline: [{ $group: { _id: null, rateAvg: { $avg: "$rate" } } }],
+              pipeline: [{ $group: { _id: null, jobs: { $sum: 1 }, rateAvg: { $avg: "$rate" } } }],
             },
           },
         ],
@@ -104,6 +104,9 @@ export const getSkilledWorkerDetails = async (req, res) => {
               localField: "_id",
               foreignField: "service_availed",
               as: "bookingsData",
+              pipeline: [
+                { $match: {$or: [ {book_status: "Accepted"} , {book_status: "Ongoing"}  ]} }
+              ]
             },
           },
         ],
