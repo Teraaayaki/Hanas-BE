@@ -50,26 +50,23 @@ export const getTopRatedWorkers = async (req, res) => {
 
 export const getTopServices = async (req, res) => {
   let top_rated_services = await Service.aggregate([
-    { $limit : 6 },
+    { $limit : 20},
     {
       $lookup: {
         from: "myservices",
         localField: "_id",
         foreignField: "service",
         as: "myServicesData",
-        pipeline: [
-          {
-            $group: {_id: null, servicesCount: { $sum: 1}},
-          },
-        ],
-      }
+      },
     },
     {
-      $project: {service_type: 1, image: 1, myServicesData: 1}
+      $group: { _id: "$_id", "service_type": { $first: "$service_type"}, "image" : { $first: "$image"} , servicesCount: { $sum: { $size: "$myServicesData"}}} 
     },
     {
-      $sort: { servicesCount: -1}
-    }
+      $match: { servicesCount : {$gt: 0}}
+    },
+    { $sort: { servicesCount : -1}},
+   
   ]);
 
   return res.status(200).json({ top_rated_services });
