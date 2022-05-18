@@ -25,6 +25,11 @@ const bookingModel = mongoose.Schema(
       },
       required: true,
     },
+    address: {
+      //NEW
+      type: String,
+      required: true,
+    },
     booked_dateTimeStart: {
       type: Date,
       required: true,
@@ -33,8 +38,10 @@ const bookingModel = mongoose.Schema(
       type: Date,
       required: true,
     },
-    date_paid: {
-      type: Date,
+    hourly_rate: {
+      //NEW
+      type: Number,
+      required: true,
     },
     total_cost: {
       type: Number,
