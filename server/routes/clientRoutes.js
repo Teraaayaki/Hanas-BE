@@ -21,6 +21,7 @@ import {
   getTopRatedWorkers,
   getSkilledWorkerDetails,
   getTopServices,
+  getSkilledWorkerWithSpecificService,
 } from "../controllers/ClientControllers/serviceController.js";
 
 // not yet used
@@ -30,12 +31,13 @@ router.get("/get-top-rated-workers", requireAuth, getTopRatedWorkers);
 router.get("/get-favorites", requireAuth, getFavorites);
 router.get("/get-top-services", requireAuth, getTopServices);
 
+
 router.post("/get-worker-details", requireAuth, getSkilledWorkerDetails);
 router.post("/book-skilled-worker", requireAuth, bookSkilledWorker);
 router.post("/remove-schedule", requireAuth, removeScheduleClient);
 router.post("/remove-cancelled-booking", requireAuth, removeCancelledBooking);
 router.post("/cancel-booking-schedule", requireAuth, cancelBookingSchedule);
-
+router.post("/get-worker-with-specific-service", requireAuth, getSkilledWorkerWithSpecificService);
 
 
 router.post("/add-to-favorites", requireAuth, addToFavorites);

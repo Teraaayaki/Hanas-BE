@@ -141,3 +141,58 @@ export const getSkilledWorkerDetails = async (req, res) => {
 
   return res.status(200).json({ worker_details: skilled_worker_details });
 };
+
+export const getSkilledWorkerWithSpecificService = async (req, res) => {
+
+  const serviceType = await Service.findOne({ service_type: req.body.DATA.service_type});
+
+  console.log("SERVICE TYPE", serviceType);
+
+  let workers_with_specific_service = await MyService.aggregate([
+    { $match: { service : serviceType._id }},
+    // { $group : { _id: "$worker", "hourly_rate": {$first: "$hourly_rate"}, "worker" : { $first: "$worker"}, "service_id" : {$first: "$_id"}}},
+    {
+      $lookup : {
+        from: "users",
+        localField: "worker",
+        foreignField: "_id",
+        as: "workerDetails",
+        pipeline: [
+          {
+            $project: {
+              name: {
+                $concat: [
+                  "$first_name",
+                  " ",
+                  "$middle_name",
+                  " ",
+                  "$family_name",
+                ],
+              },
+            },
+          }
+          
+        ]
+      }
+    },
+    {
+      $lookup : {
+        from: "feedbacks",
+        localField: "worker",
+        foreignField: "my_service_id",
+        as: "feedbackData",
+        pipeline: [
+          {
+            $group: {
+              _id: null,
+              jobs: { $sum: 1 },
+              rateAvg: { $avg: "$rate" },
+            },
+          },
+        ]
+      }
+    }
+  ]);
+
+  return res.status(200).json({ service_worker: workers_with_specific_service});
+}
