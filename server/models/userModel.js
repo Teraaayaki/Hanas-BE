@@ -66,6 +66,15 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    verify_status: {
+      type: String,
+      enum: {
+        values: ["Pending", "Accepted", "Rejected"],
+        message: "{VALUE} is not supported.",
+      },
+      required: true,
+      default: "Pending",
+    },
     profile_pic: {
       type: String,
     },

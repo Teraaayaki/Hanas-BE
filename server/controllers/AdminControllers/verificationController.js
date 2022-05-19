@@ -27,6 +27,7 @@ export const getVerifications = async (req, res) => {
         },
         is_worker: 1,
         is_verified: 1,
+        verify_status: 1,
         createdAt: 1,
       },
     },
@@ -53,6 +54,46 @@ export const getVerification = async (req, res) => {
     ]);
 
     return res.status(200).json({ verification });
+  } catch (err) {
+    console.log(err.message);
+  }
+};
+
+export const acceptVerification = async (req, res) => {
+  try {
+    User.findOneAndUpdate(
+      { _id: req.params.id },
+      { is_verified: true, verify_status: "Accepted" },
+      { new: true },
+      (error, updatedRecord) => {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log(updatedRecord);
+          return res.status(200).json({ updatedRecord });
+        }
+      }
+    ).select({ password: 0, __v: 0 });
+  } catch (err) {
+    console.log(err.message);
+  }
+};
+
+export const rejectVerification = async (req, res) => {
+  try {
+    User.findOneAndUpdate(
+      { _id: req.params.id },
+      { is_verified: false, verify_status: "Rejected" },
+      { new: true },
+      (error, updatedRecord) => {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log(updatedRecord);
+          return res.status(200).json({ updatedRecord });
+        }
+      }
+    ).select({ password: 0, __v: 0 });
   } catch (err) {
     console.log(err.message);
   }

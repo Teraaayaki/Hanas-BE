@@ -114,3 +114,41 @@ export const getCertification = async (req, res) => {
     console.log(err.message);
   }
 };
+
+export const acceptCertification = async (req, res) => {
+  try {
+    MyService.findOneAndUpdate(
+      { _id: req.params.id },
+      { is_certified: "Accepted" },
+      { new: true },
+      (error, updatedRecord) => {
+        if (error) {
+          console.log(error);
+        } else {
+          return res.status(200).json({ updatedRecord });
+        }
+      }
+    ).select({ sample_works: 0, __v: 0 });
+  } catch (err) {
+    console.log(err.message);
+  }
+};
+
+export const rejectCertification = async (req, res) => {
+  try {
+    MyService.findOneAndUpdate(
+      { _id: req.params.id },
+      { is_certified: "Rejected" },
+      { new: true },
+      (error, updatedRecord) => {
+        if (error) {
+          console.log(error);
+        } else {
+          return res.status(200).json({ updatedRecord });
+        }
+      }
+    ).select({ sample_works: 0, __v: 0 });
+  } catch (err) {
+    console.log(err.message);
+  }
+};
