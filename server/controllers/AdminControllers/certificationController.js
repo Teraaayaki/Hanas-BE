@@ -119,16 +119,16 @@ export const acceptCertification = async (req, res) => {
   try {
     MyService.findOneAndUpdate(
       { _id: req.params.id },
-      { is_verified: true, verify_status: "Accepted" },
+      { is_certified: "Accepted" },
       { new: true },
-      (error, data) => {
+      (error, updatedRecord) => {
         if (error) {
           console.log(error);
         } else {
-          console.log(data);
+          return res.status(200).json({ updatedRecord });
         }
       }
-    );
+    ).select({ sample_works: 0, __v: 0 });
   } catch (err) {
     console.log(err.message);
   }
@@ -140,14 +140,14 @@ export const rejectCertification = async (req, res) => {
       { _id: req.params.id },
       { is_certified: "Rejected" },
       { new: true },
-      (error, data) => {
+      (error, updatedRecord) => {
         if (error) {
           console.log(error);
         } else {
-          console.log(data);
+          return res.status(200).json({ updatedRecord });
         }
       }
-    );
+    ).select({ sample_works: 0, __v: 0 });
   } catch (err) {
     console.log(err.message);
   }
