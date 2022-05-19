@@ -28,8 +28,13 @@ const myServiceModel = mongoose.Schema(
     sample_works: [String],
     certificates: [String],
     is_certified: {
-      type: Boolean,
-      default: false,
+      type: String,
+      enum: {
+        values: ["Pending", "Accepted", "Rejected"],
+        message: "{VALUE} is not supported.",
+      },
+      required: true,
+      default: "Pending",
     },
   },
   {

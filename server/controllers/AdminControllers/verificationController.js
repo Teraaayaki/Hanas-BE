@@ -57,3 +57,41 @@ export const getVerification = async (req, res) => {
     console.log(err.message);
   }
 };
+
+export const acceptVerification = async (req, res) => {
+  try {
+    User.findOneAndUpdate(
+      { _id: req.params.id },
+      { is_verified: true, verify_status: "Accepted" },
+      { new: true },
+      (error, data) => {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log(data);
+        }
+      }
+    );
+  } catch (err) {
+    console.log(err.message);
+  }
+};
+
+export const rejectVerification = async (req, res) => {
+  try {
+    User.findOneAndUpdate(
+      { _id: req.params.id },
+      { verify_status: "Rejected" },
+      { new: true },
+      (error, data) => {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log(data);
+        }
+      }
+    );
+  } catch (err) {
+    console.log(err.message);
+  }
+};
