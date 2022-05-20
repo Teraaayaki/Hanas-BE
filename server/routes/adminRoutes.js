@@ -4,6 +4,7 @@ const router = express.Router();
 
 import {
   countPendingVerifications,
+  countUsers,
   countPendingReports,
 } from "../controllers/AdminControllers/overviewController.js";
 import {
@@ -42,12 +43,9 @@ import {
   rejectReport,
 } from "../controllers/AdminControllers/reportController.js";
 
-router.get(
-  "/get-pending-verifications",
-  requireAuth,
-  countPendingVerifications
-);
-router.get("/get-pending-reports", requireAuth, countPendingReports);
+router.get("/count-verifications", requireAuth, countPendingVerifications);
+router.get("/count-users", requireAuth, countUsers);
+router.get("/count-reports", requireAuth, countPendingReports);
 
 router.get("/get-verifications", requireAuth, getVerifications);
 router.get("/get-verification/:id", requireAuth, getVerification);

@@ -2,61 +2,73 @@ import User from "../../models/userModel.js";
 import Report from "../../models/reportModel.js";
 
 export const countPendingVerifications = async (req, res) => {
-  const pendingReports = await User.aggregate([
-    {
-      $match: {
-        is_verified: false,
+  try {
+    const pendingVerifications = await User.aggregate([
+      {
+        $match: {
+          is_verified: false,
+        },
       },
-    },
-    {
-      $group: {
-        _id: "_id",
+      {
+        $group: {
+          _id: "$_id",
+        },
       },
-    },
-    {
-      $count: "Count",
-    },
-  ]);
+      {
+        $count: "Count",
+      },
+    ]);
 
-  return res.status(200).json({ pendingReports });
+    return res.status(200).json({ pendingVerifications });
+  } catch (err) {
+    console.log(err.message);
+  }
 };
 
 export const countUsers = async (req, res) => {
-  const Users = await User.aggregate([
-    {
-      $match: {
-        is_verified: true,
+  try {
+    const Users = await User.aggregate([
+      {
+        $match: {
+          is_verified: true,
+        },
       },
-    },
-    {
-      $group: {
-        _id: "_id",
+      {
+        $group: {
+          _id: "$_id",
+        },
       },
-    },
-    {
-      $count: "Count",
-    },
-  ]);
+      {
+        $count: "Count",
+      },
+    ]);
 
-  return res.status(200).json({ Users });
+    return res.status(200).json({ Users });
+  } catch (err) {
+    console.log(err.message);
+  }
 };
 
 export const countPendingReports = async (req, res) => {
-  const pendingReports = await Report.aggregate([
-    {
-      $match: {
-        resolved: "Pending",
+  try {
+    const pendingReports = await Report.aggregate([
+      {
+        $match: {
+          resolved: "Pending",
+        },
       },
-    },
-    {
-      $group: {
-        _id: "_id",
+      {
+        $group: {
+          _id: "$_id",
+        },
       },
-    },
-    {
-      $count: "Count",
-    },
-  ]);
+      {
+        $count: "Count",
+      },
+    ]);
 
-  return res.status(200).json({ pendingReports });
+    return res.status(200).json({ pendingReports });
+  } catch (err) {
+    console.log(err.message);
+  }
 };
