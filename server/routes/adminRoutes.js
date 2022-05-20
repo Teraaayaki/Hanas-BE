@@ -3,6 +3,10 @@ import requireAuth from "../middleware/requireAuth.js";
 const router = express.Router();
 
 import {
+  countPendingVerifications,
+  countPendingReports,
+} from "../controllers/AdminControllers/overviewController.js";
+import {
   getVerifications,
   getVerification,
   acceptVerification,
@@ -37,6 +41,13 @@ import {
   resolveReport,
   rejectReport,
 } from "../controllers/AdminControllers/reportController.js";
+
+router.get(
+  "/get-pending-verifications",
+  requireAuth,
+  countPendingVerifications
+);
+router.get("/get-pending-reports", requireAuth, countPendingReports);
 
 router.get("/get-verifications", requireAuth, getVerifications);
 router.get("/get-verification/:id", requireAuth, getVerification);
