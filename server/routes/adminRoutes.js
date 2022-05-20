@@ -34,6 +34,8 @@ import {
 import {
   getReports,
   getReport,
+  resolveReport,
+  rejectReport,
 } from "../controllers/AdminControllers/reportController.js";
 
 router.get("/get-verifications", requireAuth, getVerifications);
@@ -57,5 +59,7 @@ router.get("/get-transaction/:id", requireAuth, getTransaction);
 
 router.get("/get-reports", requireAuth, getReports);
 router.get("/get-report/:id", requireAuth, getReport);
+router.get("/resolve-report/:id", requireAuth, resolveReport);
+router.get("/reject-report/:id", requireAuth, rejectReport);
 
 export default router;

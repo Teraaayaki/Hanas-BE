@@ -12,7 +12,7 @@ const reportModel = mongoose.Schema(
       required: true,
       ref: "User",
     },
-    reportedUser: {
+    reported_user: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
       ref: "User",
@@ -22,9 +22,13 @@ const reportModel = mongoose.Schema(
       required: true,
     },
     resolved: {
-      type: Boolean,
-      default: false,
+      type: String,
+      enum: {
+        values: ["Pending", "Accepted", "Rejected"],
+        message: "{VALUE} is not supported.",
+      },
       required: true,
+      default: "Pending",
     },
   },
   {
