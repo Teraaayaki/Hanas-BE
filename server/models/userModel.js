@@ -66,6 +66,10 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    is_deactivated: {
+      type: Boolean,
+      default: false,
+    },
     verify_status: {
       type: String,
       enum: {

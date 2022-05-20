@@ -24,7 +24,7 @@ const reportModel = mongoose.Schema(
     resolved: {
       type: String,
       enum: {
-        values: ["Pending", "Accepted", "Rejected"],
+        values: ["Pending", "Resolved", "Rejected"],
         message: "{VALUE} is not supported.",
       },
       required: true,

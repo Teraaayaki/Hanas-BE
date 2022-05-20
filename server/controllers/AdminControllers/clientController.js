@@ -59,3 +59,47 @@ export const getClient = async (req, res) => {
     console.log(err.message);
   }
 };
+
+export const deactivateClient = async (req, res) => {
+  try {
+    User.findOneAndUpdate(
+      { _id: req.params.id },
+      { is_deactivated: true },
+      { new: true },
+      (error, updatedRecord) => {
+        if (error) {
+          console.log(error);
+        } else {
+          return res.status(200).json({ updatedRecord });
+        }
+      }
+    ).select({
+      password: 0,
+      __v: 0,
+    });
+  } catch (err) {
+    console.log(err.message);
+  }
+};
+
+export const activateClient = async (req, res) => {
+  try {
+    User.findOneAndUpdate(
+      { _id: req.params.id },
+      { is_deactivated: false },
+      { new: true },
+      (error, updatedRecord) => {
+        if (error) {
+          console.log(error);
+        } else {
+          return res.status(200).json({ updatedRecord });
+        }
+      }
+    ).select({
+      password: 0,
+      __v: 0,
+    });
+  } catch (err) {
+    console.log(err.message);
+  }
+};
