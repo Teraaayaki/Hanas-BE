@@ -24,6 +24,7 @@ import {
 import {
   getClients,
   getClient,
+  toggleClient,
 } from "../controllers/AdminControllers/clientController.js";
 
 import {
@@ -59,6 +60,7 @@ router.get("/reject-certification/:id", requireAuth, rejectCertification);
 
 router.get("/get-clients", requireAuth, getClients);
 router.get("/get-client/:id", requireAuth, getClient);
+router.get("/toggle-client/:id", requireAuth, toggleClient);
 
 router.get("/get-workers", requireAuth, getWorkers);
 router.get("/get-worker/:id", requireAuth, getWorker);
