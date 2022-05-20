@@ -24,13 +24,15 @@ import {
 import {
   getClients,
   getClient,
-  toggleClientActivity,
+  activateClient,
+  deactivateClient,
 } from "../controllers/AdminControllers/clientController.js";
 
 import {
   getWorkers,
   getWorker,
-  toggleWorkerActivity,
+  activateWorker,
+  deactivateWorker,
 } from "../controllers/AdminControllers/workerController.js";
 
 import {
@@ -61,11 +63,13 @@ router.get("/reject-certification/:id", requireAuth, rejectCertification);
 
 router.get("/get-clients", requireAuth, getClients);
 router.get("/get-client/:id", requireAuth, getClient);
-router.get("/toggle-client/:id", requireAuth, toggleClientActivity);
+router.get("/activate-client/:id", requireAuth, activateClient);
+router.get("/deactivate-client/:id", requireAuth, deactivateClient);
 
 router.get("/get-workers", requireAuth, getWorkers);
 router.get("/get-worker/:id", requireAuth, getWorker);
-router.get("/toggle-worker/:id", requireAuth, toggleWorkerActivity);
+router.get("/activate-worker/:id", requireAuth, activateWorker);
+router.get("/deactivate-worker/:id", requireAuth, deactivateWorker);
 
 router.get("/get-transactions", requireAuth, getTransactions);
 router.get("/get-transaction/:id", requireAuth, getTransaction);
