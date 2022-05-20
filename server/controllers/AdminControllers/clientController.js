@@ -60,7 +60,7 @@ export const getClient = async (req, res) => {
   }
 };
 
-export const toggleClient = async (req, res) => {
+export const toggleClientActivity = async (req, res) => {
   try {
     MyService.findOneAndUpdate(
       { _id: req.params.id },
