@@ -202,7 +202,7 @@ export const getSkilledWorkerWithSpecificService = async (req, res) => {
     {
       $lookup: {
         from: "feedbacks",
-        localField: "worker",
+        localField: "_id",
         foreignField: "my_service_id",
         as: "feedbackData",
         pipeline: [
@@ -216,6 +216,16 @@ export const getSkilledWorkerWithSpecificService = async (req, res) => {
         ],
       },
     },
+    {
+      $lookup: {
+        from: "services",
+        localField: "service",
+        foreignField: "_id",
+        as: "serviceNameData",
+        pipeline: [{ $project: { service_type: 1 } }],
+      },
+    },
+
   ]);
 
   return res
