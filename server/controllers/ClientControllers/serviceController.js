@@ -35,6 +35,16 @@ export const getTopRatedWorkers = async (req, res) => {
     },
     {
       $project: {
+        myServicesData: { $filter: {
+          input: "$myServicesData",
+          as: "myServicesData",
+          cond: {$gt: [{$size: "$myServicesData" }, 0]}
+        }}
+      }
+    },
+    
+    {
+      $project: {
         name: {
           $concat: ["$first_name", " ", "$middle_name", " ", "$family_name"],
         },
@@ -43,6 +53,8 @@ export const getTopRatedWorkers = async (req, res) => {
         myServicesData: 1,
       },
     },
+    
+    
   ]);
 
   return res.status(200).json({ user: top_rated_worker });
@@ -146,11 +158,9 @@ export const getSkilledWorkerWithSpecificService = async (req, res) => {
 
   const serviceType = await Service.findOne({ service_type: req.body.DATA.service_type});
 
-  console.log("SERVICE TYPE", serviceType);
-
   let workers_with_specific_service = await MyService.aggregate([
     { $match: { service : serviceType._id }},
-    // { $group : { _id: "$worker", "hourly_rate": {$first: "$hourly_rate"}, "worker" : { $first: "$worker"}, "service_id" : {$first: "$_id"}}},
+    // { $group : { _id: "$worker", "hourly_rate": {$first: "$hourly_rate"}, "worker" : { $first: "$worker"}, "service_id" : {$first: "$_id"}}}, //ayaw lang ni i delete reference ni para unsaon pag display sa uban values pag mag gamit ug $group
     {
       $lookup : {
         from: "users",
