@@ -65,11 +65,9 @@ const bookingModel = mongoose.Schema(
     },
     isRemovedClient: {
       type: Boolean,
-      required: true,
     },
     isRemovedWorker: {
       type: Boolean,
-      required: true,
     },
   },
   {

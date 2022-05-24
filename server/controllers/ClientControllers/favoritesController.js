@@ -18,7 +18,6 @@ export const addToFavorites = async (req, res) => {
     return res.status(422).send({ error: "Worker already added" });
   }
 
-  console.log("Adding or Updating Favorites");
   Favorites.findOneAndUpdate(
     { client_id: req.body.DATA.client_id },
     { $push: { favorite_services: req.body.DATA.favorite_services } },
@@ -121,8 +120,6 @@ export const getFavorites = async (req, res) => {
       return res.status(200).json({ favoritesArray: [] });
     }
 
-    console.log("FAVORITES ARRAY NANI", favoritesArray.length);
-
     if (favoritesArray) {
       return res.status(200).json({ favoritesArray });
     } else {
@@ -140,8 +137,6 @@ export const removeFromFavorites = async (req, res) => {
     return res.status(403).send("Unable to remove from favorites");
   }
 
-  console.log(req.body);
-  console.log("Deleting");
   try {
     Favorites.findOneAndUpdate(
       { client_id: req.body.DATA.client_id },

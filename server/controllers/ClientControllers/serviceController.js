@@ -3,7 +3,7 @@ import MyService from "../../models/myServiceModel.js";
 import Service from "../../models/serviceModel.js";
 
 export const getTopRatedWorkers = async (req, res) => {
-  let top_rated_worker = await User.aggregate([
+  let top_rated_workers = await User.aggregate([
     { $match: { is_worker: true, is_verified: true } },
     {
       $lookup: {
@@ -27,7 +27,15 @@ export const getTopRatedWorkers = async (req, res) => {
               localField: "_id",
               foreignField: "my_service_id",
               as: "feedbackData",
-              pipeline: [{ $group: { _id: null, jobs: { $sum: 1 }, rateAvg: { $avg: "$rate" } } }],
+              pipeline: [
+                {
+                  $group: {
+                    _id: null,
+                    jobs: { $sum: 1 },
+                    rateAvg: { $avg: "$rate" },
+                  },
+                },
+              ],
             },
           },
         ],
@@ -45,7 +53,13 @@ export const getTopRatedWorkers = async (req, res) => {
     },
   ]);
 
-  return res.status(200).json({ user: top_rated_worker });
+  // Filter workers with no My Service Data
+  // For Further Improvements
+  const filtered_top_rated_workers = top_rated_workers.filter(
+    (top_rated_workers) => top_rated_workers.myServicesData.length >= 1
+  );
+
+  return res.status(200).json({ user: filtered_top_rated_workers });
 };
 
 export const getTopServices = async (req, res) => {
@@ -59,13 +73,18 @@ export const getTopServices = async (req, res) => {
       },
     },
     {
-      $group: { _id: "$_id", "service_type": { $first: "$service_type"}, "image" : { $first: "$image"} , servicesCount: { $sum: { $size: "$myServicesData"}}} 
+      $group: {
+        _id: "$_id",
+        service_type: { $first: "$service_type" },
+        image: { $first: "$image" },
+        servicesCount: { $sum: { $size: "$myServicesData" } },
+      },
     },
     {
-      $match: { servicesCount : {$gt: 0}}
+      $match: { servicesCount: { $gt: 0 } },
     },
-    { $sort: { servicesCount : -1}},
-    { $limit : 6},
+    { $sort: { servicesCount: -1 } },
+    { $limit: 6 },
   ]);
 
   return res.status(200).json({ top_rated_services });
@@ -129,8 +148,15 @@ export const getSkilledWorkerDetails = async (req, res) => {
               foreignField: "service_availed",
               as: "bookingsData",
               pipeline: [
-                { $match: {$or: [ {book_status: "Accepted"} , {book_status: "Ongoing"}  ]} }
-              ]
+                {
+                  $match: {
+                    $or: [
+                      { book_status: "Accepted" },
+                      { book_status: "Ongoing" },
+                    ],
+                  },
+                },
+              ],
             },
           },
         ],
@@ -140,4 +166,69 @@ export const getSkilledWorkerDetails = async (req, res) => {
   ]);
 
   return res.status(200).json({ worker_details: skilled_worker_details });
+};
+
+export const getSkilledWorkerWithSpecificService = async (req, res) => {
+  const serviceType = await Service.findOne({
+    service_type: req.body.DATA.service_type,
+  });
+
+  let workers_with_specific_service = await MyService.aggregate([
+    { $match: { service: serviceType._id } },
+    // { $group : { _id: "$worker", "hourly_rate": {$first: "$hourly_rate"}, "worker" : { $first: "$worker"}, "service_id" : {$first: "$_id"}}}, //ayaw lang ni i delete reference ni para unsaon pag display sa uban values pag mag gamit ug $group
+    {
+      $lookup: {
+        from: "users",
+        localField: "worker",
+        foreignField: "_id",
+        as: "workerDetails",
+        pipeline: [
+          {
+            $project: {
+              name: {
+                $concat: [
+                  "$first_name",
+                  " ",
+                  "$middle_name",
+                  " ",
+                  "$family_name",
+                ],
+              },
+            },
+          },
+        ],
+      },
+    },
+    {
+      $lookup: {
+        from: "feedbacks",
+        localField: "_id",
+        foreignField: "my_service_id",
+        as: "feedbackData",
+        pipeline: [
+          {
+            $group: {
+              _id: null,
+              jobs: { $sum: 1 },
+              rateAvg: { $avg: "$rate" },
+            },
+          },
+        ],
+      },
+    },
+    {
+      $lookup: {
+        from: "services",
+        localField: "service",
+        foreignField: "_id",
+        as: "serviceNameData",
+        pipeline: [{ $project: { service_type: 1 } }],
+      },
+    },
+
+  ]);
+
+  return res
+    .status(200)
+    .json({ service_worker: workers_with_specific_service });
 };
