@@ -232,3 +232,12 @@ export const getSkilledWorkerWithSpecificService = async (req, res) => {
     .status(200)
     .json({ service_worker: workers_with_specific_service });
 };
+
+export const getAllServices = async (req, res) => {
+
+  let all_service = await Service.aggregate([
+    {$project: { _id: 1, service_id: 1, service_type: 1, image: 1}}
+  ])
+
+  return res.status(200).json({ all_services: all_service});
+};
