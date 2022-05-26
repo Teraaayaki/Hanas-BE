@@ -14,6 +14,10 @@ export const loginClient = async (req, res) => {
   const client = await User.findOne({ email });
   let user = {};
 
+  if (client.is_deactivated) {
+    return res.status(422).send({ error: "User has been deactivated!" });
+  }
+
   if (client) {
     user = {
       id: client._id,
@@ -26,6 +30,7 @@ export const loginClient = async (req, res) => {
       address: client.address,
       birthdate: client.birthdate,
       sex: client.sex,
+      is_verified: client.is_verified,
     };
   }
 
@@ -43,7 +48,6 @@ export const loginClient = async (req, res) => {
       );
       return res.status(200).json({
         token,
-        is_verified: client.is_verified,
         is_worker: client.is_worker,
         user,
       });
@@ -162,6 +166,7 @@ export const getDetails = async (req, res) => {
       address: req.user.address,
       birthdate: req.user.birthdate,
       sex: req.user.sex,
+      is_verified: req.user.is_verified,
     };
     return res.status(200).json({ user });
   } else {
