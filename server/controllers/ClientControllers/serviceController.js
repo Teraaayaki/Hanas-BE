@@ -225,7 +225,6 @@ export const getSkilledWorkerWithSpecificService = async (req, res) => {
         pipeline: [{ $project: { service_type: 1 } }],
       },
     },
-
   ]);
 
   return res
@@ -234,10 +233,9 @@ export const getSkilledWorkerWithSpecificService = async (req, res) => {
 };
 
 export const getAllServices = async (req, res) => {
-
   let all_service = await Service.aggregate([
-    {$project: { _id: 1, service_id: 1, service_type: 1, image: 1}}
-  ])
+    { $project: { _id: 1, service_id: 1, service_type: 1, image: 1 } },
+  ]);
 
-  return res.status(200).json({ all_services: all_service});
+  return res.status(200).json({ all_services: all_service });
 };
