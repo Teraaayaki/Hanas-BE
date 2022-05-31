@@ -22,6 +22,11 @@ export default (req, res, next) => {
       const { user_id } = payload;
 
       const user = await User.findOne({ user_id });
+
+      if (user.is_deactivated) {
+        return res.status(422).send({ error: "User has been deactivated!" });
+      }
+
       req.user = user;
       next();
     }
