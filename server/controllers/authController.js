@@ -15,10 +15,17 @@ export const loginClient = async (req, res) => {
   const client = await User.findOne({ email });
   let user = {};
 
+  // USER IS NOT FOUND
+  if (!client) {
+    return res.status(422).send({ error: "Invalid Email or Password" });
+  }
+
+  // DEACTIVATION NOTICE
   if (client.is_deactivated) {
     return res.status(422).send({ error: "User has been deactivated!" });
   }
 
+  // USER IS FOUND
   if (client) {
     user = {
       id: client._id,
@@ -34,10 +41,6 @@ export const loginClient = async (req, res) => {
       is_verified: client.is_verified,
       profile_pic: client.profile_pic,
     };
-  }
-
-  if (!client) {
-    return res.status(422).send({ error: "Invalid Email or Password" });
   }
 
   bcrypt.compare(password, client.password, (err, success) => {
