@@ -253,9 +253,6 @@ export const editPassword = async (req, res) => {
               res.status(200).send({ message:  "Email sent", message_id: info.messageId, accepted: info.accepted});
             });
 
-
-            console.log("UPDATED USER", updatedUser);
-
             return res.status(200).json({ success: "Password has been successfully updated" });
           }catch (err) {
             console.log(err);
