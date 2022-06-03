@@ -7,6 +7,10 @@ const userSchema = mongoose.Schema(
       unique: true,
       required: true,
     },
+    profile_pic: {
+      type: String,
+      default: "none",
+    },
     first_name: {
       type: String,
       required: [true, "Please enter your first name."],

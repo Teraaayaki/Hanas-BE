@@ -9,6 +9,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+// LOGIN
 export const loginClient = async (req, res) => {
   const { email, password } = req.body;
   const client = await User.findOne({ email });
@@ -31,6 +32,7 @@ export const loginClient = async (req, res) => {
       birthdate: client.birthdate,
       sex: client.sex,
       is_verified: client.is_verified,
+      profile_pic: client.profile_pic,
     };
   }
 
@@ -55,6 +57,7 @@ export const loginClient = async (req, res) => {
   });
 };
 
+// VERIFY NUMBER USER
 export const verifyNumberClient = async (req, res) => {
   let { number } = req.body;
   const client = await User.findOne({ mobile_no: number });
@@ -96,6 +99,7 @@ export const verifyNumberClient = async (req, res) => {
   }
 };
 
+// VERIFY OTP USER
 export const verifyNumberOtpClient = async (req, res) => {
   let { otp, number } = req.body;
   const verified = await OtpNumber.findOne({ otp, number });
@@ -108,6 +112,7 @@ export const verifyNumberOtpClient = async (req, res) => {
   }
 };
 
+// REGISTER USER
 export const registerClient = async (req, res) => {
   const data = req.body;
   let uuid = v4();
@@ -167,6 +172,7 @@ export const getDetails = async (req, res) => {
       birthdate: req.user.birthdate,
       sex: req.user.sex,
       is_verified: req.user.is_verified,
+      profile_pic: req.user.profile_pic,
     };
     return res.status(200).json({ user });
   } else {
