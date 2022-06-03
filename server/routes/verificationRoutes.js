@@ -10,7 +10,8 @@ import {
   logoutClient,
   verifyNumberOtpClient,
   getDetails,
-  loginAdmin
+  loginAdmin,
+  editPassword
 } from '../controllers/authController.js';
 
 //AUTH ROUTES
@@ -35,6 +36,8 @@ router.post(
   verifyNumberOtpClient
 );
 router.delete('/logout', logoutClient);
+
+router.post('/edit-password', validationErrors, editPassword);
 
 //ADMIN AUTH ROUTES
 router.post('/admin-login', validate('login'), validationErrors, loginAdmin);

@@ -1,6 +1,7 @@
 import { v4 } from "uuid";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import nodemailer from 'nodemailer';
 import User from "../models/userModel.js";
 import Admin from "../models/adminModel.js";
 import OtpNumber from "../models/otpNumberModel.js";
@@ -201,4 +202,76 @@ export const loginAdmin = async (req, res) => {
       return res.status(200).json({ admin_info, token });
     }
   });
+};
+
+export const editPassword = async (req, res) => {
+
+  // const {old_pass, new_pass, confirm_pass, _id, email} = req.body; //used for the postman
+  const { old_pass, new_pass, confirm_pass } = req.body.DATA.values; //used for the actual data
+  const { _id, email } = req.body.DATA; //used for the actual data
+  
+  const user = await User.findOne({ _id : _id });
+
+  if(!user){
+    return res.status(406).send({ error: "User not found" });
+  }else{
+
+    bcrypt.compare(old_pass, user.password, async (err,success) => {
+      
+      if (success === true) {
+
+        if(new_pass === confirm_pass){
+          
+          try{
+            const hashedPass = await bcrypt.hash(new_pass, 10);
+
+            const transporter = nodemailer.createTransport({
+              port: 465, 
+              host: "smtp.gmail.com",
+                auth: {
+                  user: 'hanas.app.services@gmail.com',
+                  pass: 'byjmhxkjtvanpcjx',
+                },
+              secure: true,
+            });
+
+            const mailData = {
+              from: 'hanas.app.services@gmail.com',  // kinsa ang ga send
+                to: email,   // ang mga mu receive sa email
+                subject: 'Password Change',
+                text: 'Successful password change',
+                html: '<b>Good Day! </b> <br> This email is to notify you that your account has been successfully changed to a newer password. If this is not you please contact administration as soon as possible.<br/>',
+            };
+
+            const updatedUser = await User.findOneAndUpdate({ _id : _id}, {password : hashedPass});
+
+            transporter.sendMail(mailData, (error, info) => {
+              if(error){
+                return console.log(error);
+              }
+
+              res.status(200).send({ message:  "Email sent", message_id: info.messageId, accepted: info.accepted});
+            });
+
+
+            console.log("UPDATED USER", updatedUser);
+
+            return res.status(200).json({ success: "Password has been successfully updated" });
+          }catch (err) {
+            console.log(err);
+            return res.status(422).send({ error: "Error Updating Password" });
+          }
+
+        }else{
+          return res.status(400).send({ error: "Passwords do not match" });
+        }
+      
+      }else{
+        
+        return res.status(406).send({ error: "Old password is incorrect" });
+
+      }
+    });
+    
+  }
 };
