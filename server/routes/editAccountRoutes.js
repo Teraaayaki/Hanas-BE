@@ -16,9 +16,10 @@ router.post(
   multer.single("profile"),
   uploadProfilePicture
 );
-router.delete("/delete-profile-image", requireAuth, deleteProfilePicture);
 
 router.patch("/account-info", requireAuth, changeAccountInfo);
 router.patch("/address", requireAuth, changeAddress);
+
+router.delete("/delete-profile-image", requireAuth, deleteProfilePicture);
 
 export default router;
