@@ -68,3 +68,21 @@ export const uploadProfilePicture = async (req, res) => {
 
   blobStream.end(req.file.buffer);
 };
+
+export const deleteProfilePicture = async (req, res) => {
+  if (!req.body.fileName) {
+    console.log("No filename");
+    console.log(req.body.fileName);
+    return res.status(422).send({ error: "Error deleting file" });
+  }
+  let fileName = req.body.fileName;
+  try {
+    console.log("Deleting file in bucket");
+    await bucket.file(`users/${req.user._id}/${fileName}`).delete();
+
+    return res.status(200).json({ success: true });
+  } catch (err) {
+    console.log("Error deleting file in bucket", err);
+    return res.status(422).send({ error: "Error deleting file" });
+  }
+};

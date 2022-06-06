@@ -7,6 +7,7 @@ import {
   uploadProfilePicture,
   changeAccountInfo,
   changeAddress,
+  deleteProfilePicture,
 } from "../controllers/editAccountController.js";
 
 router.post(
@@ -15,8 +16,9 @@ router.post(
   multer.single("profile"),
   uploadProfilePicture
 );
+router.delete("/delete-profile-image", requireAuth, deleteProfilePicture);
 
-router.patch("/acount-info", requireAuth, changeAccountInfo);
+router.patch("/account-info", requireAuth, changeAccountInfo);
 router.patch("/address", requireAuth, changeAddress);
 
 export default router;
