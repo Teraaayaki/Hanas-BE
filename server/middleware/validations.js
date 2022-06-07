@@ -31,6 +31,12 @@ export const validate = (method) => {
         body("number", "Invalid Number").isInt().exists(),
         body("otp", "Invalid OTP").isInt().exists(),
       ];
+    case "edit-password":
+      return [
+        body("old_pass", "Password must be at least 8 characters").isLength({ min: 8,}),
+        body("new_pass", "Password must be at least 8 characters").isLength({ min: 8,}),
+        body("confirm_pass", "Password must be at least 8 characters").isLength({ min: 8,}),
+      ];
   }
 };
 
