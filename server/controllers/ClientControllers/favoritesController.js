@@ -62,6 +62,7 @@ const aggregateFavourites = (favorite_services) => {
                     "$suffix",
                   ],
                 },
+                profile_pic: 1,
               },
             },
           ],
