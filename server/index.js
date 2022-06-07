@@ -10,6 +10,7 @@ import clientRoutes from "./routes/clientRoutes.js";
 import workerRoutes from "./routes/workerRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import conversationRoutes from "./routes/conversationRoutes.js";
+import editAccountRoutes from "./routes/editAccountRoutes.js";
 
 dotenv.config();
 connectDB();
@@ -32,6 +33,7 @@ app.use("/api/worker", workerRoutes);
 app.use("/api/client", clientRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/conversations", conversationRoutes);
+app.use("/api/edit", editAccountRoutes);
 
 server.listen(process.env.PORT, () =>
   console.log(`Server running on port ${port}`)

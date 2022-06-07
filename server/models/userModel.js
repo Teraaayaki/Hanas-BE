@@ -81,6 +81,7 @@ const userSchema = mongoose.Schema(
     },
     profile_pic: {
       type: String,
+      default: "none",
     },
     valid_ID: {
       type: String,

@@ -28,6 +28,7 @@ import {
 
 // not yet used
 router.get("/get-feedback", requireAuth, getFeedback);
+
 router.get("/get-bookings", requireAuth, getBookings);
 router.get("/get-top-rated-workers", requireAuth, getTopRatedWorkers);
 router.get("/get-favorites", requireAuth, getFavorites);
@@ -39,8 +40,11 @@ router.post("/book-skilled-worker", requireAuth, bookSkilledWorker);
 router.post("/remove-schedule", requireAuth, removeScheduleClient);
 router.post("/remove-cancelled-booking", requireAuth, removeCancelledBooking);
 router.post("/cancel-booking-schedule", requireAuth, cancelBookingSchedule);
-router.post("/get-worker-with-specific-service", requireAuth, getSkilledWorkerWithSpecificService);
-
+router.post(
+  "/get-worker-with-specific-service",
+  requireAuth,
+  getSkilledWorkerWithSpecificService
+);
 
 router.post("/add-to-favorites", requireAuth, addToFavorites);
 router.post("/remove-from-favorites", requireAuth, removeFromFavorites);
