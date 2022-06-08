@@ -46,6 +46,7 @@ export const getTopRatedWorkers = async (req, res) => {
         name: {
           $concat: ["$first_name", " ", "$middle_name", " ", "$family_name"],
         },
+        profile_pic: 1,
         feedbackData: 1,
         serviceNameData: 1,
         myServicesData: 1,
@@ -133,6 +134,7 @@ export const getSkilledWorkerDetails = async (req, res) => {
                               "$family_name",
                             ],
                           },
+                          profile_pic: 1,
                         },
                       },
                     ],
@@ -194,6 +196,7 @@ export const getSkilledWorkerWithSpecificService = async (req, res) => {
                   "$family_name",
                 ],
               },
+              profile_pic: 1,
             },
           },
         ],
