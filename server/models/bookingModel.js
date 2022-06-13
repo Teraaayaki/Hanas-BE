@@ -69,6 +69,9 @@ const bookingModel = mongoose.Schema(
     isRemovedWorker: {
       type: Boolean,
     },
+    isFeedbacked: {
+      type: Boolean,
+    },
   },
   {
     timestamps: true,
