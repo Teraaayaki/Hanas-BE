@@ -16,8 +16,7 @@ const monitorDBChanges = (server) => {
       .watch([{ $match: { operationType: "update" } }])
       .on("change", (data) => {
         const index = data.updateDescription.updatedFields.__v - 1;
-        const newData =
-          data.updateDescription.updatedFields[`messages.${index}`];
+        const newData = data.updateDescription.updatedFields[`messages.${index}`];
 
         io.of("/api/socket").emit("conversationUpdate", newData);
       });
@@ -33,6 +32,15 @@ const monitorDBChanges = (server) => {
         io.of("/api/socket").emit("clientBookingUpdate", {
           newData: bookingData.client,
         });
+      });
+
+    mongoose.connection
+      .collection('bookings')
+      .watch([{ $match: { operationType: 'update' } }], {
+        fullDocument: 'updateLookup',
+      })
+      .on('change', (data) => {
+        console.log(data);
       });
   });
 };

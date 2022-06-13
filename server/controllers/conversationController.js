@@ -5,15 +5,15 @@ const getConversation = async (senderID, receiverID) => {
     const existingConversation = await Conversation.find({
       $and: [
         { 'participants.user': senderID },
-        { 'participants.user': receiverID }
-      ]
+        { 'participants.user': receiverID },
+      ],
     });
 
     if (existingConversation.length > 0) {
       return existingConversation;
     } else {
       const newConversation = await Conversation.create({
-        participants: [{ user: senderID }, { user: receiverID }]
+        participants: [{ user: senderID }, { user: receiverID }],
       });
 
       return newConversation;
@@ -46,10 +46,18 @@ export const storeMessage = async (req, res) => {
 
 export const getConversations = async (req, res) => {
   const conversations = await Conversation.find({
-    'participants.user': req.user._id
+    'participants.user': req.user._id,
   }).populate('participants.user');
 
   conversations.forEach((conversation) => conversation.messages.reverse());
 
   return res.status(200).json({ conversations });
+};
+
+export const getMessages = async (req, res) => {
+  const conversation = await Conversation.find({
+    'participants.user': req.params.id,
+  });
+
+  return res.status(200).json({ messages: conversation[0].messages.reverse() });
 };

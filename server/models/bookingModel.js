@@ -1,27 +1,27 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const bookingModel = mongoose.Schema(
   {
     service_availed: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: "MyService",
+      ref: 'MyService',
     },
     worker: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: "User",
+      ref: 'User',
     },
     client: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: "User",
+      ref: 'User',
     },
     book_type: {
       type: String,
       enum: {
-        values: ["Single", "Multiple"],
-        message: "{VALUE} is not supported.",
+        values: ['Single', 'Multiple'],
+        message: '{VALUE} is not supported.',
       },
       required: true,
     },
@@ -43,6 +43,9 @@ const bookingModel = mongoose.Schema(
       type: Number,
       required: true,
     },
+    date_paid: {
+      type: Date,
+    },
     total_cost: {
       type: Number,
       required: true,
@@ -54,8 +57,8 @@ const bookingModel = mongoose.Schema(
     book_status: {
       type: String,
       enum: {
-        values: ["Ongoing", "Finished", "Accepted", "Pending", "Declined"],
-        message: "{VALUE} is not supported.",
+        values: ['On Going', 'Finished', 'Accepted', 'Pending', 'Declined'],
+        message: '{VALUE} is not supported.',
       },
       required: true,
     },
@@ -72,7 +75,7 @@ const bookingModel = mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
-export default mongoose.model("Booking", bookingModel);
+export default mongoose.model('Booking', bookingModel);

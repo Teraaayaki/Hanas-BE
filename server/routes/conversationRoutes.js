@@ -4,10 +4,12 @@ const router = express.Router();
 
 import {
   getConversations,
-  storeMessage
+  getMessages,
+  storeMessage,
 } from '../controllers/conversationController.js';
 
 router.get('/', requireAuth, getConversations);
+router.get('/:id', requireAuth, getMessages);
 router.post('/', requireAuth, storeMessage);
 
 export default router;
