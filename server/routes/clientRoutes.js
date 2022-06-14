@@ -2,7 +2,6 @@ import express from "express";
 import requireAuth from "../middleware/requireAuth.js";
 const router = express.Router();
 
-
 import {
   getFeedback,
   bookSkilledWorker,
@@ -30,7 +29,7 @@ import {
 router.get("/get-feedback", requireAuth, getFeedback);
 
 router.get("/get-bookings", requireAuth, getBookings);
-router.get("/get-top-rated-workers", requireAuth, getTopRatedWorkers);
+router.get("/get-top-rated-workers/:address", requireAuth, getTopRatedWorkers);
 router.get("/get-favorites", requireAuth, getFavorites);
 router.get("/get-top-services", requireAuth, getTopServices);
 router.get("/get-all-services", requireAuth, getAllServices);

@@ -3,8 +3,17 @@ import MyService from "../../models/myServiceModel.js";
 import Service from "../../models/serviceModel.js";
 
 export const getTopRatedWorkers = async (req, res) => {
+  console.log("Address is: ", req.params.address);
+  const regEx = new RegExp(`${req.params.address}`);
+
   let top_rated_workers = await User.aggregate([
-    { $match: { is_worker: true, is_verified: true } },
+    {
+      $match: {
+        is_worker: true,
+        is_verified: true,
+        address: { $regex: regEx },
+      },
+    },
     {
       $lookup: {
         from: "myservices", // other table name
