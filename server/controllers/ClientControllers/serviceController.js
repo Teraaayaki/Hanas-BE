@@ -180,8 +180,13 @@ export const getSkilledWorkerDetails = async (req, res) => {
 };
 
 export const getSkilledWorkerWithSpecificService = async (req, res) => {
+  console.log("PARAMS", req.params.service_type, req.params.address);
+
+  const { service_type, address } = req.params;
+  const regexpAddress = new RegExp(`${address}`);
+
   const serviceType = await Service.findOne({
-    service_type: req.body.DATA.service_type,
+    service_type,
   });
 
   let workers_with_specific_service = await MyService.aggregate([
@@ -206,6 +211,7 @@ export const getSkilledWorkerWithSpecificService = async (req, res) => {
                 ],
               },
               profile_pic: 1,
+              address: 1,
             },
           },
         ],
@@ -236,6 +242,9 @@ export const getSkilledWorkerWithSpecificService = async (req, res) => {
         as: "serviceNameData",
         pipeline: [{ $project: { service_type: 1 } }],
       },
+    },
+    {
+      $match: { "workerDetails.address": { $regex: regexpAddress } },
     },
   ]);
 
