@@ -1,14 +1,24 @@
 import User from "../../models/userModel.js";
+import Verification from "../../models/verificationModel.js";
 
 import { ObjectId } from "mongodb";
 
 //Verifications----------------------------------------
 export const getVerifications = async (req, res) => {
+
   const verifications = await User.aggregate([
     {
       $match: {
         is_verified: false,
       },
+    },
+    {
+      $lookup:{
+        from: "verification",
+        localField: "_id",
+        foreignField: "user_id",
+        as: "verificationData",
+      }
     },
     {
       $project: {
@@ -29,6 +39,7 @@ export const getVerifications = async (req, res) => {
         is_verified: 1,
         verify_status: 1,
         createdAt: 1,
+        verificationData: 1,
       },
     },
   ]);
