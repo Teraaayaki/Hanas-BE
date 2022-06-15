@@ -13,6 +13,6 @@ const verificationSchema = mongoose.Schema(
     {
         timestamps: true,
     }
-)
+);
 
 export default mongoose.model("Verification", verificationSchema);

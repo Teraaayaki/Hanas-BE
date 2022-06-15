@@ -6,50 +6,56 @@ import { ObjectId } from "mongodb";
 //Verifications----------------------------------------
 export const getVerifications = async (req, res) => {
 
-  const verifications = await User.aggregate([
-    {
-      $match: {
-        is_verified: false,
-      },
-    },
-    {
-      $lookup:{
-        from: "verification",
-        localField: "_id",
-        foreignField: "user_id",
-        as: "verificationData",
+  try{
+    const verifications = await Verification.aggregate([
+      {
+        $lookup: {
+          from: 'users', 
+          localField: 'user_id', 
+          foreignField: '_id', 
+          as: 'workerData', 
+          pipeline: [
+            {
+              $project: {
+                name: {
+                  $concat: [
+                    "$first_name",
+                    " ",
+                    "$middle_name",
+                    " ",
+                    "$family_name",
+                    " ",
+                    "$suffix",
+                  ],
+                },
+                createdAt: 1,
+                email: 1,
+                mobile_no: 1,
+                address: 1,
+                birthdate: 1,
+                is_verified: 1,
+                profile_pic: 1,
+                verify_status: 1,
+                createdAt: 1,
+              },
+            }
+          ]
+        }
       }
-    },
-    {
-      $project: {
-        user_id: 1,
-        profile_pic: 1,
-        name: {
-          $concat: [
-            "$first_name",
-            " ",
-            "$middle_name",
-            " ",
-            "$family_name",
-            " ",
-            "$suffix",
-          ],
-        },
-        is_worker: 1,
-        is_verified: 1,
-        verify_status: 1,
-        createdAt: 1,
-        verificationData: 1,
-      },
-    },
-  ]);
+    ]);
 
-  return res.status(200).json({ verifications });
+    return res.status(200).json({ verifications });
+
+  } catch( error ){
+    console.log(error);
+  }
+  
+
 };
 
-export const getVerification = async (req, res) => {
+export const getSpecificVerification = async (req, res) => {
   try {
-    const verification = await User.aggregate([
+    const specific_verification = await User.aggregate([
       {
         $match: {
           _id: new ObjectId(req.params.id),
@@ -64,7 +70,7 @@ export const getVerification = async (req, res) => {
       },
     ]);
 
-    return res.status(200).json({ verification });
+    return res.status(200).json({ specific_verification });
   } catch (err) {
     console.log(err.message);
   }

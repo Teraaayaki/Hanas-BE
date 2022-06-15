@@ -9,7 +9,7 @@ import {
 } from "../controllers/AdminControllers/overviewController.js";
 import {
   getVerifications,
-  getVerification,
+  getSpecificVerification,
   acceptVerification,
   rejectVerification,
 } from "../controllers/AdminControllers/verificationController.js";
@@ -52,7 +52,7 @@ router.get("/count-users", requireAuth, countUsers);
 router.get("/count-reports", requireAuth, countPendingReports);
 
 router.get("/get-verifications", requireAuth, getVerifications);
-router.get("/get-verification/:id", requireAuth, getVerification);
+router.get("/get-verification/:id", requireAuth, getSpecificVerification);
 router.get("/accept-verification/:id", requireAuth, acceptVerification);
 router.get("/reject-verification/:id", requireAuth, rejectVerification);
 
