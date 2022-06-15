@@ -206,7 +206,7 @@ export const giveFeedback = async (req,res) => {
   
   let data = req.body.DATA;
 
-  const feedback = await Feedback.insertMany({
+  const feedback = await Feedback.create({
     comment: data.values.comment,
     rate: data.rate,
     client: data.client,
