@@ -1,27 +1,27 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const bookingModel = mongoose.Schema(
   {
     service_availed: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: 'MyService',
+      ref: "MyService",
     },
     worker: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: 'User',
+      ref: "User",
     },
     client: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: 'User',
+      ref: "User",
     },
     book_type: {
       type: String,
       enum: {
-        values: ['Single', 'Multiple'],
-        message: '{VALUE} is not supported.',
+        values: ["Single", "Multiple"],
+        message: "{VALUE} is not supported.",
       },
       required: true,
     },
@@ -57,8 +57,8 @@ const bookingModel = mongoose.Schema(
     book_status: {
       type: String,
       enum: {
-        values: ['On Going', 'Finished', 'Accepted', 'Pending', 'Declined'],
-        message: '{VALUE} is not supported.',
+        values: ["On Going", "Finished", "Accepted", "Pending", "Declined"],
+        message: "{VALUE} is not supported.",
       },
       required: true,
     },
@@ -78,4 +78,4 @@ const bookingModel = mongoose.Schema(
   },
 );
 
-export default mongoose.model('Booking', bookingModel);
+export default mongoose.model("Booking", bookingModel);

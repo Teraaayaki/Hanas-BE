@@ -35,11 +35,11 @@ const monitorDBChanges = (server) => {
       });
 
     mongoose.connection
-      .collection('bookings')
-      .watch([{ $match: { operationType: 'update' } }], {
-        fullDocument: 'updateLookup',
+      .collection("bookings")
+      .watch([{ $match: { operationType: "update" } }], {
+        fullDocument: "updateLookup",
       })
-      .on('change', (data) => {
+      .on("change", (data) => {
         console.log(data);
       });
   });
