@@ -260,3 +260,90 @@ export const getAllServices = async (req, res) => {
 
   return res.status(200).json({ all_services: all_service });
 };
+
+export const getWorkers = async (req, res) => {
+  console.log("Got: ", req.params.keyword, req.params.address);
+  const regExpKeyword = new RegExp(`${req.params.keyword}`);
+  const regExpAddress = new RegExp(`${req.params.address}`);
+
+  let workers = await MyService.aggregate([
+    {
+      $lookup: {
+        from: "users",
+        localField: "worker",
+        foreignField: "_id",
+        as: "workerDetails",
+        pipeline: [
+          {
+            $project: {
+              name: {
+                $concat: [
+                  "$first_name",
+                  " ",
+                  "$middle_name",
+                  " ",
+                  "$family_name",
+                ],
+              },
+              profile_pic: 1,
+              address: 1,
+              is_deactivated: 1,
+              is_verified: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $lookup: {
+        from: "feedbacks",
+        localField: "_id",
+        foreignField: "my_service_id",
+        as: "feedbackData",
+        pipeline: [
+          {
+            $group: {
+              _id: null,
+              jobs: { $sum: 1 },
+              rateAvg: { $avg: "$rate" },
+            },
+          },
+        ],
+      },
+    },
+    {
+      $lookup: {
+        from: "services",
+        localField: "service",
+        foreignField: "_id",
+        as: "serviceNameData",
+        pipeline: [{ $project: { service_type: 1 } }],
+      },
+    },
+    {
+      $project: {
+        hourly_rate: 1,
+        workerDetails: { $arrayElemAt: ["$workerDetails", 0] },
+        feedbackData: 1,
+        serviceNameData: { $arrayElemAt: ["$serviceNameData", 0] },
+        is_certified: 1,
+        keyword: {
+          $concat: [
+            { $arrayElemAt: ["$workerDetails.name", 0] },
+            " ",
+            { $arrayElemAt: ["$serviceNameData.service_type", 0] },
+          ],
+        },
+      },
+    },
+    {
+      $match: {
+        "workerDetails.address": { $regex: regExpAddress },
+        "workerDetails.is_deactivated": false,
+        "workerDetails.is_verified": true,
+      },
+    },
+  ]);
+
+  return res.status(200).json({ workers });
+};

@@ -23,6 +23,7 @@ import {
   getTopServices,
   getSkilledWorkerWithSpecificService,
   getAllServices,
+  getWorkers,
 } from "../controllers/ClientControllers/serviceController.js";
 
 // not yet used
@@ -35,6 +36,7 @@ router.get(
   requireAuth,
   getSkilledWorkerWithSpecificService
 );
+router.get("/get-workers/:keyword/:address", requireAuth, getWorkers);
 router.get("/get-favorites", requireAuth, getFavorites);
 router.get("/get-top-services", requireAuth, getTopServices);
 router.get("/get-all-services", requireAuth, getAllServices);
