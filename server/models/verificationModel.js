@@ -9,6 +9,10 @@ const verificationSchema = mongoose.Schema(
           },
         valid_id: [String],
         nbi_brgy_clearance: [String],
+        is_removed: {
+            type: Boolean,
+            default: false,
+          },
     },
     {
         timestamps: true,
