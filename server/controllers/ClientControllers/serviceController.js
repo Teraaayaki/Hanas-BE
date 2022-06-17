@@ -3,7 +3,7 @@ import MyService from "../../models/myServiceModel.js";
 import Service from "../../models/serviceModel.js";
 
 export const getTopRatedWorkers = async (req, res) => {
-  console.log("Address is: ", req.params.address);
+  // console.log("Address is: ", req.params.address);
   const regEx = new RegExp(`${req.params.address}`);
 
   let top_rated_workers = await User.aggregate([
@@ -180,7 +180,7 @@ export const getSkilledWorkerDetails = async (req, res) => {
 };
 
 export const getSkilledWorkerWithSpecificService = async (req, res) => {
-  console.log("PARAMS", req.params.service_type, req.params.address);
+  // console.log("PARAMS", req.params.service_type, req.params.address);
 
   const { service_type, address } = req.params;
   const regexpAddress = new RegExp(`${address}`);
@@ -262,9 +262,11 @@ export const getAllServices = async (req, res) => {
 };
 
 export const getWorkers = async (req, res) => {
-  console.log("Got: ", req.params.keyword, req.params.address);
-  const regExpKeyword = new RegExp(`${req.params.keyword}`);
+  const formattedKeyword = req?.params?.keyword?.replace(" ", "|");
+  const regExpKeyword = new RegExp(`${formattedKeyword}`, "i");
   const regExpAddress = new RegExp(`${req.params.address}`);
+
+  console.log("Got: ", formattedKeyword, req.params.address);
 
   let workers = await MyService.aggregate([
     {
@@ -324,7 +326,7 @@ export const getWorkers = async (req, res) => {
       $project: {
         hourly_rate: 1,
         workerDetails: { $arrayElemAt: ["$workerDetails", 0] },
-        feedbackData: 1,
+        feedbackData: { $arrayElemAt: ["$feedbackData", 0] },
         serviceNameData: { $arrayElemAt: ["$serviceNameData", 0] },
         is_certified: 1,
         keyword: {
@@ -338,9 +340,11 @@ export const getWorkers = async (req, res) => {
     },
     {
       $match: {
+        keyword: { $regex: regExpKeyword },
         "workerDetails.address": { $regex: regExpAddress },
         "workerDetails.is_deactivated": false,
         "workerDetails.is_verified": true,
+        is_certified: "Accepted",
       },
     },
   ]);
