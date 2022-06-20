@@ -70,24 +70,13 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    verify_status: {
-      type: String,
-      enum: {
-        values: ["Pending", "Accepted", "Rejected"],
-        message: "{VALUE} is not supported.",
-      },
-      required: true,
-      default: "Pending",
+    pending_verification: {
+      type: Boolean,
+      default: false,
     },
     profile_pic: {
       type: String,
       default: "none",
-    },
-    valid_ID: {
-      type: String,
-    },
-    NBI_clearance: {
-      type: String,
     },
   },
   {

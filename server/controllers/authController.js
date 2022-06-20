@@ -41,6 +41,7 @@ export const loginClient = async (req, res) => {
       sex: client.sex,
       is_verified: client.is_verified,
       profile_pic: client.profile_pic,
+      pending_verification: client.pending_verification,
     };
   }
 
@@ -177,6 +178,7 @@ export const getDetails = async (req, res) => {
       sex: req.user.sex,
       is_verified: req.user.is_verified,
       profile_pic: req.user.profile_pic,
+      pending_verification: req.user.pending_verification,
     };
     return res.status(200).json({ user });
   } else {

@@ -1,4 +1,6 @@
 import Feedback from "../../models/feedbackModel.js";
+import Verification from "../../models/verificationModel.js";
+import User from "../../models/userModel.js";
 import uploadImage from "../../helpers/uploadImage.js";
 
 export const getFeedback = async (req, res) => {
@@ -70,6 +72,9 @@ export const getFeedback = async (req, res) => {
 
 export const createVerificationRequest = async (req, res) => {
   console.log(req.files);
+  if (!req.files.validId || !req.files.clearance) {
+    res.status(422).send({ error: "Error missing photos" });
+  }
 
   const publicIdUrl = req.files.validId.map(
     async (item) =>
@@ -87,8 +92,23 @@ export const createVerificationRequest = async (req, res) => {
     console.log("Public Urls", publicIdUrls);
     console.log("Public Clearance Urls", publicClearanceUrls);
 
-    res.status(200).json({ message: "Successfully created request" });
+    await Verification.create({
+      user_id: req.user._id,
+      valid_id: publicIdUrls,
+      nbi_brgy_clearance: publicClearanceUrls,
+    });
+
+    await User.updateOne(
+      { _id: req.user._id },
+      { pending_verification: true },
+      { runValidators: true }
+    );
+
+    res
+      .status(200)
+      .json({ message: "Successfully created verification request" });
   } catch (error) {
     console.log(error);
+    res.status(422).send({ error: "Error uploading photos" });
   }
 };

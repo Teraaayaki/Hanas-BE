@@ -1,9 +1,10 @@
-import bucket from "../../helpers/googleCloudStorage.js";
 import dotenv from "dotenv";
+
+import bucket from "./googleCloudStorage.js";
 
 dotenv.config();
 
-export default uploadImage = (file, filePath) =>
+export default (file, filePath) =>
   new Promise((resolve, reject) => {
     const blob = bucket.file(filePath + file.originalname);
     const blobStream = blob.createWriteStream({
