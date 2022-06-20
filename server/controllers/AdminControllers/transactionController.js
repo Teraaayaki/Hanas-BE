@@ -84,7 +84,7 @@ export const getTransactions = async (req, res) => {
   return res.status(200).json({ transactions });
 };
 
-export const getTransaction = async (req, res) => {
+export const getSpecificTransaction = async (req, res) => {
   try {
     const transaction = await Booking.aggregate([
       {
