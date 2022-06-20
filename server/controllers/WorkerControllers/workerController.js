@@ -1,4 +1,5 @@
 import Feedback from "../../models/feedbackModel.js";
+import uploadImage from "../../helpers/uploadImage.js";
 
 export const getFeedback = async (req, res) => {
   let worker_id = req.user._id;
@@ -65,4 +66,29 @@ export const getFeedback = async (req, res) => {
   ]);
 
   return res.status(200).json({ feedback });
+};
+
+export const createVerificationRequest = async (req, res) => {
+  console.log(req.files);
+
+  const publicIdUrl = req.files.validId.map(
+    async (item) =>
+      await uploadImage(item, `verifications/${req.user._id}/validId/`)
+  );
+
+  const publicClearanceUrl = req.files.clearance.map(
+    async (item) =>
+      await uploadImage(item, `verifications/${req.user._id}/clearance/`)
+  );
+
+  try {
+    const publicIdUrls = await Promise.all(publicIdUrl);
+    const publicClearanceUrls = await Promise.all(publicClearanceUrl);
+    console.log("Public Urls", publicIdUrls);
+    console.log("Public Clearance Urls", publicClearanceUrls);
+
+    res.status(200).json({ message: "Successfully created request" });
+  } catch (error) {
+    console.log(error);
+  }
 };
