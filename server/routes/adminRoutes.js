@@ -37,7 +37,6 @@ import {
 
 import {
   getTransactions,
-  getTransaction,
 } from "../controllers/AdminControllers/transactionController.js";
 
 import {
@@ -71,8 +70,7 @@ router.get("/get-worker/:id", requireAuth, getWorker);
 router.get("/activate-worker/:id", requireAuth, activateWorker);
 router.get("/deactivate-worker/:id", requireAuth, deactivateWorker);
 
-router.get("/get-transactions", requireAuth, getTransactions);
-router.get("/get-transaction/:id", requireAuth, getTransaction);
+router.get("/get-transactions", getTransactions);
 
 router.get("/get-reports", requireAuth, getReports);
 router.get("/get-report/:id", requireAuth, getReport);
