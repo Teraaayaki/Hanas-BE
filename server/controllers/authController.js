@@ -207,7 +207,7 @@ export const loginAdmin = async (req, res) => {
       return res.status(422).send({ error: "Invalid Email or Password" });
     } else {
       const token = jwt.sign(
-        { admin_id: admin.user_id },
+        { admin_id: admin._id },
         process.env.MY_SECRET_ACCESS_TOKEN
       );
       return res.status(200).json({ admin_info, token });
