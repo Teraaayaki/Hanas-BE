@@ -41,6 +41,7 @@ export const loginClient = async (req, res) => {
       sex: client.sex,
       is_verified: client.is_verified,
       profile_pic: client.profile_pic,
+      pending_verification: client.pending_verification,
     };
   }
 
@@ -177,6 +178,7 @@ export const getDetails = async (req, res) => {
       sex: req.user.sex,
       is_verified: req.user.is_verified,
       profile_pic: req.user.profile_pic,
+      pending_verification: req.user.pending_verification,
     };
     return res.status(200).json({ user });
   } else {
@@ -205,7 +207,7 @@ export const loginAdmin = async (req, res) => {
       return res.status(422).send({ error: "Invalid Email or Password" });
     } else {
       const token = jwt.sign(
-        { admin_id: admin.user_id },
+        { admin_id: admin._id },
         process.env.MY_SECRET_ACCESS_TOKEN
       );
       return res.status(200).json({ admin_info, token });

@@ -111,7 +111,7 @@ const aggregateFavourites = (favorite_services) => {
 };
 
 export const getFavorites = async (req, res) => {
-  let favoritesArray;
+  let favoritesArray = [];
   try {
     let favorites = await Favorites.findOne({ client_id: req.user._id });
 
