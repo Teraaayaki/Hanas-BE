@@ -1,5 +1,6 @@
 import Feedback from "../../models/feedbackModel.js";
 import Booking from "../../models/bookingModel.js";
+import { ObjectId } from "mongodb";
 
 export const removeScheduleClient = async (req, res) => {
   if (!req.body) {
@@ -196,4 +197,28 @@ export const removeBooking = async (req, res) => {
   await booking.save();
 
   return res.status(200).json({ booking });
+};
+
+export const giveFeedback = async (req,res) => {
+  if (!req.body.DATA) {
+      return res.status(403).send({error: "Unable to send the feedback"});
+    }
+  
+  let data = req.body.DATA;
+
+  const feedback = await Feedback.create({
+    comment: data.values.comment,
+    rate: data.rate,
+    client: data.client,
+    worker: data.worker,
+    my_service_id: data.my_service_id
+  });
+
+  const booking = await Booking.findOneAndUpdate({ _id: data._id}, { isFeedbacked: 'true' });
+
+  if(!feedback || !booking){
+    return res.status(406).send({error: "Unhandled request"});
+  }else{
+    return res.status(200).send({success: "Successful feedback"});
+  }
 };

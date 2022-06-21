@@ -9,6 +9,7 @@ import {
   removeScheduleClient,
   removeCancelledBooking,
   cancelBookingSchedule,
+  giveFeedback,
 } from "../controllers/ClientControllers/clientController.js";
 
 import {
@@ -46,6 +47,7 @@ router.post("/book-skilled-worker", requireAuth, bookSkilledWorker);
 router.post("/remove-schedule", requireAuth, removeScheduleClient);
 router.post("/remove-cancelled-booking", requireAuth, removeCancelledBooking);
 router.post("/cancel-booking-schedule", requireAuth, cancelBookingSchedule);
+router.patch("/give-feedback", requireAuth, giveFeedback);
 
 router.post("/add-to-favorites", requireAuth, addToFavorites);
 router.post("/remove-from-favorites", requireAuth, removeFromFavorites);
