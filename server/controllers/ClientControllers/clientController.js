@@ -200,7 +200,7 @@ export const removeBooking = async (req, res) => {
 };
 
 export const giveFeedback = async (req,res) => {
-  if (!req.body) {
+  if (!req.body.DATA) {
       return res.status(403).send({error: "Unable to send the feedback"});
     }
   
