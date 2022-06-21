@@ -43,6 +43,9 @@ const bookingModel = mongoose.Schema(
       type: Number,
       required: true,
     },
+    date_paid: {
+      type: Date,
+    },
     total_cost: {
       type: Number,
       required: true,
@@ -54,7 +57,7 @@ const bookingModel = mongoose.Schema(
     book_status: {
       type: String,
       enum: {
-        values: ["Ongoing", "Finished", "Accepted", "Pending", "Declined"],
+        values: ["On Going", "Finished", "Accepted", "Pending", "Declined"],
         message: "{VALUE} is not supported.",
       },
       required: true,
@@ -75,7 +78,7 @@ const bookingModel = mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 export default mongoose.model("Booking", bookingModel);
