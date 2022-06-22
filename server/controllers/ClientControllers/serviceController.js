@@ -3,8 +3,17 @@ import MyService from "../../models/myServiceModel.js";
 import Service from "../../models/serviceModel.js";
 
 export const getTopRatedWorkers = async (req, res) => {
+  // console.log("Address is: ", req.params.address);
+  const regEx = new RegExp(`${req.params.address}`);
+
   let top_rated_workers = await User.aggregate([
-    { $match: { is_worker: true, is_verified: true } },
+    {
+      $match: {
+        is_worker: true,
+        is_verified: true,
+        address: { $regex: regEx },
+      },
+    },
     {
       $lookup: {
         from: "myservices", // other table name
@@ -171,8 +180,13 @@ export const getSkilledWorkerDetails = async (req, res) => {
 };
 
 export const getSkilledWorkerWithSpecificService = async (req, res) => {
+  // console.log("PARAMS", req.params.service_type, req.params.address);
+
+  const { service_type, address } = req.params;
+  const regexpAddress = new RegExp(`${address}`);
+
   const serviceType = await Service.findOne({
-    service_type: req.body.DATA.service_type,
+    service_type,
   });
 
   let workers_with_specific_service = await MyService.aggregate([
@@ -197,6 +211,7 @@ export const getSkilledWorkerWithSpecificService = async (req, res) => {
                 ],
               },
               profile_pic: 1,
+              address: 1,
             },
           },
         ],
@@ -228,6 +243,9 @@ export const getSkilledWorkerWithSpecificService = async (req, res) => {
         pipeline: [{ $project: { service_type: 1 } }],
       },
     },
+    {
+      $match: { "workerDetails.address": { $regex: regexpAddress } },
+    },
   ]);
 
   return res
@@ -241,4 +259,95 @@ export const getAllServices = async (req, res) => {
   ]);
 
   return res.status(200).json({ all_services: all_service });
+};
+
+export const getWorkers = async (req, res) => {
+  const formattedKeyword = req?.params?.keyword?.replace(" ", "|");
+  const regExpKeyword = new RegExp(`${formattedKeyword}`, "i");
+  const regExpAddress = new RegExp(`${req.params.address}`);
+
+  console.log("Got: ", formattedKeyword, req.params.address);
+
+  let workers = await MyService.aggregate([
+    {
+      $lookup: {
+        from: "users",
+        localField: "worker",
+        foreignField: "_id",
+        as: "workerDetails",
+        pipeline: [
+          {
+            $project: {
+              name: {
+                $concat: [
+                  "$first_name",
+                  " ",
+                  "$middle_name",
+                  " ",
+                  "$family_name",
+                ],
+              },
+              profile_pic: 1,
+              address: 1,
+              is_deactivated: 1,
+              is_verified: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $lookup: {
+        from: "feedbacks",
+        localField: "_id",
+        foreignField: "my_service_id",
+        as: "feedbackData",
+        pipeline: [
+          {
+            $group: {
+              _id: null,
+              jobs: { $sum: 1 },
+              rateAvg: { $avg: "$rate" },
+            },
+          },
+        ],
+      },
+    },
+    {
+      $lookup: {
+        from: "services",
+        localField: "service",
+        foreignField: "_id",
+        as: "serviceNameData",
+        pipeline: [{ $project: { service_type: 1 } }],
+      },
+    },
+    {
+      $project: {
+        hourly_rate: 1,
+        workerDetails: { $arrayElemAt: ["$workerDetails", 0] },
+        feedbackData: { $arrayElemAt: ["$feedbackData", 0] },
+        serviceNameData: { $arrayElemAt: ["$serviceNameData", 0] },
+        is_certified: 1,
+        keyword: {
+          $concat: [
+            { $arrayElemAt: ["$workerDetails.name", 0] },
+            " ",
+            { $arrayElemAt: ["$serviceNameData.service_type", 0] },
+          ],
+        },
+      },
+    },
+    {
+      $match: {
+        keyword: { $regex: regExpKeyword },
+        "workerDetails.address": { $regex: regExpAddress },
+        "workerDetails.is_deactivated": false,
+        "workerDetails.is_verified": true,
+        is_certified: "Accepted",
+      },
+    },
+  ]);
+
+  return res.status(200).json({ workers });
 };
