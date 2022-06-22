@@ -98,9 +98,9 @@ export const acceptVerification = async (req, res) => {
   console.log(req.params);
 
   try {
-    User.findOneAndUpdate(
-      { _id: req.params.id },
-      { is_verified: true, verify_status: "Accepted" },
+    Verification.findOneAndUpdate(
+      { user_id: req.params.id },
+      { verify_status: "Accepted" },
       { new: true },
       (error, updatedRecord) => {
         if (error) {
@@ -118,8 +118,8 @@ export const acceptVerification = async (req, res) => {
 
 export const rejectVerification = async (req, res) => {
   try {
-    User.findOneAndUpdate(
-      { _id: req.params.id },
+    Verification.findOneAndUpdate(
+      { user_id: req.params.id },
       { verify_status: "Rejected" },
       { new: true },
       (error, updatedRecord) => {
