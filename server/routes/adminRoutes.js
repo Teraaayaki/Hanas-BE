@@ -6,6 +6,7 @@ import {
   countPendingVerifications,
   countUsers,
   countPendingReports,
+  countIncome,
 } from "../controllers/AdminControllers/overviewController.js";
 import {
   getVerifications,
@@ -76,6 +77,7 @@ router.get("/get-transaction/:id", requireAuth, getSpecificTransaction);
 
 router.get("/get-reports", requireAuth, getReports);
 router.get("/get-report/:id", requireAuth, getReport);
+router.get("/get-income", countIncome);
 router.get("/resolve-report/:id", requireAuth, resolveReport);
 router.get("/reject-report/:id", requireAuth, rejectReport);
 
