@@ -61,8 +61,8 @@ router.get("/get-certification/:id", requireAuth, getCertification);
 router.get("/accept-certification/:id", requireAuth, acceptCertification);
 router.get("/reject-certification/:id", requireAuth, rejectCertification);
 
-router.get("/get-clients", requireAuth, getClients);
-router.get("/get-client/:id", requireAuth, getClient);
+router.get("/get-clients", getClients);
+router.get("/get-client/:id", getClient);
 router.get("/activate-client/:id", requireAuth, activateClient);
 router.get("/deactivate-client/:id", requireAuth, deactivateClient);
 

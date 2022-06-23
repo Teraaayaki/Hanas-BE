@@ -31,6 +31,21 @@ export const getClients = async (req, res) => {
         createdAt: 1,
       },
     },
+    {
+      $lookup: {
+        from: "verifications",
+        localField: "_id",
+        foreignField: "user_id",
+        as: "verificationData",
+        pipeline: [
+          {
+            $project: {
+              verify_status: 1,
+            },
+          },
+        ],
+      },
+    },
   ]);
 
   return res.status(200).json({ clients });
