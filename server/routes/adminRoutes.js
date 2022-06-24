@@ -7,6 +7,8 @@ import {
   countUsers,
   countPendingReports,
   countIncome,
+  percentageOfVerified,
+  percentageOnTypeOfUsers,
 } from "../controllers/AdminControllers/overviewController.js";
 import {
   getVerifications,
@@ -48,9 +50,9 @@ import {
   rejectReport,
 } from "../controllers/AdminControllers/reportController.js";
 
-router.get("/count-verifications", requireAuth, countPendingVerifications);
-router.get("/count-users", requireAuth, countUsers);
-router.get("/count-reports", requireAuth, countPendingReports);
+router.get("/count-verifications", countPendingVerifications);
+router.get("/count-users", countUsers);
+router.get("/count-reports", countPendingReports);
 
 router.get("/get-verifications", requireAuth, getVerifications);
 router.get("/get-verification/:id", requireAuth, getVerification);
@@ -78,6 +80,8 @@ router.get("/get-transaction/:id", requireAuth, getSpecificTransaction);
 router.get("/get-reports", requireAuth, getReports);
 router.get("/get-report/:id", requireAuth, getReport);
 router.get("/get-income", countIncome);
+router.get("/get-verified", percentageOfVerified);
+router.get("/get-type-of-users", percentageOnTypeOfUsers);
 router.get("/resolve-report/:id", requireAuth, resolveReport);
 router.get("/reject-report/:id", requireAuth, rejectReport);
 
