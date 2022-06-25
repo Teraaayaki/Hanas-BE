@@ -6,7 +6,6 @@ export const getClients = async (req, res) => {
   const clients = await User.aggregate([
     {
       $match: {
-        is_verified: true,
         is_worker: false,
       },
     },
@@ -26,24 +25,9 @@ export const getClients = async (req, res) => {
           ],
         },
         address: 1,
-        is_verified: 1,
         is_worker: 1,
+        is_deactivated: 1,
         createdAt: 1,
-      },
-    },
-    {
-      $lookup: {
-        from: "verifications",
-        localField: "_id",
-        foreignField: "user_id",
-        as: "verificationData",
-        pipeline: [
-          {
-            $project: {
-              verify_status: 1,
-            },
-          },
-        ],
       },
     },
   ]);
@@ -57,12 +41,12 @@ export const getClient = async (req, res) => {
       {
         $match: {
           _id: new ObjectId(req.params.id),
-          is_verified: true,
           is_worker: false,
         },
       },
       {
         $project: {
+          is_verified: 0,
           password: 0,
           __v: 0,
         },
