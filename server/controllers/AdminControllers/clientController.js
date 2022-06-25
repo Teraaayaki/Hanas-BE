@@ -63,8 +63,35 @@ export const getClient = async (req, res) => {
       },
       {
         $project: {
+          name: {
+            $concat: [
+              "$first_name",
+              " ",
+              "$middle_name",
+              " ",
+              "$family_name",
+              " ",
+              "$suffix",
+            ],
+          },
           password: 0,
           __v: 0,
+        },
+      },
+      {
+        $lookup: {
+          from: "verifications",
+          localField: "_id",
+          foreignField: "user_id",
+          as: "verificationData",
+          pipeline: [
+            {
+              $project: {
+                valid_id: 1,
+                nbi_brgy_clearance: 1,
+              },
+            },
+          ],
         },
       },
     ]);
