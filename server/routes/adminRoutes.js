@@ -63,13 +63,13 @@ router.get("/reject-certification/:id", requireAuth, rejectCertification);
 
 router.get("/get-clients", getClients);
 router.get("/get-client/:id", getClient);
-router.get("/activate-client/:id", requireAuth, activateClient);
-router.get("/deactivate-client/:id", requireAuth, deactivateClient);
+router.get("/activate-client/:id", activateClient);
+router.get("/deactivate-client/:id", deactivateClient);
 
-router.get("/get-workers", requireAuth, getWorkers);
-router.get("/get-worker/:id", requireAuth, getWorker);
-router.get("/activate-worker/:id", requireAuth, activateWorker);
-router.get("/deactivate-worker/:id", requireAuth, deactivateWorker);
+router.get("/get-workers", getWorkers);
+router.get("/get-worker/:id", getWorker);
+router.get("/activate-worker/:id", activateWorker);
+router.get("/deactivate-worker/:id", deactivateWorker);
 
 router.get("/get-transactions", requireAuth, getTransactions);
 router.get("/get-transaction/:id", requireAuth, getSpecificTransaction);

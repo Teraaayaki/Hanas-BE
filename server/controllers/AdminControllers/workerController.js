@@ -27,8 +27,24 @@ export const getWorkers = async (req, res) => {
         },
         address: 1,
         is_verified: 1,
+        is_deactivated: 1,
         is_worker: 1,
         createdAt: 1,
+      },
+    },
+    {
+      $lookup: {
+        from: "verification",
+        localField: "_id",
+        foreignField: "user_id",
+        as: "verificationData",
+        pipeline: [
+          {
+            $match: {
+              verify_status: 1,
+            },
+          },
+        ],
       },
     },
     {
