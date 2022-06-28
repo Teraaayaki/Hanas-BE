@@ -34,11 +34,16 @@ export const getWorkerList = async (req, res) => {
     },
     {
       $lookup: {
-        from: "verification",
+        from: "verifications",
         localField: "_id",
         foreignField: "user_id",
         as: "verificationData",
         pipeline: [
+          {
+            $match: {
+              verify_status: "Accepted",
+            },
+          },
           {
             $project: {
               verify_status: 1,
@@ -56,7 +61,7 @@ export const getWorkerList = async (req, res) => {
         pipeline: [
           {
             $match: {
-              is_certified: true,
+              is_certified: "Accepted",
             },
           },
           {
