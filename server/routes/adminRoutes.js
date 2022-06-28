@@ -29,7 +29,7 @@ import {
 } from "../controllers/AdminControllers/clientController.js";
 
 import {
-  getWorkers,
+  getWorkerList,
   getWorker,
   activateWorker,
   deactivateWorker,
@@ -66,7 +66,7 @@ router.get("/get-client/:id", getClient);
 router.get("/activate-client/:id", activateClient);
 router.get("/deactivate-client/:id", deactivateClient);
 
-router.get("/get-workers", getWorkers);
+router.get("/get-worker-list", getWorkerList);
 router.get("/get-worker/:id", getWorker);
 router.get("/activate-worker/:id", activateWorker);
 router.get("/deactivate-worker/:id", deactivateWorker);

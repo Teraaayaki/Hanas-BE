@@ -2,8 +2,8 @@ import User from "../../models/userModel.js";
 
 import { ObjectId } from "mongodb";
 
-export const getWorkers = async (req, res) => {
-  const workers = await User.aggregate([
+export const getWorkerList = async (req, res) => {
+  const workerList = await User.aggregate([
     {
       $match: {
         is_verified: true,
@@ -40,7 +40,7 @@ export const getWorkers = async (req, res) => {
         as: "verificationData",
         pipeline: [
           {
-            $match: {
+            $project: {
               verify_status: 1,
             },
           },
@@ -85,7 +85,7 @@ export const getWorkers = async (req, res) => {
     },
   ]);
 
-  return res.status(200).json({ workers });
+  return res.status(200).json({ workerList });
 };
 
 export const getWorker = async (req, res) => {
