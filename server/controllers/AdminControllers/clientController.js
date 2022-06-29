@@ -2,11 +2,10 @@ import User from "../../models/userModel.js";
 
 import { ObjectId } from "mongodb";
 
-export const getClients = async (req, res) => {
-  const clients = await User.aggregate([
+export const getClientList = async (req, res) => {
+  const clientList = await User.aggregate([
     {
       $match: {
-        is_verified: true,
         is_worker: false,
       },
     },
@@ -26,29 +25,14 @@ export const getClients = async (req, res) => {
           ],
         },
         address: 1,
-        is_verified: 1,
         is_worker: 1,
+        is_deactivated: 1,
         createdAt: 1,
-      },
-    },
-    {
-      $lookup: {
-        from: "verifications",
-        localField: "_id",
-        foreignField: "user_id",
-        as: "verificationData",
-        pipeline: [
-          {
-            $project: {
-              verify_status: 1,
-            },
-          },
-        ],
       },
     },
   ]);
 
-  return res.status(200).json({ clients });
+  return res.status(200).json({ clientList });
 };
 
 export const getClient = async (req, res) => {
@@ -57,41 +41,14 @@ export const getClient = async (req, res) => {
       {
         $match: {
           _id: new ObjectId(req.params.id),
-          is_verified: true,
           is_worker: false,
         },
       },
       {
         $project: {
-          name: {
-            $concat: [
-              "$first_name",
-              " ",
-              "$middle_name",
-              " ",
-              "$family_name",
-              " ",
-              "$suffix",
-            ],
-          },
+          is_verified: 0,
           password: 0,
           __v: 0,
-        },
-      },
-      {
-        $lookup: {
-          from: "verifications",
-          localField: "_id",
-          foreignField: "user_id",
-          as: "verificationData",
-          pipeline: [
-            {
-              $project: {
-                valid_id: 1,
-                nbi_brgy_clearance: 1,
-              },
-            },
-          ],
         },
       },
     ]);

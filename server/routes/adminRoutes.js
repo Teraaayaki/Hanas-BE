@@ -22,7 +22,7 @@ import {
 } from "../controllers/AdminControllers/certificationController.js";
 
 import {
-  getClients,
+  getClientList,
   getClient,
   activateClient,
   deactivateClient,
@@ -61,10 +61,10 @@ router.get("/get-certification/:id", requireAuth, getCertification);
 router.get("/accept-certification/:id", requireAuth, acceptCertification);
 router.get("/reject-certification/:id", requireAuth, rejectCertification);
 
-router.get("/get-clients", getClients);
+router.get("/get-client-list", getClientList);
 router.get("/get-client/:id", getClient);
-router.get("/activate-client/:id", requireAuth, activateClient);
-router.get("/deactivate-client/:id", requireAuth, deactivateClient);
+router.get("/activate-client/:id", activateClient);
+router.get("/deactivate-client/:id", deactivateClient);
 
 router.get("/get-workers", requireAuth, getWorkers);
 router.get("/get-worker/:id", requireAuth, getWorker);
