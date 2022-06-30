@@ -9,6 +9,7 @@ import {
   removeScheduleClient,
   removeCancelledBooking,
   cancelBookingSchedule,
+  giveFeedback,
 } from "../controllers/ClientControllers/clientController.js";
 
 import {
@@ -23,6 +24,7 @@ import {
   getTopServices,
   getSkilledWorkerWithSpecificService,
   getAllServices,
+  getWorkers,
 } from "../controllers/ClientControllers/serviceController.js";
 
 // not yet used
@@ -35,6 +37,7 @@ router.get(
   requireAuth,
   getSkilledWorkerWithSpecificService
 );
+router.get("/get-workers/:keyword/:address", requireAuth, getWorkers);
 router.get("/get-favorites", requireAuth, getFavorites);
 router.get("/get-top-services", requireAuth, getTopServices);
 router.get("/get-all-services", requireAuth, getAllServices);
@@ -44,6 +47,7 @@ router.post("/book-skilled-worker", requireAuth, bookSkilledWorker);
 router.post("/remove-schedule", requireAuth, removeScheduleClient);
 router.post("/remove-cancelled-booking", requireAuth, removeCancelledBooking);
 router.post("/cancel-booking-schedule", requireAuth, cancelBookingSchedule);
+router.patch("/give-feedback", requireAuth, giveFeedback);
 
 router.post("/add-to-favorites", requireAuth, addToFavorites);
 router.post("/remove-from-favorites", requireAuth, removeFromFavorites);

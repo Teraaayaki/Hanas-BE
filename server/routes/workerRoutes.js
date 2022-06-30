@@ -3,7 +3,10 @@ import requireAuth from "../middleware/requireAuth.js";
 import multer from "../helpers/multer.js";
 const router = express.Router();
 
-import { getFeedback } from "../controllers/WorkerControllers/workerController.js";
+import {
+  getFeedback,
+  createVerificationRequest,
+} from "../controllers/WorkerControllers/workerController.js";
 
 import {
   getServices,
@@ -37,16 +40,22 @@ router.post(
   "/upload-image-service",
   requireAuth,
   multer.single("sample"),
-  uploadImageService,
+  uploadImageService
 );
 router.post(
   "/upload-image-certificate",
   requireAuth,
   multer.single("certificate"),
-  uploadImageCertificate,
+  uploadImageCertificate
 );
 router.post("/delete-image-service", requireAuth, deleteImageService);
 router.post("/delete-image-certificate", requireAuth, deleteImageCertificate);
+router.post(
+  "/create-verification-request",
+  requireAuth,
+  multer.fields([{ name: "validId" }, { name: "clearance" }]),
+  createVerificationRequest
+);
 
 //Booking Routes
 router.get("/booking-requests", requireAuth, getBookingRequests);
