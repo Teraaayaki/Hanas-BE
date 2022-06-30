@@ -71,8 +71,8 @@ router.get("/get-worker/:id", getWorker);
 router.get("/activate-worker/:id", activateWorker);
 router.get("/deactivate-worker/:id", deactivateWorker);
 
-router.get("/get-transactions", requireAuth, getTransactions);
-router.get("/get-transaction/:id", requireAuth, getSpecificTransaction);
+router.get("/get-transactions", getTransactions);
+router.get("/get-transaction/:id", getSpecificTransaction);
 
 router.get("/get-reports", requireAuth, getReports);
 router.get("/get-report/:id", requireAuth, getReport);

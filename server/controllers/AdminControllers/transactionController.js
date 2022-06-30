@@ -4,15 +4,13 @@ import { ObjectId } from "mongodb";
 
 export const getTransactions = async (req, res) => {
   const transactions = await Booking.aggregate([
-    { $match: { book_status: "Finished" } },
+    { $match: { $or: [ { book_status: "Finished" }, {book_status: "Ongoing"}] } },
     {
       $project: {
-        _id: 1,
-        client: 1,
-        worker: 1,
-        service_availed: 1,
-        address: 1,
-        total_cost: 1,
+        __v: 0,
+        isFeedbacked: 0,
+        isRemovedClient: 0,
+        isRemovedWorker: 0,
       },
     },
     {
@@ -27,6 +25,7 @@ export const getTransactions = async (req, res) => {
               first_name: 1,
               middle_name: 1,
               family_name: 1,
+              address: 1,
             },
           },
         ],
@@ -59,6 +58,7 @@ export const getTransactions = async (req, res) => {
           {
             $project: {
               service: 1,
+              hourly_rate: 1,
             },
           },
           {
