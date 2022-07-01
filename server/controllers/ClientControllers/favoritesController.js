@@ -63,6 +63,7 @@ const aggregateFavourites = (favorite_services) => {
                   ],
                 },
                 profile_pic: 1,
+                address: 1,
               },
             },
           ],

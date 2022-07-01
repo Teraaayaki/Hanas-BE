@@ -6,6 +6,7 @@ import http from "http";
 import cors from "cors";
 
 import verificationRoutes from "./routes/verificationRoutes.js";
+import guestRoutes from "./routes/guestRoutes.js";
 import clientRoutes from "./routes/clientRoutes.js";
 import workerRoutes from "./routes/workerRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
@@ -32,9 +33,12 @@ app.get("/", (req, res) => {
 app.use("/api/auth", verificationRoutes);
 app.use("/api/worker", workerRoutes);
 app.use("/api/client", clientRoutes);
+app.use("/api/guest", guestRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/conversations", conversationRoutes);
 app.use("/api/edit", editAccountRoutes);
 app.use("/api/transactions", transactionRoutes);
 
-server.listen(process.env.PORT, () => console.log(`Server running on port ${port}`));
+server.listen(process.env.PORT, () =>
+  console.log(`Server running on port ${port}`)
+);
