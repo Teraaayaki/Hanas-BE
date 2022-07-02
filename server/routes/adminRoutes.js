@@ -9,9 +9,10 @@ import {
 } from "../controllers/AdminControllers/overviewController.js";
 import {
   getVerifications,
-  getVerification,
+  getSpecificVerification,
   acceptVerification,
   rejectVerification,
+  removeSpecificVerification
 } from "../controllers/AdminControllers/verificationController.js";
 
 import {
@@ -29,7 +30,7 @@ import {
 } from "../controllers/AdminControllers/clientController.js";
 
 import {
-  getWorkers,
+  getWorkerList,
   getWorker,
   activateWorker,
   deactivateWorker,
@@ -52,9 +53,10 @@ router.get("/count-users", requireAuth, countUsers);
 router.get("/count-reports", requireAuth, countPendingReports);
 
 router.get("/get-verifications", requireAuth, getVerifications);
-router.get("/get-verification/:id", requireAuth, getVerification);
-router.get("/accept-verification/:id", requireAuth, acceptVerification);
-router.get("/reject-verification/:id", requireAuth, rejectVerification);
+router.get("/get-verification/:id", requireAuth, getSpecificVerification);
+router.post("/accept-verification/:id", requireAuth, acceptVerification);
+router.post("/reject-verification/:id", requireAuth, rejectVerification);
+router.post("/remove-verification/:id", requireAuth, removeSpecificVerification);
 
 router.get("/get-certifications", requireAuth, getCertifications);
 router.get("/get-certification/:id", requireAuth, getCertification);
@@ -66,13 +68,13 @@ router.get("/get-client/:id", getClient);
 router.get("/activate-client/:id", activateClient);
 router.get("/deactivate-client/:id", deactivateClient);
 
-router.get("/get-workers", requireAuth, getWorkers);
-router.get("/get-worker/:id", requireAuth, getWorker);
-router.get("/activate-worker/:id", requireAuth, activateWorker);
-router.get("/deactivate-worker/:id", requireAuth, deactivateWorker);
+router.get("/get-worker-list", getWorkerList);
+router.get("/get-worker/:id", getWorker);
+router.get("/activate-worker/:id", activateWorker);
+router.get("/deactivate-worker/:id", deactivateWorker);
 
-router.get("/get-transactions", requireAuth, getTransactions);
-router.get("/get-transaction/:id", requireAuth, getSpecificTransaction);
+router.get("/get-transactions", getTransactions);
+router.get("/get-transaction/:id", getSpecificTransaction);
 
 router.get("/get-reports", requireAuth, getReports);
 router.get("/get-report/:id", requireAuth, getReport);
