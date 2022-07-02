@@ -2,8 +2,8 @@ import User from "../../models/userModel.js";
 
 import { ObjectId } from "mongodb";
 
-export const getClients = async (req, res) => {
-  const clients = await User.aggregate([
+export const getClientList = async (req, res) => {
+  const clientList = await User.aggregate([
     {
       $match: {
         is_worker: false,
@@ -32,7 +32,7 @@ export const getClients = async (req, res) => {
     },
   ]);
 
-  return res.status(200).json({ clients });
+  return res.status(200).json({ clientList });
 };
 
 export const getClient = async (req, res) => {
@@ -46,9 +46,31 @@ export const getClient = async (req, res) => {
       },
       {
         $project: {
-          is_verified: 0,
-          password: 0,
-          __v: 0,
+          user_id: 1,
+          first_name: 1,
+          middle_name: 1,
+          family_name: 1,
+          suffix: 1,
+          name: {
+            $concat: [
+              "$first_name",
+              " ",
+              "$middle_name",
+              " ",
+              "$family_name",
+              " ",
+              "$suffix",
+            ],
+          },
+          email: 1,
+          mobile_no: 1,
+          address: 1,
+          birthdate: 1,
+          sex: 1,
+          is_worker: 1,
+          is_deactivated: 1,
+          profile_pic: 1,
+          createdAt: 1,
         },
       },
     ]);
