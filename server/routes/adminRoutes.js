@@ -12,7 +12,8 @@ import {
   getSpecificVerification,
   acceptVerification,
   rejectVerification,
-  removeSpecificVerification
+  removeSpecificVerification,
+  sortVerification,
 } from "../controllers/AdminControllers/verificationController.js";
 
 import {
@@ -39,6 +40,7 @@ import {
 import {
   getTransactions,
   getSpecificTransaction,
+  sortTransaction,
 } from "../controllers/AdminControllers/transactionController.js";
 
 import {
@@ -57,6 +59,7 @@ router.get("/get-verification/:id", requireAuth, getSpecificVerification);
 router.post("/accept-verification/:id", requireAuth, acceptVerification);
 router.post("/reject-verification/:id", requireAuth, rejectVerification);
 router.post("/remove-verification/:id", requireAuth, removeSpecificVerification);
+router.patch("/sort-verification", sortVerification);
 
 router.get("/get-certifications", requireAuth, getCertifications);
 router.get("/get-certification/:id", requireAuth, getCertification);
@@ -75,6 +78,7 @@ router.get("/deactivate-worker/:id", deactivateWorker);
 
 router.get("/get-transactions", getTransactions);
 router.get("/get-transaction/:id", getSpecificTransaction);
+router.patch("/sort-transaction", sortTransaction);
 
 router.get("/get-reports", requireAuth, getReports);
 router.get("/get-report/:id", requireAuth, getReport);
