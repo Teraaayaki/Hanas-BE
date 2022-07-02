@@ -105,12 +105,87 @@ export const getWorker = async (req, res) => {
       },
       {
         $project: {
-          password: 0,
-          __v: 0,
+          user_id: 1,
+          first_name: 1,
+          middle_name: 1,
+          family_name: 1,
+          suffix: 1,
+          name: {
+            $concat: [
+              "$first_name",
+              " ",
+              "$middle_name",
+              " ",
+              "$family_name",
+              " ",
+              "$suffix",
+            ],
+          },
+          email: 1,
+          mobile_no: 1,
+          address: 1,
+          birthdate: 1,
+          sex: 1,
+          is_worker: 1,
+          is_deactivated: 1,
+          is_verified: 1,
+          profile_pic: 1,
+          createdAt: 1,
+        },
+      },
+      {
+        $lookup: {
+          from: "myservices",
+          localField: "_id",
+          foreignField: "worker",
+          as: "myServicesData",
+          pipeline: [
+            {
+              $match: {
+                is_certified: "Accepted",
+              },
+            },
+            {
+              $project: {
+                service: 1,
+                is_certified: 1,
+              },
+            },
+            {
+              $lookup: {
+                from: "services",
+                localField: "service",
+                foreignField: "_id",
+                as: "servicesData",
+                pipeline: [
+                  {
+                    $project: {
+                      service_type: 1,
+                    },
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      },
+      {
+        $lookup: {
+          from: "verification",
+          localField: "_id",
+          foreignField: "worker",
+          as: "verificationData",
+          pipeline: [
+            {
+              $project: {
+                valid_id: 1,
+                nbi_brgy_clearance: 1,
+              },
+            },
+          ],
         },
       },
     ]);
-
     return res.status(200).json({ worker });
   } catch (err) {
     console.log(err.message);
