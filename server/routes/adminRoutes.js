@@ -14,6 +14,7 @@ import {
   rejectVerification,
   removeSpecificVerification,
   sortVerification,
+  filterVerification,
 } from "../controllers/AdminControllers/verificationController.js";
 
 import {
@@ -60,6 +61,7 @@ router.post("/accept-verification/:id", requireAuth, acceptVerification);
 router.post("/reject-verification/:id", requireAuth, rejectVerification);
 router.post("/remove-verification/:id", requireAuth, removeSpecificVerification);
 router.patch("/sort-verification", sortVerification);
+router.patch("/filter-verification", filterVerification);
 
 router.get("/get-certifications", requireAuth, getCertifications);
 router.get("/get-certification/:id", requireAuth, getCertification);
