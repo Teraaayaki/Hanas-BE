@@ -157,3 +157,168 @@ export const removeSpecificVerification = async (req, res) => {
   }
   
 };
+
+const sortAscendingHelper = async (sortValue) => {
+
+  const verifications = await Verification.aggregate([
+    {$match: {is_removed: false}},
+    {
+      $lookup: {
+        from: 'users', 
+        localField: 'user_id', 
+        foreignField: '_id', 
+        as: 'workerData', 
+        pipeline: [
+          {
+            $project: {
+              name: {
+                $concat: [
+                  "$first_name",
+                  " ",
+                  "$middle_name",
+                  " ",
+                  "$family_name",
+                  " ",
+                  "$suffix",
+                ],
+              },
+              createdAt: 1,
+              email: 1,
+              mobile_no: 1,
+              address: 1,
+              birthdate: 1,
+              is_verified: 1,
+              profile_pic: 1,
+              verify_status: 1,
+              sex: 1,
+            },
+          },
+        ]
+      },
+    },
+    {$sort: {[sortValue]: 1}},
+
+  ]);
+
+  return Promise.all(verifications);
+}
+
+export const sortVerification = async (req, res) => {
+
+  const choice = req.body.choice;
+  switch (choice) {
+    case 'name':
+      try{
+      
+        const verifications = await sortAscendingHelper('workerData.name');
+  
+        return res.status(200).json({ verifications });
+    
+      } catch( error ){
+        console.log(error);
+      }
+
+      break;
+
+    case 'date':
+      try{
+        const verifications = await sortAscendingHelper('workerData.createdAt');
+  
+        return res.status(200).json({ verifications });
+      } catch(error){
+        console.log(error);
+      }
+
+      break;
+
+    default:
+      break;
+  }
+};
+
+const verificationFilterHelper = async (filterValue) => {
+
+  const verifications = await Verification.aggregate([
+    {$match: {verify_status: filterValue}},
+    {
+      $lookup: {
+        from: 'users', 
+        localField: 'user_id', 
+        foreignField: '_id', 
+        as: 'workerData', 
+        pipeline: [
+          {
+            $project: {
+              name: {
+                $concat: [
+                  "$first_name",
+                  " ",
+                  "$middle_name",
+                  " ",
+                  "$family_name",
+                  " ",
+                  "$suffix",
+                ],
+              },
+              createdAt: 1,
+              email: 1,
+              mobile_no: 1,
+              address: 1,
+              birthdate: 1,
+              is_verified: 1,
+              profile_pic: 1,
+              verify_status: 1,
+              sex: 1,
+            },
+          }
+        ]
+      }
+    }
+  ]);
+
+  return Promise.all(verifications);
+}
+
+export const filterVerification = async (req, res) => {
+
+  const choice = req.body.choice;
+  
+  switch (choice) {
+    case 'Pending':
+      try{
+      
+        const verifications = await verificationFilterHelper('Pending');
+        
+        return res.status(200).json({ verifications });
+    
+      } catch( error ){
+        console.log(error);
+      }
+
+      break;
+
+    case 'Accepted':
+      try{
+        const verifications = await verificationFilterHelper('Accepted');
+  
+        return res.status(200).json({ verifications });
+      } catch(error){
+        console.log(error);
+      }
+
+      break;
+    case 'Rejected':
+      try{
+        const verifications = await verificationFilterHelper('Rejected');
+  
+        return res.status(200).json({ verifications });
+      } catch(error){
+        console.log(error);
+      }
+
+      break;
+
+    default:
+      break;
+  }
+};
