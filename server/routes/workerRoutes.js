@@ -27,9 +27,13 @@ import {
 
 import { getAcceptedBookings } from "../controllers/WorkerControllers/scheduleController.js";
 import { getTransactions } from "../controllers/WorkerControllers/transactionController.js";
+import { getAchievements } from "../controllers/WorkerControllers/achievementController.js";
 
 // Worker Routes
 router.get("/get-feedback", requireAuth, getFeedback);
+
+// Achievement Routes
+router.get("/get-achievements", requireAuth, getAchievements);
 
 // Services Routes
 router.get("/get-services", requireAuth, getServices);
