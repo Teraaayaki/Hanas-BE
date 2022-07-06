@@ -235,3 +235,135 @@ export const activateWorker = async (req, res) => {
     console.log(err.message);
   }
 };
+
+const sortAscendingHelper = async (sortValue) => {
+  const workerList = await User.aggregate([
+    {
+      $match: {
+        is_verified: true,
+        is_worker: true,
+      },
+    },
+    {
+      $project: {
+        user_id: 1,
+        profile_pic: 1,
+        name: {
+          $concat: [
+            "$first_name",
+            " ",
+            "$middle_name",
+            " ",
+            "$family_name",
+            " ",
+            "$suffix",
+          ],
+        },
+        address: 1,
+        is_verified: 1,
+        is_deactivated: 1,
+        is_worker: 1,
+        createdAt: 1,
+      },
+    },
+    {
+      $lookup: {
+        from: "verifications",
+        localField: "_id",
+        foreignField: "user_id",
+        as: "verificationData",
+        pipeline: [
+          {
+            $match: {
+              verify_status: "Accepted",
+            },
+          },
+          {
+            $project: {
+              verify_status: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $lookup: {
+        from: "myservices",
+        localField: "_id",
+        foreignField: "worker",
+        as: "myServicesData",
+        pipeline: [
+          {
+            $match: {
+              is_certified: "Accepted",
+            },
+          },
+          {
+            $project: {
+              service: 1,
+              is_certified: 1,
+            },
+          },
+          {
+            $lookup: {
+              from: "services",
+              localField: "service",
+              foreignField: "_id",
+              as: "servicesData",
+              pipeline: [
+                {
+                  $project: {
+                    service_type: 1,
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      $sort : {[sortValue]: 1}
+    }
+  ]);
+};
+
+export const sortWorker = async (req, res) => {
+  const choice = req.body.choice;
+  switch (choice) {
+    case 'name':
+      try{
+        
+        const workerList = await sortAscendingHelper('name');
+
+        return res.status(200).json({ workerList});
+    
+      } catch( error ){
+        console.log(error);
+      }
+
+      break;
+
+    case 'date':
+      try{
+        const workerList = await sortAscendingHelper('createdAt');
+  
+        return res.status(200).json({ workerList });
+      } catch(error){
+        console.log(error);
+      }
+
+    break;
+
+    default:
+      break;
+  }
+};
+
+const filterHelper = async (filterValue) => {
+
+};
+
+export const filterWorker = async (req, res) => {
+
+};
