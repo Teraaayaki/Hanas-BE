@@ -11,7 +11,7 @@ export const addToAchievement = async (req, res) => {
 
     res.status(200).json({ message: "Successfully claimed achievement" });
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     return res.status(422).send({ Error: "Error inserting data" });
   }
 };

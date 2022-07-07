@@ -5,9 +5,9 @@ const achievementModel = mongoose.Schema({
   first_item_claimed: [String],
   second_item_claimed: [String],
   third_item_claimed: [String],
-  four_item_claimed: [String],
-  five_item_claimed: [String],
-  six_item_claimed: [String],
+  fourth_item_claimed: [String],
+  fifth_item_claimed: [String],
+  sixth_item_claimed: [String],
 });
 
 export default mongoose.model("Achievement", achievementModel);
