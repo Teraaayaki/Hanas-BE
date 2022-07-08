@@ -228,6 +228,39 @@ const filterHelper = async (filterValue) => {
   return Promise.all(client);
 };
 
+const filterDefault = async () => {
+  const client = await User.aggregate([
+    {
+      $match: {
+        is_worker: false,
+      },
+    },
+    {
+      $project: {
+        user_id: 1,
+        profile_pic: 1,
+        name: {
+          $concat: [
+            "$first_name",
+            " ",
+            "$middle_name",
+            " ",
+            "$family_name",
+            " ",
+            "$suffix",
+          ],
+        },
+        address: 1,
+        is_worker: 1,
+        is_deactivated: 1,
+        createdAt: 1,
+      },
+    },
+  ]);
+
+  return Promise.all(client);
+};
+
 export const filterClient = async (req, res) => {
 
   const choice = req.body.choice;
@@ -248,6 +281,17 @@ export const filterClient = async (req, res) => {
     case 'deactivated':
       try{
         const clientList = await filterHelper(true);
+  
+        return res.status(200).json({ clientList });
+      } catch(error){
+        console.log(error);
+      }
+
+    break;
+  
+    case 'all':
+      try{
+        const clientList = await filterDefault();
   
         return res.status(200).json({ clientList });
       } catch(error){
