@@ -12,7 +12,7 @@ import {
   getSpecificVerification,
   acceptVerification,
   rejectVerification,
-  removeSpecificVerification
+  removeSpecificVerification,
 } from "../controllers/AdminControllers/verificationController.js";
 
 import {
@@ -42,7 +42,7 @@ import {
 } from "../controllers/AdminControllers/transactionController.js";
 
 import {
-  getReports,
+  getReportList,
   getReport,
   resolveReport,
   rejectReport,
@@ -56,7 +56,11 @@ router.get("/get-verifications", requireAuth, getVerifications);
 router.get("/get-verification/:id", requireAuth, getSpecificVerification);
 router.post("/accept-verification/:id", requireAuth, acceptVerification);
 router.post("/reject-verification/:id", requireAuth, rejectVerification);
-router.post("/remove-verification/:id", requireAuth, removeSpecificVerification);
+router.post(
+  "/remove-verification/:id",
+  requireAuth,
+  removeSpecificVerification
+);
 
 router.get("/get-certifications", requireAuth, getCertifications);
 router.get("/get-certification/:id", requireAuth, getCertification);
@@ -76,8 +80,8 @@ router.get("/deactivate-worker/:id", deactivateWorker);
 router.get("/get-transactions", getTransactions);
 router.get("/get-transaction/:id", getSpecificTransaction);
 
-router.get("/get-reports", requireAuth, getReports);
-router.get("/get-report/:id", requireAuth, getReport);
+router.get("/get-report-list", getReportList);
+router.get("/get-report/:id", getReport);
 router.get("/resolve-report/:id", requireAuth, resolveReport);
 router.get("/reject-report/:id", requireAuth, rejectReport);
 

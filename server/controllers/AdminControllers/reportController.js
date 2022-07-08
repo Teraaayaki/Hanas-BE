@@ -2,8 +2,8 @@ import Report from "../../models/reportModel.js";
 
 import { ObjectId } from "mongodb";
 
-export const getReports = async (req, res) => {
-  const reports = await Report.aggregate([
+export const getReportList = async (req, res) => {
+  const reportList = await Report.aggregate([
     {
       $lookup: {
         from: "users",
@@ -18,6 +18,7 @@ export const getReports = async (req, res) => {
               middle_name: 1,
               family_name: 1,
               suffix: 1,
+              is_worker: 1,
             },
           },
         ],
@@ -37,19 +38,25 @@ export const getReports = async (req, res) => {
               middle_name: 1,
               family_name: 1,
               suffix: 1,
+              is_worker: 1,
             },
           },
         ],
       },
     },
+    {
+      $project: {
+        __v: 0,
+      },
+    },
   ]);
 
-  return res.status(200).json({ reports });
+  return res.status(200).json({ reportList });
 };
 
 export const getReport = async (req, res) => {
   try {
-    const reports = await Report.aggregate([
+    const report = await Report.aggregate([
       {
         $match: {
           _id: new ObjectId(req.params.id),
@@ -74,6 +81,7 @@ export const getReport = async (req, res) => {
                 middle_name: 1,
                 family_name: 1,
                 suffix: 1,
+                is_worker: 1,
               },
             },
           ],
@@ -93,6 +101,7 @@ export const getReport = async (req, res) => {
                 middle_name: 1,
                 family_name: 1,
                 suffix: 1,
+                is_worker: 1,
               },
             },
           ],
@@ -100,7 +109,7 @@ export const getReport = async (req, res) => {
       },
     ]);
 
-    return res.status(200).json({ reports });
+    return res.status(200).json({ report });
   } catch (err) {
     console.log(err.message);
   }
