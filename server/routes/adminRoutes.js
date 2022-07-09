@@ -32,6 +32,8 @@ import {
   getClient,
   activateClient,
   deactivateClient,
+  sortClient,
+  filterClient,
 } from "../controllers/AdminControllers/clientController.js";
 
 import {
@@ -39,6 +41,8 @@ import {
   getWorker,
   activateWorker,
   deactivateWorker,
+  sortWorker,
+  filterWorker,
 } from "../controllers/AdminControllers/workerController.js";
 
 import {
@@ -75,11 +79,15 @@ router.get("/get-client-list", getClientList);
 router.get("/get-client/:id", getClient);
 router.get("/activate-client/:id", activateClient);
 router.get("/deactivate-client/:id", deactivateClient);
+router.patch("/sort-client", sortClient);
+router.patch("/filter-client", filterClient);
 
 router.get("/get-worker-list", getWorkerList);
 router.get("/get-worker/:id", getWorker);
 router.get("/activate-worker/:id", activateWorker);
 router.get("/deactivate-worker/:id", deactivateWorker);
+router.patch("/sort-worker", sortWorker);
+router.patch("/filter-worker", filterWorker);
 
 router.get("/get-transactions", getTransactions);
 router.get("/get-transaction/:id", getSpecificTransaction);
