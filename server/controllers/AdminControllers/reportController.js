@@ -119,7 +119,7 @@ export const resolveReport = async (req, res) => {
   try {
     Report.findOneAndUpdate(
       { _id: req.params.id },
-      { resolved: "Resolved" },
+      { status: "Resolved" },
       { new: true },
       (error, updatedRecord) => {
         if (error) {
@@ -138,7 +138,26 @@ export const rejectReport = async (req, res) => {
   try {
     Report.findOneAndUpdate(
       { _id: req.params.id },
-      { resolved: "Rejected" },
+      { status: "Rejected" },
+      { new: true },
+      (error, updatedRecord) => {
+        if (error) {
+          console.log(error);
+        } else {
+          return res.status(200).json({ updatedRecord });
+        }
+      }
+    ).select({ __v: 0 });
+  } catch (err) {
+    console.log(err.message);
+  }
+};
+
+export const setPendingReport = async (req, res) => {
+  try {
+    Report.findOneAndUpdate(
+      { _id: req.params.id },
+      { status: "Pending" },
       { new: true },
       (error, updatedRecord) => {
         if (error) {

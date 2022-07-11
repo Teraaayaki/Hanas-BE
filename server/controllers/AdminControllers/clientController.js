@@ -1,4 +1,5 @@
 import User from "../../models/userModel.js";
+import nodemailer from "nodemailer";
 
 import { ObjectId } from "mongodb";
 
@@ -91,6 +92,29 @@ export const deactivateClient = async (req, res) => {
         if (error) {
           console.log(error);
         } else {
+          const nodemailer = require("nodemailer");
+          let fullname =
+            updatedRecord.first_name +
+            " " +
+            updatedRecord.middle_name +
+            " " +
+            updatedRecord.family_name;
+          if (updatedRecord.suffix) {
+            fullname.concat(" " + updatedRecord.suffix);
+          }
+          fullname.concat(",<br><br>");
+
+          const mailData = {
+            from: "hanas.app.services@gmail.com",
+            to: updatedRecord.email,
+            subject: "Account Deactivation",
+            text: "Your Hanas Account has beed deactivated.",
+            html:
+              "Good Day" +
+              fullname +
+              "This email is composed to notify you that your account has been deactivated. If you think this is a mistake, please do not hesitate to contact us.<br/><br/>",
+          };
+
           return res.status(200).json({ updatedRecord });
         }
       }

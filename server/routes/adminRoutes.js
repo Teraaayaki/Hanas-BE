@@ -46,6 +46,7 @@ import {
   getReport,
   resolveReport,
   rejectReport,
+  setPendingReport,
 } from "../controllers/AdminControllers/reportController.js";
 
 router.get("/count-verifications", requireAuth, countPendingVerifications);
@@ -82,7 +83,8 @@ router.get("/get-transaction/:id", getSpecificTransaction);
 
 router.get("/get-report-list", getReportList);
 router.get("/get-report/:id", getReport);
-router.get("/resolve-report/:id", requireAuth, resolveReport);
-router.get("/reject-report/:id", requireAuth, rejectReport);
+router.get("/resolve-report/:id", resolveReport);
+router.get("/reject-report/:id", rejectReport);
+router.get("/set-pending-report/:id", setPendingReport);
 
 export default router;

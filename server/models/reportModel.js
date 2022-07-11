@@ -21,7 +21,7 @@ const reportModel = mongoose.Schema(
       type: String,
       required: true,
     },
-    resolved: {
+    status: {
       type: String,
       enum: {
         values: ["Pending", "Resolved", "Rejected"],
