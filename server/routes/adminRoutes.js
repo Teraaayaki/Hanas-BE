@@ -6,6 +6,9 @@ import {
   countPendingVerifications,
   countUsers,
   countPendingReports,
+  countIncome,
+  percentageOfVerified,
+  percentageOnTypeOfUsers,
 } from "../controllers/AdminControllers/overviewController.js";
 import {
   getVerifications,
@@ -13,6 +16,8 @@ import {
   acceptVerification,
   rejectVerification,
   removeSpecificVerification,
+  sortVerification,
+  filterVerification,
 } from "../controllers/AdminControllers/verificationController.js";
 
 import {
@@ -27,6 +32,8 @@ import {
   getClient,
   activateClient,
   deactivateClient,
+  sortClient,
+  filterClient,
 } from "../controllers/AdminControllers/clientController.js";
 
 import {
@@ -34,11 +41,14 @@ import {
   getWorker,
   activateWorker,
   deactivateWorker,
+  sortWorker,
+  filterWorker,
 } from "../controllers/AdminControllers/workerController.js";
 
 import {
   getTransactions,
   getSpecificTransaction,
+  sortTransaction,
 } from "../controllers/AdminControllers/transactionController.js";
 
 import {
@@ -49,9 +59,11 @@ import {
   setPendingReport,
 } from "../controllers/AdminControllers/reportController.js";
 
-router.get("/count-verifications", requireAuth, countPendingVerifications);
-router.get("/count-users", requireAuth, countUsers);
-router.get("/count-reports", requireAuth, countPendingReports);
+router.get("/count-verifications", countPendingVerifications);
+router.get("/count-users", countUsers);
+router.get("/count-reports", countPendingReports);
+router.get("/get-verified", percentageOfVerified);
+router.get("/get-type-of-users", percentageOnTypeOfUsers);
 
 router.get("/get-verifications", requireAuth, getVerifications);
 router.get("/get-verification/:id", requireAuth, getSpecificVerification);
@@ -62,6 +74,8 @@ router.post(
   requireAuth,
   removeSpecificVerification
 );
+router.patch("/sort-verification", sortVerification);
+router.patch("/filter-verification", filterVerification);
 
 router.get("/get-certifications", requireAuth, getCertifications);
 router.get("/get-certification/:id", requireAuth, getCertification);
@@ -72,19 +86,25 @@ router.get("/get-client-list", getClientList);
 router.get("/get-client/:id", getClient);
 router.get("/activate-client/:id", activateClient);
 router.get("/deactivate-client/:id", deactivateClient);
+router.patch("/sort-client", sortClient);
+router.patch("/filter-client", filterClient);
 
 router.get("/get-worker-list", getWorkerList);
 router.get("/get-worker/:id", getWorker);
 router.get("/activate-worker/:id", activateWorker);
 router.get("/deactivate-worker/:id", deactivateWorker);
+router.patch("/sort-worker", sortWorker);
+router.patch("/filter-worker", filterWorker);
 
 router.get("/get-transactions", getTransactions);
 router.get("/get-transaction/:id", getSpecificTransaction);
+router.patch("/sort-transaction", sortTransaction);
 
 router.get("/get-report-list", getReportList);
 router.get("/get-report/:id", getReport);
 router.get("/resolve-report/:id", resolveReport);
 router.get("/reject-report/:id", rejectReport);
 router.get("/set-pending-report/:id", setPendingReport);
+router.get("/get-income", countIncome);
 
 export default router;
