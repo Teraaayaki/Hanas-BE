@@ -235,7 +235,7 @@ export const deactivateWorker = async (req, res) => {
             html:
               "Good Day " +
               fullname +
-              ",<br>This is an automated email composed to notify you that your account has been deactivated. If you think this is a mistake, please do not hesitate to contact us.<br/>",
+              ", <br><br/><br>We would like to notify you that your account has been deactivated.If you think this is a mistake, please do not hesitate to contact us.<br/>",
           };
 
           transporter.sendMail(mailData, (error) => {
@@ -299,7 +299,7 @@ export const activateWorker = async (req, res) => {
             html:
               "Good Day " +
               fullname +
-              ", <br> This is an automated email composed to notify you that your account has been reactivated. If you have any concerns, please do not hesitate to contact us.<br/>",
+              ", <br><br/><br>We would like to notify you that your account has been reactivated. If you have any concerns, please do not hesitate to contact us.<br/>",
           };
 
           transporter.sendMail(mailData, (error) => {
