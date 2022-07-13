@@ -124,3 +124,183 @@ export const activateClient = async (req, res) => {
     console.log(err.message);
   }
 };
+
+const sortAscendingHelper = async (sortValue) => {
+  
+  const client = await User.aggregate([
+    {
+      $match: {
+        is_worker: false,
+      },
+    },
+    {
+      $project: {
+        user_id: 1,
+        profile_pic: 1,
+        name: {
+          $concat: [
+            "$first_name",
+            " ",
+            "$middle_name",
+            " ",
+            "$family_name",
+            " ",
+            "$suffix",
+          ],
+        },
+        address: 1,
+        is_worker: 1,
+        is_deactivated: 1,
+        createdAt: 1,
+      },
+    },
+    {$sort: {[sortValue]: 1}},
+  ]);
+
+  return Promise.all(client);
+};
+
+export const sortClient = async (req, res) => {
+  
+  const choice = req.body.choice;
+  switch (choice) {
+    case 'name':
+      try{
+        
+        const clientList = await sortAscendingHelper('name');
+
+        return res.status(200).json({ clientList});
+    
+      } catch( error ){
+        console.log(error);
+      }
+
+      break;
+
+    case 'date':
+      try{
+        const clientList = await sortAscendingHelper('createdAt');
+  
+        return res.status(200).json({ clientList });
+      } catch(error){
+        console.log(error);
+      }
+
+    break;
+
+    default:
+      break;
+  }
+
+};
+
+const filterHelper = async (filterValue) => {
+  const client = await User.aggregate([
+    {
+      $match: {
+        is_worker: false,
+        is_deactivated: filterValue,
+      },
+    },
+    {
+      $project: {
+        user_id: 1,
+        profile_pic: 1,
+        name: {
+          $concat: [
+            "$first_name",
+            " ",
+            "$middle_name",
+            " ",
+            "$family_name",
+            " ",
+            "$suffix",
+          ],
+        },
+        address: 1,
+        is_worker: 1,
+        is_deactivated: 1,
+        createdAt: 1,
+      },
+    },
+  ]);
+
+  return Promise.all(client);
+};
+
+const filterDefault = async () => {
+  const client = await User.aggregate([
+    {
+      $match: {
+        is_worker: false,
+      },
+    },
+    {
+      $project: {
+        user_id: 1,
+        profile_pic: 1,
+        name: {
+          $concat: [
+            "$first_name",
+            " ",
+            "$middle_name",
+            " ",
+            "$family_name",
+            " ",
+            "$suffix",
+          ],
+        },
+        address: 1,
+        is_worker: 1,
+        is_deactivated: 1,
+        createdAt: 1,
+      },
+    },
+  ]);
+
+  return Promise.all(client);
+};
+
+export const filterClient = async (req, res) => {
+
+  const choice = req.body.choice;
+  switch (choice) {
+    case 'active':
+      try{
+        
+        const clientList = await filterHelper(false);
+
+        return res.status(200).json({ clientList});
+    
+      } catch( error ){
+        console.log(error);
+      }
+
+      break;
+
+    case 'deactivated':
+      try{
+        const clientList = await filterHelper(true);
+  
+        return res.status(200).json({ clientList });
+      } catch(error){
+        console.log(error);
+      }
+
+    break;
+  
+    case 'all':
+      try{
+        const clientList = await filterDefault();
+  
+        return res.status(200).json({ clientList });
+      } catch(error){
+        console.log(error);
+      }
+
+    break;
+
+    default:
+      break;
+  }
+};
