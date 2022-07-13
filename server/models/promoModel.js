@@ -1,36 +1,31 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const promoModel = mongoose.Schema(
   {
-    promo_id: {
-      type: String,
-      unique: true,
-      required: true
-    },
     evenDesc: {
       type: String,
-      required: true
+      required: true,
     },
     salesRequired: {
       type: Number,
-      required: true
+      required: true,
     },
     rewardDesc: {
       type: String,
-      required: true
+      required: true,
     },
     start_dateTime: {
       type: Date,
-      required: true
+      required: true,
     },
     end_dateTime: {
       type: Date,
-      required: true
-    }
+      required: true,
+    },
   },
   {
-    timestamps: true
+    timestamps: true,
   }
 );
 
-export default mongoose.model('Promo', promoModel);
+export default mongoose.model("Promo", promoModel);
