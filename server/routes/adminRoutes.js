@@ -21,7 +21,7 @@ import {
 } from "../controllers/AdminControllers/verificationController.js";
 
 import {
-  getCertifications,
+  getCertificationList,
   getCertification,
   acceptCertification,
   rejectCertification,
@@ -76,7 +76,7 @@ router.post(
 router.patch("/sort-verification", sortVerification);
 router.patch("/filter-verification", filterVerification);
 
-router.get("/get-certifications", requireAuth, getCertifications);
+router.get("/get-certification-list", requireAuth, getCertificationList);
 router.get("/get-certification/:id", requireAuth, getCertification);
 router.get("/accept-certification/:id", requireAuth, acceptCertification);
 router.get("/reject-certification/:id", requireAuth, rejectCertification);

@@ -2,8 +2,8 @@ import MyService from "../../models/myServiceModel.js";
 
 import { ObjectId } from "mongodb";
 
-export const getCertifications = async (req, res) => {
-  const certifications = await MyService.aggregate([
+export const getCertificationList = async (req, res) => {
+  const certificationList = await MyService.aggregate([
     {
       $project: {
         _id: 1,
@@ -56,7 +56,7 @@ export const getCertifications = async (req, res) => {
     },
   ]);
 
-  return res.status(200).json({ certifications });
+  return res.status(200).json({ certificationList });
 };
 
 export const getCertification = async (req, res) => {
