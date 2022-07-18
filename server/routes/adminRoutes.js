@@ -61,7 +61,8 @@ import {
   filterReport,
 } from "../controllers/AdminControllers/reportController.js";
 
-/*OVERVIEW*/
+import { addToAchievement } from "../controllers/AdminControllers/achievementController.js";
+
 router.get("/count-verifications", countPendingVerifications);
 router.get("/count-users", countUsers);
 router.get("/count-reports", countPendingReports);
@@ -73,7 +74,11 @@ router.get("/get-verifications", requireAuth, getVerifications);
 router.get("/get-verification/:id", requireAuth, getSpecificVerification);
 router.post("/accept-verification/:id", requireAuth, acceptVerification);
 router.post("/reject-verification/:id", requireAuth, rejectVerification);
-router.post("/remove-verification/:id", requireAuth, removeSpecificVerification);
+router.post(
+  "/remove-verification/:id",
+  requireAuth,
+  removeSpecificVerification
+);
 router.patch("/sort-verification", sortVerification);
 router.patch("/filter-verification", filterVerification);
 
@@ -113,5 +118,7 @@ router.get("/reject-report/:id", rejectReport);
 router.get("/set-pending-report/:id", reopenReport);
 router.patch("/filter-report", filterReport);
 router.patch("/sort-report", sortReport);
+
+router.post("/add-to-achievement", addToAchievement);
 
 export default router;
