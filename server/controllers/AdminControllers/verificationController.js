@@ -56,33 +56,53 @@ export const getVerifications = async (req, res) => {
 
 export const getSpecificVerification = async (req, res) => {
   try {
-    const specific_verification = await User.aggregate([
+    const specific_verification = await Verification.aggregate([
       {
         $match: {
-          _id: new ObjectId(req.params.id),
-          is_verified: false,
+          user_id: new ObjectId(req.params.id),
+          is_removed: false,
         },
       },
       {
         $lookup: {
-          from: "verifications",
-          localField: "_id",
-          foreignField: "user_id",
-          as: "verificationData",
+          from: "users",
+          localField: "user_id",
+          foreignField: "_id",
+          as: "workerData",
+          pipeline: [
+            {
+              $project: {
+                name: {
+                  $concat: [
+                    "$first_name",
+                    " ",
+                    "$middle_name",
+                    " ",
+                    "$family_name",
+                    " ",
+                    "$suffix",
+                  ],
+                },
+                createdAt: 1,
+                email: 1,
+                mobile_no: 1,
+                address: 1,
+                birthdate: 1,
+                is_verified: 1,
+                profile_pic: 1,
+                sex: 1,
+              },
+            }
+          ]
         }
       },
       {
         $project: {
+          workerData: 1,
+          verify_status: 1,
           createdAt: 1,
-          email: 1,
-          mobile_no: 1,
-          address: 1,
-          birthdate: 1,
-          is_verified: 1,
-          profile_pic: 1,
-          verify_status: 1,
-          sex: 1,
-          verify_status: 1,
+          valid_id: 1,
+          nbi_brgy_clearance: 1,
         },
       },
     ]);
