@@ -115,8 +115,6 @@ export const getSpecificVerification = async (req, res) => {
 
 export const acceptVerification = async (req, res) => {
 
-  console.log(req.params);
-
   try {
     Verification.findOneAndUpdate(
       { user_id: req.params.id },
@@ -178,6 +176,47 @@ export const removeSpecificVerification = async (req, res) => {
   
 };
 
+const verificationDefault = async (req, res) => {
+  const verifications = await Verification.aggregate([
+    {
+      $lookup: {
+        from: 'users', 
+        localField: 'user_id', 
+        foreignField: '_id', 
+        as: 'workerData', 
+        pipeline: [
+          {
+            $project: {
+              name: {
+                $concat: [
+                  "$first_name",
+                  " ",
+                  "$middle_name",
+                  " ",
+                  "$family_name",
+                  " ",
+                  "$suffix",
+                ],
+              },
+              createdAt: 1,
+              email: 1,
+              mobile_no: 1,
+              address: 1,
+              birthdate: 1,
+              is_verified: 1,
+              profile_pic: 1,
+              verify_status: 1,
+              sex: 1,
+            },
+          }
+        ]
+      }
+    }
+  ]);
+
+  return Promise.all(verifications);
+};
+
 const sortAscendingHelper = async (sortValue) => {
 
   const verifications = await Verification.aggregate([
@@ -227,6 +266,18 @@ export const sortVerification = async (req, res) => {
 
   const choice = req.body.choice;
   switch (choice) {
+    case 'all':
+      try{
+      
+        const verifications = await verificationDefault();
+  
+        return res.status(200).json({ verifications });
+    
+      } catch( error ){
+        console.log(error);
+      }
+
+      break;
     case 'name':
       try{
       
@@ -304,6 +355,18 @@ export const filterVerification = async (req, res) => {
   const choice = req.body.choice;
   
   switch (choice) {
+    case 'all':
+      try{
+      
+        const verifications = await verificationDefault();
+        
+        return res.status(200).json({ verifications });
+    
+      } catch( error ){
+        console.log(error);
+      }
+
+      break;
     case 'Pending':
       try{
       
