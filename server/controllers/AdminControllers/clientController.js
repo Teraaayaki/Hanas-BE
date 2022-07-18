@@ -125,6 +125,39 @@ export const activateClient = async (req, res) => {
   }
 };
 
+const clientDefault = async () => {
+  const client = await User.aggregate([
+    {
+      $match: {
+        is_worker: false,
+      },
+    },
+    {
+      $project: {
+        user_id: 1,
+        profile_pic: 1,
+        name: {
+          $concat: [
+            "$first_name",
+            " ",
+            "$middle_name",
+            " ",
+            "$family_name",
+            " ",
+            "$suffix",
+          ],
+        },
+        address: 1,
+        is_worker: 1,
+        is_deactivated: 1,
+        createdAt: 1,
+      },
+    },
+  ]);
+
+  return Promise.all(client);
+};
+
 const sortAscendingHelper = async (sortValue) => {
   
   const client = await User.aggregate([
@@ -164,6 +197,18 @@ export const sortClient = async (req, res) => {
   
   const choice = req.body.choice;
   switch (choice) {
+    case 'all':
+      try{
+        
+        const clientList = await clientDefault('all');
+
+        return res.status(200).json({ clientList});
+    
+      } catch( error ){
+        console.log(error);
+      }
+
+      break;
     case 'name':
       try{
         
@@ -228,38 +273,6 @@ const filterHelper = async (filterValue) => {
   return Promise.all(client);
 };
 
-const filterDefault = async () => {
-  const client = await User.aggregate([
-    {
-      $match: {
-        is_worker: false,
-      },
-    },
-    {
-      $project: {
-        user_id: 1,
-        profile_pic: 1,
-        name: {
-          $concat: [
-            "$first_name",
-            " ",
-            "$middle_name",
-            " ",
-            "$family_name",
-            " ",
-            "$suffix",
-          ],
-        },
-        address: 1,
-        is_worker: 1,
-        is_deactivated: 1,
-        createdAt: 1,
-      },
-    },
-  ]);
-
-  return Promise.all(client);
-};
 
 export const filterClient = async (req, res) => {
 
@@ -291,7 +304,7 @@ export const filterClient = async (req, res) => {
   
     case 'all':
       try{
-        const clientList = await filterDefault();
+        const clientList = await clientDefault();
   
         return res.status(200).json({ clientList });
       } catch(error){
