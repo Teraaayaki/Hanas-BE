@@ -36,7 +36,7 @@ export const addService = async (req, res) => {
   if (!req.body) {
     return res.status(422).send({ error: "Error adding service" });
   }
-  console.log(req.body);
+  // console.log(req.body);
   let service = await Services.findOne({ service_type: req.body.service });
   let user_id = req.user._id;
   let uuid = v4();
@@ -65,7 +65,7 @@ export const editServices = async (req, res) => {
   if (!req.body) {
     return res.status(422).send({ error: "Error adding service" });
   }
-  console.log(req.body);
+  // console.log(req.body);
   // Create myservice object
   const myService = {
     description: req.body.description,
@@ -79,13 +79,13 @@ export const editServices = async (req, res) => {
     await MyService.updateOne({ _id: req.body.service_id }, { ...myService });
     return res.status(200).json({ success: true });
   } catch (err) {
-    console.log(err);
+    console.log("Edit Services Error");
     return res.status(422).send({ error: "Error adding service" });
   }
 };
 
 export const uploadImageService = async (req, res) => {
-  console.log(req.file);
+  // console.log(req.file);
   if (!req.file) {
     return res.status(422).send({ error: "Error uploading file" });
   }
@@ -111,7 +111,7 @@ export const uploadImageService = async (req, res) => {
 };
 
 export const uploadImageCertificate = async (req, res) => {
-  console.log(req.file);
+  // console.log(req.file);
   if (!req.file) {
     return res.status(422).send({ error: "Error uploading file" });
   }
@@ -139,7 +139,7 @@ export const uploadImageCertificate = async (req, res) => {
 export const deleteImageService = async (req, res) => {
   if (!req.body.fileName) {
     console.log("No filename");
-    console.log(req.body.fileName);
+    // console.log(req.body.fileName);
     return res.status(422).send({ error: "Error deleting file" });
   }
   let fileName = req.body.fileName;
@@ -157,7 +157,7 @@ export const deleteImageService = async (req, res) => {
 export const deleteImageCertificate = async (req, res) => {
   if (!req.body.fileName) {
     console.log("No filename");
-    console.log(req.body.fileName);
+    // console.log(req.body.fileName);
     return res.status(422).send({ error: "Error deleting file" });
   }
   let fileName = req.body.fileName;
