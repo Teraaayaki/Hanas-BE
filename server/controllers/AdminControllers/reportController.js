@@ -18,6 +18,7 @@ export const getReports = async (req, res) => {
               middle_name: 1,
               family_name: 1,
               suffix: 1,
+              is_worker: 1,
             },
           },
         ],
@@ -37,6 +38,7 @@ export const getReports = async (req, res) => {
               middle_name: 1,
               family_name: 1,
               suffix: 1,
+              is_worker: 1,
             },
           },
         ],
@@ -74,6 +76,7 @@ export const getReport = async (req, res) => {
                 middle_name: 1,
                 family_name: 1,
                 suffix: 1,
+                is_worker: 1,
               },
             },
           ],
@@ -93,6 +96,7 @@ export const getReport = async (req, res) => {
                 middle_name: 1,
                 family_name: 1,
                 suffix: 1,
+                is_worker: 1,
               },
             },
           ],
@@ -161,7 +165,6 @@ export const reopenReport = async (req, res) => {
 };
 
 const sortAscendingHelper = async (sortValue) => {
-
   const reportList = await Report.aggregate([
     {
       $lookup: {
@@ -201,7 +204,7 @@ const sortAscendingHelper = async (sortValue) => {
         ],
       },
     },
-    {$sort: {[sortValue]: 1}},
+    { $sort: { [sortValue]: 1 } },
   ]);
 
   return Promise.all(reportList);
@@ -253,39 +256,36 @@ const reportDefault = async () => {
 };
 
 export const sortReport = async (req, res) => {
-
   const choice = req.body.choice;
   switch (choice) {
-    case 'all':
-      try{
+    case "all":
+      try {
         const reportList = await reportDefault();
-  
+
         return res.status(200).json({ reportList });
-      }catch( error ){
+      } catch (error) {
         console.log(error);
       }
 
       break;
 
-    case 'name':
-      try{
-      
-        const reportList = await sortAscendingHelper('reporterData.first_name');
-  
+    case "name":
+      try {
+        const reportList = await sortAscendingHelper("reporterData.first_name");
+
         return res.status(200).json({ reportList });
-    
-      } catch( error ){
+      } catch (error) {
         console.log(error);
       }
 
       break;
 
-    case 'date':
-      try{
-        const reportList = await sortAscendingHelper('createdAt');
-  
+    case "date":
+      try {
+        const reportList = await sortAscendingHelper("createdAt");
+
         return res.status(200).json({ reportList });
-      } catch(error){
+      } catch (error) {
         console.log(error);
       }
 
@@ -294,11 +294,11 @@ export const sortReport = async (req, res) => {
     default:
       break;
   }
-}
+};
 
 const reportFilterHelper = async (filterValue) => {
   const reportList = await Report.aggregate([
-    {$match: {status: filterValue}},
+    { $match: { status: filterValue } },
     {
       $lookup: {
         from: "users",
@@ -343,49 +343,46 @@ const reportFilterHelper = async (filterValue) => {
 };
 
 export const filterReport = async (req, res) => {
-
   const choice = req.body.choice;
   switch (choice) {
-    case 'all':
-      try{
+    case "all":
+      try {
         const reportList = await reportDefault();
-  
-        return res.status(200).json({ reportList });
-      }catch( error ){
-        console.log(error);
-      }
 
-      break;
-      
-    case 'resolved':
-      try{
-      
-        const reportList = await reportFilterHelper('Resolved');
-  
         return res.status(200).json({ reportList });
-    
-      } catch( error ){
+      } catch (error) {
         console.log(error);
       }
 
       break;
 
-    case 'pending':
-      try{
-        const reportList = await reportFilterHelper('Pending');
-  
+    case "resolved":
+      try {
+        const reportList = await reportFilterHelper("Resolved");
+
         return res.status(200).json({ reportList });
-      } catch(error){
+      } catch (error) {
         console.log(error);
       }
 
       break;
-    case 'rejected':
-      try{
-        const reportList = await reportFilterHelper('Rejected');
-  
+
+    case "pending":
+      try {
+        const reportList = await reportFilterHelper("Pending");
+
         return res.status(200).json({ reportList });
-      } catch(error){
+      } catch (error) {
+        console.log(error);
+      }
+
+      break;
+    case "rejected":
+      try {
+        const reportList = await reportFilterHelper("Rejected");
+
+        return res.status(200).json({ reportList });
+      } catch (error) {
         console.log(error);
       }
 
@@ -394,4 +391,4 @@ export const filterReport = async (req, res) => {
     default:
       break;
   }
-}
+};
