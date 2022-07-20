@@ -1,4 +1,5 @@
 import User from "../../models/userModel.js";
+import nodemailer from "nodemailer";
 
 import { ObjectId } from "mongodb";
 
@@ -91,6 +92,48 @@ export const deactivateClient = async (req, res) => {
         if (error) {
           console.log(error);
         } else {
+          let fullname =
+            updatedRecord.first_name +
+            " " +
+            updatedRecord.middle_name +
+            " " +
+            updatedRecord.family_name;
+
+          if (updatedRecord.suffix) {
+            fullname.concat(" " + updatedRecord.suffix);
+          }
+
+          const transporter = nodemailer.createTransport({
+            port: 465,
+            host: "smtp.gmail.com",
+            auth: {
+              user: "hanas.app.services@gmail.com",
+              pass: process.env.NODE_EMAILER_PASS,
+            },
+            secure: true,
+            tls: {
+              // do not fail on invalid certs
+              rejectUnauthorized: false,
+            },
+          });
+
+          const mailData = {
+            from: "hanas.app.services@gmail.com",
+            to: updatedRecord.email,
+            subject: "Account Deactivation",
+            text: "Your Hanas Account has beed deactivated.",
+            html:
+              "Good Day " +
+              fullname +
+              ",<br><br/><br>We would like to notify you that your account has been deactivated. If you think this is a mistake, please do not hesitate to contact us.<br/>",
+          };
+
+          transporter.sendMail(mailData, (error) => {
+            if (error) {
+              return console.log("Send Mail " + error);
+            }
+          });
+
           return res.status(200).json({ updatedRecord });
         }
       }
@@ -113,6 +156,48 @@ export const activateClient = async (req, res) => {
         if (error) {
           console.log(error);
         } else {
+          let fullname =
+            updatedRecord.first_name +
+            " " +
+            updatedRecord.middle_name +
+            " " +
+            updatedRecord.family_name;
+
+          if (updatedRecord.suffix) {
+            fullname.concat(" " + updatedRecord.suffix);
+          }
+
+          const transporter = nodemailer.createTransport({
+            port: 465,
+            host: "smtp.gmail.com",
+            auth: {
+              user: "hanas.app.services@gmail.com",
+              pass: process.env.NODE_EMAILER_PASS,
+            },
+            secure: true,
+            tls: {
+              // do not fail on invalid certs
+              rejectUnauthorized: false,
+            },
+          });
+
+          const mailData = {
+            from: "hanas.app.services@gmail.com",
+            to: updatedRecord.email,
+            subject: "Account Reactivation",
+            text: "Your Hanas Account has beed reactivated.",
+            html:
+              "Good Day " +
+              fullname +
+              ", <br><br/><br> We would like to notify you that your account has been reactivated. If you have any concerns, please do not hesitate to contact us.<br/>",
+          };
+
+          transporter.sendMail(mailData, (error) => {
+            if (error) {
+              return console.log("Send Mail " + error);
+            }
+          });
+
           return res.status(200).json({ updatedRecord });
         }
       }

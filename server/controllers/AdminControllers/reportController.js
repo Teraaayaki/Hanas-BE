@@ -2,7 +2,11 @@ import Report from "../../models/reportModel.js";
 
 import { ObjectId } from "mongodb";
 
+<<<<<<< HEAD
+export const getReportList = async (req, res) => {
+=======
 export const getReports = async (req, res) => {
+>>>>>>> develop
   const reportList = await Report.aggregate([
     {
       $lookup: {
@@ -44,6 +48,11 @@ export const getReports = async (req, res) => {
         ],
       },
     },
+    {
+      $project: {
+        __v: 0,
+      },
+    },
   ]);
 
   return res.status(200).json({ reportList });
@@ -51,7 +60,7 @@ export const getReports = async (req, res) => {
 
 export const getReport = async (req, res) => {
   try {
-    const reports = await Report.aggregate([
+    const report = await Report.aggregate([
       {
         $match: {
           _id: new ObjectId(req.params.id),
@@ -104,7 +113,7 @@ export const getReport = async (req, res) => {
       },
     ]);
 
-    return res.status(200).json({ reports });
+    return res.status(200).json({ report });
   } catch (err) {
     console.log(err.message);
   }
@@ -115,6 +124,10 @@ export const resolveReport = async (req, res) => {
     Report.findOneAndUpdate(
       { _id: req.params.id },
       { status: "Resolved" },
+<<<<<<< HEAD
+      { new: true },
+=======
+>>>>>>> develop
       (error, updatedRecord) => {
         if (error) {
           console.log(error);
@@ -133,6 +146,29 @@ export const rejectReport = async (req, res) => {
     Report.findOneAndUpdate(
       { _id: req.params.id },
       { status: "Rejected" },
+<<<<<<< HEAD
+      { new: true },
+      (error, updatedRecord) => {
+        if (error) {
+          console.log(error);
+        } else {
+          return res.status(200).json({ updatedRecord });
+        }
+      }
+    ).select({ __v: 0 });
+  } catch (err) {
+    console.log(err.message);
+  }
+};
+
+export const setPendingReport = async (req, res) => {
+  try {
+    Report.findOneAndUpdate(
+      { _id: req.params.id },
+      { status: "Pending" },
+      { new: true },
+=======
+>>>>>>> develop
       (error, updatedRecord) => {
         if (error) {
           console.log(error);
