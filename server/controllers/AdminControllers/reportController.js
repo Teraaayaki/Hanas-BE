@@ -151,25 +151,6 @@ export const setPendingReport = async (req, res) => {
     Report.findOneAndUpdate(
       { _id: req.params.id },
       { status: "Pending" },
-      { new: true },
-      (error, updatedRecord) => {
-        if (error) {
-          console.log(error);
-        } else {
-          return res.status(200).json({ updatedRecord });
-        }
-      }
-    ).select({ __v: 0 });
-  } catch (err) {
-    console.log(err.message);
-  }
-};
-
-export const reopenReport = async (req, res) => {
-  try {
-    Report.findOneAndUpdate(
-      { _id: req.params.id },
-      { status: "Pending" },
       (error, updatedRecord) => {
         if (error) {
           console.log(error);

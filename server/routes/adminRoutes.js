@@ -57,7 +57,6 @@ import {
   resolveReport,
   rejectReport,
   setPendingReport,
-  reopenReport,
   sortReport,
   filterReport,
 } from "../controllers/AdminControllers/reportController.js";
