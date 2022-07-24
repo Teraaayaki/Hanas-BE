@@ -25,6 +25,7 @@ import {
   getCertification,
   acceptCertification,
   rejectCertification,
+  setPendingCertification,
 } from "../controllers/AdminControllers/certificationController.js";
 
 import {
@@ -82,10 +83,12 @@ router.post(
 router.patch("/sort-verification", sortVerification);
 router.patch("/filter-verification", filterVerification);
 
+/*CERTIFICATION*/
 router.get("/get-certification-list", getCertificationList);
 router.get("/get-certification/:id", getCertification);
 router.get("/accept-certification/:id", acceptCertification);
 router.get("/reject-certification/:id", rejectCertification);
+router.get("/set-pending-certification/:id", setPendingCertification);
 
 /*CLIENT*/
 router.get("/get-client-list", getClientList);
