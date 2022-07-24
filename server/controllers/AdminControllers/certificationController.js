@@ -81,6 +81,23 @@ export const getCertificationList = async (req, res) => {
         ],
       },
     },
+    {
+      $lookup: {
+        from: "feedbacks",
+        localField: "_id",
+        foreignField: "my_service_id",
+        as: "feedbackData",
+        pipeline: [
+          {
+            $group: {
+              _id: null,
+              jobs: { $sum: 1 },
+              rateAvg: { $avg: "$rate" },
+            },
+          },
+        ],
+      },
+    },
   ]);
 
   const certificationList = unfilteredCertificationList.filter(
@@ -180,6 +197,23 @@ export const getCertification = async (req, res) => {
               $project: {
                 image: 1,
                 service_type: 1,
+              },
+            },
+          ],
+        },
+      },
+      {
+        $lookup: {
+          from: "feedbacks",
+          localField: "_id",
+          foreignField: "my_service_id",
+          as: "feedbackData",
+          pipeline: [
+            {
+              $group: {
+                _id: null,
+                jobs: { $sum: 1 },
+                rateAvg: { $avg: "$rate" },
               },
             },
           ],
