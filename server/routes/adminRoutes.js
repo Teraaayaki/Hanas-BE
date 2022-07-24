@@ -114,7 +114,7 @@ router.get("/get-transaction/:id", getSpecificTransaction);
 router.patch("/sort-transaction", sortTransaction);
 
 /*REPORTS*/
-router.get("/get-report-list", getReports);
+router.get("/get-report-list", getReportList);
 router.get("/get-report/:id", getReport);
 router.get("/get-type-of-users", percentageOnTypeOfUsers);
 router.get("/resolve-report/:id", resolveReport);
