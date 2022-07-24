@@ -53,10 +53,11 @@ import {
 } from "../controllers/AdminControllers/transactionController.js";
 
 import {
-  getReports,
+  getReportList,
   getReport,
   resolveReport,
   rejectReport,
+  setPendingReport,
   reopenReport,
   sortReport,
   filterReport,
@@ -67,8 +68,9 @@ import { addToAchievement } from "../controllers/AdminControllers/achievementCon
 router.get("/count-verifications", countPendingVerifications);
 router.get("/count-users", countUsers);
 router.get("/count-reports", countPendingReports);
-router.get("/get-income", countIncome);
 router.get("/get-verified", percentageOfVerified);
+router.get("/get-type-of-users", percentageOnTypeOfUsers);
+router.get("/get-income", countIncome);
 
 /*VERIFICATIONS*/
 router.get("/get-verifications", requireAuth, getVerifications);
