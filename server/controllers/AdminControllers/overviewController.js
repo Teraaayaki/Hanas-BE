@@ -70,8 +70,8 @@ export const countIncome = async (req, res) => {
         }
       },
       {
-        $sort: { Month: 1}
-      }
+        $sort: {_id: 1}
+      },
     ]);
 
     return res.status(200).json({ incomeReport });

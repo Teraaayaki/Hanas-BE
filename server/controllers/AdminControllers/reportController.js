@@ -44,11 +44,6 @@ export const getReportList = async (req, res) => {
         ],
       },
     },
-    {
-      $project: {
-        __v: 0,
-      },
-    },
   ]);
 
   return res.status(200).json({ reportList });
@@ -56,7 +51,7 @@ export const getReportList = async (req, res) => {
 
 export const getReport = async (req, res) => {
   try {
-    const report = await Report.aggregate([
+    const reports = await Report.aggregate([
       {
         $match: {
           _id: new ObjectId(req.params.id),
@@ -109,7 +104,7 @@ export const getReport = async (req, res) => {
       },
     ]);
 
-    return res.status(200).json({ report });
+    return res.status(200).json({ reports });
   } catch (err) {
     console.log(err.message);
   }
@@ -120,7 +115,6 @@ export const resolveReport = async (req, res) => {
     Report.findOneAndUpdate(
       { _id: req.params.id },
       { status: "Resolved" },
-      { new: true },
       (error, updatedRecord) => {
         if (error) {
           console.log(error);
@@ -139,26 +133,6 @@ export const rejectReport = async (req, res) => {
     Report.findOneAndUpdate(
       { _id: req.params.id },
       { status: "Rejected" },
-      { new: true },
-      (error, updatedRecord) => {
-        if (error) {
-          console.log(error);
-        } else {
-          return res.status(200).json({ updatedRecord });
-        }
-      }
-    ).select({ __v: 0 });
-  } catch (err) {
-    console.log(err.message);
-  }
-};
-
-export const setPendingReport = async (req, res) => {
-  try {
-    Report.findOneAndUpdate(
-      { _id: req.params.id },
-      { status: "Pending" },
-      { new: true },
       (error, updatedRecord) => {
         if (error) {
           console.log(error);

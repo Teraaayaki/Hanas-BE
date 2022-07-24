@@ -2,20 +2,21 @@ import mongoose from 'mongoose';
 
 const convFeeTransactionModel = mongoose.Schema(
   {
-    transaction_id: {
-      type: String,
-      unique: true,
-      required: true
-    },
     worker: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
       ref: 'User'
     },
-    amount_paid: {
+    payments: [{
+      date : [Date],
+      amount : [Number]
+    }],
+    total_paid:{
       type: Number,
-      required: true
-    }
+    },
+    total_amount: {
+      type: Number,
+    },
   },
   {
     timestamps: true

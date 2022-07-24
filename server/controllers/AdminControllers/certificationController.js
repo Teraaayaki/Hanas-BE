@@ -236,7 +236,6 @@ export const acceptCertification = async (req, res) => {
     const updatedRecord = MyService.findOneAndUpdate(
       { _id: req.params.id },
       { is_certified: "Accepted" },
-      { new: true },
       (error, updatedRecord) => {
         if (error) {
           console.log(error);
@@ -306,7 +305,6 @@ export const rejectCertification = async (req, res) => {
     MyService.findOneAndUpdate(
       { _id: req.params.id },
       { is_certified: "Rejected" },
-      { new: true },
       (error, updatedRecord) => {
         if (error) {
           console.log(error);
@@ -371,12 +369,11 @@ export const rejectCertification = async (req, res) => {
   }
 };
 
-export const setPendingCertification = async (req, res) => {
+export const reopenCertification = async (req, res) => {
   try {
     MyService.findOneAndUpdate(
       { _id: req.params.id },
       { is_certified: "Pending" },
-      { new: true },
       (error, updatedRecord) => {
         if (error) {
           console.log(error);

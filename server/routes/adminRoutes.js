@@ -25,7 +25,7 @@ import {
   getCertification,
   acceptCertification,
   rejectCertification,
-  setPendingCertification,
+  reopenCertification,
 } from "../controllers/AdminControllers/certificationController.js";
 
 import {
@@ -57,13 +57,14 @@ import {
   getReport,
   resolveReport,
   rejectReport,
-  setPendingReport,
   reopenReport,
   sortReport,
   filterReport,
 } from "../controllers/AdminControllers/reportController.js";
 
 import { addToAchievement } from "../controllers/AdminControllers/achievementController.js";
+
+import { getConvFeeTransactions } from "../controllers/AdminControllers/convFeeTransactionController.js";
 
 router.get("/count-verifications", countPendingVerifications);
 router.get("/count-users", countUsers);
@@ -73,15 +74,11 @@ router.get("/get-type-of-users", percentageOnTypeOfUsers);
 router.get("/get-income", countIncome);
 
 /*VERIFICATIONS*/
-router.get("/get-verifications", requireAuth, getVerifications);
-router.get("/get-verification/:id", requireAuth, getSpecificVerification);
-router.post("/accept-verification/:id", requireAuth, acceptVerification);
-router.post("/reject-verification/:id", requireAuth, rejectVerification);
-router.post(
-  "/remove-verification/:id",
-  requireAuth,
-  removeSpecificVerification
-);
+router.get("/get-verifications", getVerifications);
+router.get("/get-verification/:id", getSpecificVerification);
+router.post("/accept-verification/:id", acceptVerification);
+router.post("/reject-verification/:id", rejectVerification);
+router.post("/remove-verification/:id", removeSpecificVerification);
 router.patch("/sort-verification", sortVerification);
 router.patch("/filter-verification", filterVerification);
 
@@ -90,7 +87,7 @@ router.get("/get-certification-list", getCertificationList);
 router.get("/get-certification/:id", getCertification);
 router.get("/accept-certification/:id", acceptCertification);
 router.get("/reject-certification/:id", rejectCertification);
-router.get("/set-pending-certification/:id", setPendingCertification);
+router.get("/reopen-certification/:id", reopenCertification);
 
 /*CLIENT*/
 router.get("/get-client-list", getClientList);
@@ -119,10 +116,14 @@ router.get("/get-report/:id", getReport);
 router.get("/get-type-of-users", percentageOnTypeOfUsers);
 router.get("/resolve-report/:id", resolveReport);
 router.get("/reject-report/:id", rejectReport);
-router.get("/set-pending-report/:id", reopenReport);
+router.get("/reopen-report/:id", reopenReport);
 router.patch("/filter-report", filterReport);
 router.patch("/sort-report", sortReport);
 
+/*ACHIEVEMENTS*/
 router.post("/add-to-achievement", addToAchievement);
+
+/*CONVENIENCE FEE*/
+router.get("/get-conv-fee-list", getConvFeeTransactions);
 
 export default router;
