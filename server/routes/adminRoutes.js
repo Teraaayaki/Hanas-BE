@@ -52,7 +52,7 @@ import {
 } from "../controllers/AdminControllers/transactionController.js";
 
 import {
-  getReportList,
+  getReportsList,
   getReport,
   resolveReport,
   rejectReport,
@@ -112,12 +112,12 @@ router.get("/get-transaction/:id", getSpecificTransaction);
 router.patch("/sort-transaction", sortTransaction);
 
 /*REPORTS*/
-router.get("/get-report-list", getReports);
+router.get("/get-report-list", getReportsList);
 router.get("/get-report/:id", getReport);
 router.get("/get-type-of-users", percentageOnTypeOfUsers);
 router.get("/resolve-report/:id", resolveReport);
 router.get("/reject-report/:id", rejectReport);
-router.get("/set-pending-report/:id", reopenReport);
+router.get("/set-pending-report/:id", setPendingReport);
 router.patch("/filter-report", filterReport);
 router.patch("/sort-report", sortReport);
 
