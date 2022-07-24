@@ -71,23 +71,22 @@ router.get("/get-type-of-users", percentageOnTypeOfUsers);
 router.get("/get-income", countIncome);
 
 /*VERIFICATIONS*/
-router.get("/get-verifications", requireAuth, getVerifications);
-router.get("/get-verification/:id", requireAuth, getSpecificVerification);
-router.post("/accept-verification/:id", requireAuth, acceptVerification);
-router.post("/reject-verification/:id", requireAuth, rejectVerification);
+router.get("/get-verifications", getVerifications);
+router.get("/get-verification/:id", getSpecificVerification);
+router.post("/accept-verification/:id", acceptVerification);
+router.post("/reject-verification/:id", rejectVerification);
 router.post(
   "/remove-verification/:id",
-  requireAuth,
   removeSpecificVerification
 );
 router.patch("/sort-verification", sortVerification);
 router.patch("/filter-verification", filterVerification);
 
 /*CERTIFICATIONS*/
-router.get("/get-certifications", requireAuth, getCertifications);
-router.get("/get-certification/:id", requireAuth, getCertification);
-router.get("/accept-certification/:id", requireAuth, acceptCertification);
-router.get("/reject-certification/:id", requireAuth, rejectCertification);
+router.get("/get-certifications", getCertifications);
+router.get("/get-certification/:id", getCertification);
+router.get("/accept-certification/:id", acceptCertification);
+router.get("/reject-certification/:id", rejectCertification);
 
 /*CLIENT*/
 router.get("/get-client-list", getClientList);
