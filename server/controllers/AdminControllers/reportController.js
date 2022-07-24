@@ -2,7 +2,7 @@ import Report from "../../models/reportModel.js";
 
 import { ObjectId } from "mongodb";
 
-export const getReportsList = async (req, res) => {
+export const getReportList = async (req, res) => {
   const reportList = await Report.aggregate([
     {
       $lookup: {
@@ -146,7 +146,7 @@ export const rejectReport = async (req, res) => {
   }
 };
 
-export const setPendingReport = async (req, res) => {
+export const reopenReport = async (req, res) => {
   try {
     Report.findOneAndUpdate(
       { _id: req.params.id },

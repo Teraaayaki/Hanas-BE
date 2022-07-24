@@ -21,10 +21,11 @@ import {
 } from "../controllers/AdminControllers/verificationController.js";
 
 import {
-  getCertifications,
+  getCertificationList,
   getCertification,
   acceptCertification,
   rejectCertification,
+  reopenCertification,
 } from "../controllers/AdminControllers/certificationController.js";
 
 import {
@@ -52,11 +53,11 @@ import {
 } from "../controllers/AdminControllers/transactionController.js";
 
 import {
-  getReportsList,
+  getReportList,
   getReport,
   resolveReport,
   rejectReport,
-  setPendingReport,
+  reopenReport,
   sortReport,
   filterReport,
 } from "../controllers/AdminControllers/reportController.js";
@@ -77,18 +78,16 @@ router.get("/get-verifications", getVerifications);
 router.get("/get-verification/:id", getSpecificVerification);
 router.post("/accept-verification/:id", acceptVerification);
 router.post("/reject-verification/:id", rejectVerification);
-router.post(
-  "/remove-verification/:id",
-  removeSpecificVerification
-);
+router.post("/remove-verification/:id", removeSpecificVerification);
 router.patch("/sort-verification", sortVerification);
 router.patch("/filter-verification", filterVerification);
 
-/*CERTIFICATIONS*/
-router.get("/get-certifications", getCertifications);
+/*CERTIFICATION*/
+router.get("/get-certification-list", getCertificationList);
 router.get("/get-certification/:id", getCertification);
 router.get("/accept-certification/:id", acceptCertification);
 router.get("/reject-certification/:id", rejectCertification);
+router.get("/reopen-certification/:id", reopenCertification);
 
 /*CLIENT*/
 router.get("/get-client-list", getClientList);
@@ -112,12 +111,12 @@ router.get("/get-transaction/:id", getSpecificTransaction);
 router.patch("/sort-transaction", sortTransaction);
 
 /*REPORTS*/
-router.get("/get-report-list", getReportsList);
+router.get("/get-report-list", getReportList);
 router.get("/get-report/:id", getReport);
 router.get("/get-type-of-users", percentageOnTypeOfUsers);
 router.get("/resolve-report/:id", resolveReport);
 router.get("/reject-report/:id", rejectReport);
-router.get("/set-pending-report/:id", setPendingReport);
+router.get("/reopen-report/:id", reopenReport);
 router.patch("/filter-report", filterReport);
 router.patch("/sort-report", sortReport);
 
