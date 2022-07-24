@@ -199,7 +199,7 @@ export const getCertification = async (req, res) => {
 
 export const acceptCertification = async (req, res) => {
   try {
-    MyService.findOneAndUpdate(
+    const updatedRecord = MyService.findOneAndUpdate(
       { _id: req.params.id },
       { is_certified: "Accepted" },
       { new: true },
@@ -207,10 +207,61 @@ export const acceptCertification = async (req, res) => {
         if (error) {
           console.log(error);
         } else {
+          let fullname =
+            updatedRecord.worker.first_name +
+            " " +
+            updatedRecord.worker.middle_name +
+            " " +
+            updatedRecord.worker.family_name;
+
+          if (updatedRecord.suffix) {
+            fullname.concat(" " + updatedRecord.worker.suffix);
+          }
+
+          const transporter = nodemailer.createTransport({
+            port: 465,
+            host: "smtp.gmail.com",
+            auth: {
+              user: "hanas.app.services@gmail.com",
+              pass: process.env.NODE_EMAILER_PASS,
+            },
+            secure: true,
+            tls: {
+              // do not fail on invalid certs
+              rejectUnauthorized: false,
+            },
+          });
+
+          const mailData = {
+            from: "hanas.app.services@gmail.com",
+            to: updatedRecord.worker.email,
+            subject:
+              updatedRecord.service.service_type + " Service Certification",
+            text:
+              "Your " +
+              updatedRecord.service.service_type +
+              " Service Certification Request has been Accepted.",
+            html:
+              "Good Day " +
+              fullname +
+              ", <br><br/><br> We would like to notify you that your service, " +
+              updatedRecord.service.service_type +
+              " service has been certified and is now visible to your clients. If you have any concerns, please do not hesitate to contact us.<br/>",
+          };
+
+          transporter.sendMail(mailData, (error) => {
+            if (error) {
+              return console.log("Send Mail " + error);
+            }
+          });
+
           return res.status(200).json({ updatedRecord });
         }
       }
-    ).select({ sample_works: 0, __v: 0 });
+    )
+      .select({ sample_works: 0, __v: 0 })
+      .populate("worker", "first_name middle_name family_name suffix email")
+      .populate("service", "service_type");
   } catch (err) {
     console.log(err.message);
   }
@@ -226,10 +277,61 @@ export const rejectCertification = async (req, res) => {
         if (error) {
           console.log(error);
         } else {
+          let fullname =
+            updatedRecord.worker.first_name +
+            " " +
+            updatedRecord.worker.middle_name +
+            " " +
+            updatedRecord.worker.family_name;
+
+          if (updatedRecord.suffix) {
+            fullname.concat(" " + updatedRecord.worker.suffix);
+          }
+
+          const transporter = nodemailer.createTransport({
+            port: 465,
+            host: "smtp.gmail.com",
+            auth: {
+              user: "hanas.app.services@gmail.com",
+              pass: process.env.NODE_EMAILER_PASS,
+            },
+            secure: true,
+            tls: {
+              // do not fail on invalid certs
+              rejectUnauthorized: false,
+            },
+          });
+
+          const mailData = {
+            from: "hanas.app.services@gmail.com",
+            to: updatedRecord.worker.email,
+            subject:
+              updatedRecord.service.service_type + " Service Certification",
+            text:
+              "Your " +
+              updatedRecord.service.service_type +
+              " Service Certification Request has been Rejected.",
+            html:
+              "Good Day " +
+              fullname +
+              ", <br><br/><br> We would like to notify you that your Certification request for your " +
+              updatedRecord.service.service_type +
+              " service has been Rejected. Please check if you have uploaded the correct images, if the image quality is sufficiently readable and upload the correct images. If you think this is a mistake, please do not hesitate to contact us.<br/>",
+          };
+
+          transporter.sendMail(mailData, (error) => {
+            if (error) {
+              return console.log("Send Mail " + error);
+            }
+          });
+
           return res.status(200).json({ updatedRecord });
         }
       }
-    ).select({ sample_works: 0, __v: 0 });
+    )
+      .select({ sample_works: 0, __v: 0 })
+      .populate("worker", "first_name middle_name family_name suffix email")
+      .populate("service", "service_type");
   } catch (err) {
     console.log(err.message);
   }
@@ -248,7 +350,10 @@ export const setPendingCertification = async (req, res) => {
           return res.status(200).json({ updatedRecord });
         }
       }
-    ).select({ sample_works: 0, __v: 0 });
+    )
+      .select({ sample_works: 0, __v: 0 })
+      .populate("worker", "first_name middle_name family_name suffix email")
+      .populate("service", "service_type");
   } catch (err) {
     console.log(err.message);
   }
