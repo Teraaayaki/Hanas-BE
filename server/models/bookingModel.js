@@ -57,7 +57,7 @@ const bookingModel = mongoose.Schema(
     book_status: {
       type: String,
       enum: {
-        values: ["On Going", "Finished", "Accepted", "Pending", "Declined"],
+        values: ["Ongoing", "Finished", "Accepted", "Pending", "Declined"],
         message: "{VALUE} is not supported.",
       },
       required: true,

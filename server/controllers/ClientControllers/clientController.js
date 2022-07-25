@@ -1,6 +1,6 @@
 import Feedback from "../../models/feedbackModel.js";
 import Booking from "../../models/bookingModel.js";
-import { ObjectId } from "mongodb";
+import { createNotification } from "../notificationController.js";
 
 export const removeScheduleClient = async (req, res) => {
   if (!req.body) {
@@ -10,7 +10,7 @@ export const removeScheduleClient = async (req, res) => {
   try {
     let schedule_details = await Booking.updateOne(
       { _id: req.body.DATA._id },
-      { $set: { isRemovedClient: "true" } }
+      { $set: { isRemovedClient: "true" } },
     );
     return res.status(200).json("Successful update");
   } catch (err) {
@@ -26,7 +26,7 @@ export const removeCancelledBooking = async (req, res) => {
   try {
     let cancelled_details = await Booking.updateOne(
       { _id: req.body.DATA._id },
-      { $set: { isRemovedClient: "true" } }
+      { $set: { isRemovedClient: "true" } },
     );
     return res.status(200).json("Successful update");
   } catch (err) {
@@ -42,7 +42,7 @@ export const cancelBookingSchedule = async (req, res) => {
   try {
     let cancelled_schedule = await Booking.updateOne(
       { _id: req.body.DATA._id },
-      { $set: { book_status: "Declined" } }
+      { $set: { book_status: "Declined" } },
     );
     return res.status(200).json("Successful cancellation");
   } catch (err) {
@@ -55,6 +55,13 @@ export const bookSkilledWorker = async (req, res) => {
     return res.status(403).send({ error: "Must input some data" });
   }
   let booking_details = await Booking.create({ ...req.body.DATA });
+
+  createNotification({
+    causer: req.user,
+    notifiedUserID: req.body.DATA.worker,
+    type: "Booking Requests",
+    route: "WorkerBookingRequests",
+  });
 
   let booking_data = await Booking.aggregate([
     { $match: { _id: booking_details._id } },
@@ -147,13 +154,7 @@ export const getFeedback = async (req, res) => {
           {
             $project: {
               name: {
-                $concat: [
-                  "$first_name",
-                  " ",
-                  "$middle_name",
-                  " ",
-                  "$family_name",
-                ],
+                $concat: ["$first_name", " ", "$middle_name", " ", "$family_name"],
               },
             },
           },
@@ -199,11 +200,11 @@ export const removeBooking = async (req, res) => {
   return res.status(200).json({ booking });
 };
 
-export const giveFeedback = async (req,res) => {
+export const giveFeedback = async (req, res) => {
   if (!req.body.DATA) {
-      return res.status(403).send({error: "Unable to send the feedback"});
-    }
-  
+    return res.status(403).send({ error: "Unable to send the feedback" });
+  }
+
   let data = req.body.DATA;
 
   const feedback = await Feedback.create({
@@ -211,14 +212,17 @@ export const giveFeedback = async (req,res) => {
     rate: data.rate,
     client: data.client,
     worker: data.worker,
-    my_service_id: data.my_service_id
+    my_service_id: data.my_service_id,
   });
 
-  const booking = await Booking.findOneAndUpdate({ _id: data._id}, { isFeedbacked: 'true' });
+  const booking = await Booking.findOneAndUpdate(
+    { _id: data._id },
+    { isFeedbacked: "true" },
+  );
 
-  if(!feedback || !booking){
-    return res.status(406).send({error: "Unhandled request"});
-  }else{
-    return res.status(200).send({success: "Successful feedback"});
+  if (!feedback || !booking) {
+    return res.status(406).send({ error: "Unhandled request" });
+  } else {
+    return res.status(200).send({ success: "Successful feedback" });
   }
 };

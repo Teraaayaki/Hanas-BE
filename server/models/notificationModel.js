@@ -1,38 +1,38 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const notificationModel = mongoose.Schema(
   {
-    notification_id: {
-      type: String,
-      unique: true,
-      required: true
-    },
     causer: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: 'User'
+      ref: "User",
     },
     notifiedUser: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: 'User'
+      ref: "User",
     },
     type: {
       type: String,
-      required: true
+      required: true,
     },
-    URL: {
+    route: {
       type: String,
-      required: true
+      required: true,
     },
     description: {
-      type: Date,
-      required: true
-    }
+      type: String,
+      required: true,
+    },
+    isOpened: {
+      type: Boolean,
+      default: false,
+      required: true,
+    },
   },
   {
-    timestamps: true
-  }
+    timestamps: true,
+  },
 );
 
-export default mongoose.model('Notification', notificationModel);
+export default mongoose.model("Notification", notificationModel);
