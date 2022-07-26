@@ -63,7 +63,7 @@ import {
 
 import { addToAchievement } from "../controllers/AdminControllers/achievementController.js";
 
-import { getConvFeeTransactions, setToPaid} from "../controllers/AdminControllers/convFeeTransactionController.js";
+import { getConvFeeTransactions, setToPaid, sortConvFee, filterConvFee} from "../controllers/AdminControllers/convFeeTransactionController.js";
 
 router.get("/count-verifications", countPendingVerifications);
 router.get("/count-users", countUsers);
@@ -127,5 +127,7 @@ router.post("/add-to-achievement", addToAchievement);
 /*CONVENIENCE FEE*/
 router.get("/get-conv-fee-list", getConvFeeTransactions);
 router.patch("/set-to-paid", setToPaid);
+router.patch("/sort-convenience-fee", sortConvFee);
+router.patch("/filter-convenience-fee", filterConvFee);
 
 export default router;
