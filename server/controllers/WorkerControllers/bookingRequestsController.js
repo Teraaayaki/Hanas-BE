@@ -1,4 +1,5 @@
 import Booking from "../../models/bookingModel.js";
+import { createNotification } from "../notificationController.js";
 
 export const getBookingRequests = async (req, res) => {
   const bookingRequests = await Booking.find({
@@ -18,27 +19,41 @@ export const getBookingRequests = async (req, res) => {
 };
 
 export const acceptBookingRequest = async (req, res) => {
-  const response = await Booking.updateOne(
+  const bookingRequest = await Booking.findOneAndUpdate(
     { _id: req.params.id },
     { book_status: "Accepted" },
+    { new: true },
   );
 
-  if (response.modifiedCount) {
-    console.log("accepted booking");
+  if (bookingRequest) {
+    createNotification({
+      causer: req.user,
+      notifiedUserID: bookingRequest.client,
+      type: "Accepted Booking Requests",
+      route: "Calendar",
+    });
+
     return res.status(200).json({ message: "Booking successfully accecpted" });
   } else {
-    console.log("no booking");
     return res.status(404).json({ error: "No booking with that ID" });
   }
 };
 
 export const declineBookingRequest = async (req, res) => {
-  const response = await Booking.updateOne(
+  const bookingRequest = await Booking.findOneAndUpdate(
     { _id: req.params.id },
     { book_status: "Declined" },
+    { new: true },
   );
 
-  if (response.modifiedCount) {
+  if (bookingRequest) {
+    createNotification({
+      causer: req.user,
+      notifiedUserID: bookingRequest.client,
+      type: "Declined Booking Requests",
+      route: "Declined/Cancelled",
+    });
+
     return res.status(200).json({ message: "Booking successfully declined" });
   } else {
     return res.status(404).json({ error: "No booking with that ID" });

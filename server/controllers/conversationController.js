@@ -1,4 +1,5 @@
 import Conversation from "../models/conversationModel.js";
+import { createNotification } from "./notificationController.js";
 
 const getConversation = async (senderID, receiverID) => {
   try {
@@ -7,7 +8,7 @@ const getConversation = async (senderID, receiverID) => {
     });
 
     if (existingConversation.length > 0) {
-      return existingConversation;
+      return existingConversation[0];
     } else {
       const newConversation = await Conversation.create({
         participants: [{ user: senderID }, { user: receiverID }],
@@ -22,18 +23,27 @@ const getConversation = async (senderID, receiverID) => {
 
 export const storeMessage = async (req, res) => {
   const { receiverID, newMessage } = req.body;
+
   const conversation = getConversation(req.user._id, receiverID);
 
   delete newMessage._id;
 
   conversation
     .then((conversation) => {
-      conversation[0].messages.push(newMessage);
-      conversation[0].save();
+      conversation.messages.push(newMessage);
+      conversation.save();
+
+      createNotification({
+        causer: req.user,
+        notifiedUserID: receiverID,
+        type: "Message",
+        route: "Messages",
+      });
 
       return res.status(200).json({ message: "Successfully inserted new message" });
     })
     .catch((err) => {
+      console.log("error inserting new mesage");
       console.log(err.message);
       res.status(422).send({ error: "Error inserting new message" });
     });
@@ -54,5 +64,5 @@ export const getMessages = async (req, res) => {
     "participants.user": req.params.id,
   });
 
-  return res.status(200).json({ messages: conversation[0].messages.reverse() });
+  return res.status(200).json({ messages: conversation[0]?.messages.reverse() });
 };

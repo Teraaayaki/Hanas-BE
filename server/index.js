@@ -14,6 +14,7 @@ import conversationRoutes from "./routes/conversationRoutes.js";
 import editAccountRoutes from "./routes/editAccountRoutes.js";
 import transactionRoutes from "./routes/transactionRoutes.js";
 import reportRoutes from "./routes/reportRoutes.js";
+import notificationRoutes from "./routes/notificationRoutes.js";
 
 dotenv.config();
 connectDB();
@@ -40,7 +41,6 @@ app.use("/api/conversations", conversationRoutes);
 app.use("/api/edit", editAccountRoutes);
 app.use("/api/transactions", transactionRoutes);
 app.use("/api/reports", reportRoutes);
+app.use("/api/notifications", notificationRoutes);
 
-server.listen(process.env.PORT, () =>
-  console.log(`Server running on port ${port}`)
-);
+server.listen(process.env.PORT, () => console.log(`Server running on port ${port}`));
