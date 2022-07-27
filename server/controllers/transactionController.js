@@ -1,4 +1,4 @@
-import Booking from "../../models/bookingModel.js";
+import Booking from "../models/bookingModel.js";
 
 export const getTransactions = async (req, res) => {
   const condition = req.user.is_worker

@@ -69,38 +69,52 @@ export const verifyNumberClient = async (req, res) => {
 
   const otp = Math.floor(Math.random() * 8999 + 1000);
 
-  if (!client) {
-    try {
-      await OtpNumber.create({
-        expiresAt: new Date(),
-        otp,
-        number,
-      });
-
-      twilio.messages.create(
-        {
-          body: `YOUR OTP CODE: ${otp}`,
-          messagingServiceSid: process.env.TWILIO_MESSAGING_SERVICE_SID,
-          to: `+63${number}`,
-        }
-        // (err) => {
-        //   console.log("No error found");
-        //   if (err) {
-        //     console.log(err);
-        //   }
-        // }
-      );
-
-      // send otp to number logic here
-      return res.status(200).json({ success: true });
-    } catch (error) {
-      console.log(error);
-      return res
-        .status(409)
-        .send({ error: "Maximum allowable request reached" });
-    }
-  } else {
+  if (client) {
     return res.status(401).send({ error: "Number already registered" });
+  }
+
+  try {
+    await OtpNumber.create({
+      expiresAt: new Date(),
+      otp,
+      number,
+    });
+
+    await twilio.messages.create({
+      body: `YOUR OTP CODE: ${otp}`,
+      messagingServiceSid: process.env.TWILIO_MESSAGING_SERVICE_SID,
+      to: `+63${number}`,
+    });
+
+    return res.status(200).json({ success: true });
+  } catch (error) {
+    return res
+      .status(422)
+      .send({ error: "Maximum allowable requests reached" });
+  }
+};
+
+// RESEND CODE
+
+export const resendCodeClient = async (req, res) => {
+  let { number } = req.body;
+  const otp = Math.floor(Math.random() * 8999 + 1000);
+
+  try {
+    await OtpNumber.findOneAndUpdate(
+      { number },
+      { otp, expiresAt: new Date() },
+      { upsert: true }
+    );
+    await twilio.messages.create({
+      body: `YOUR OTP CODE: ${otp}`,
+      messagingServiceSid: process.env.TWILIO_MESSAGING_SERVICE_SID,
+      to: `+63${number}`,
+    });
+
+    return res.status(200).json({ success: true });
+  } catch (error) {
+    return res.status(422).send({ error: "Error Sending Code" });
   }
 };
 

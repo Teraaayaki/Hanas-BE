@@ -26,8 +26,15 @@ import {
 } from "../controllers/WorkerControllers/bookingRequestsController.js";
 
 import { getAcceptedBookings } from "../controllers/WorkerControllers/scheduleController.js";
-import { getTransactions } from "../controllers/WorkerControllers/transactionController.js";
+import { getTransactions } from "../controllers/transactionController.js";
 import { getAchievements } from "../controllers/WorkerControllers/achievementController.js";
+import {
+  getOverviewData,
+  getUpcomingServices,
+  startService,
+  serviceFinished,
+  getOngoingService,
+} from "../controllers/WorkerControllers/dashboardController.js";
 
 // Worker Routes
 router.get("/get-feedback", requireAuth, getFeedback);
@@ -44,13 +51,13 @@ router.post(
   "/upload-image-service",
   requireAuth,
   multer.single("sample"),
-  uploadImageService
+  uploadImageService,
 );
 router.post(
   "/upload-image-certificate",
   requireAuth,
   multer.single("certificate"),
-  uploadImageCertificate
+  uploadImageCertificate,
 );
 router.post("/delete-image-service", requireAuth, deleteImageService);
 router.post("/delete-image-certificate", requireAuth, deleteImageCertificate);
@@ -58,7 +65,7 @@ router.post(
   "/create-verification-request",
   requireAuth,
   multer.fields([{ name: "validId" }, { name: "clearance" }]),
-  createVerificationRequest
+  createVerificationRequest,
 );
 
 //Booking Routes
@@ -66,7 +73,10 @@ router.get("/booking-requests", requireAuth, getBookingRequests);
 router.patch("/accept-booking/:id", requireAuth, acceptBookingRequest);
 router.patch("/decline-booking/:id", requireAuth, declineBookingRequest);
 router.get("/accepted-bookings", requireAuth, getAcceptedBookings);
-
-router.get("/transactions", requireAuth, getTransactions);
+router.get("/overview", requireAuth, getOverviewData);
+router.get("/upcoming-services", requireAuth, getUpcomingServices);
+router.get("/ongoing-service", requireAuth, getOngoingService);
+router.patch("/start-service/:id", requireAuth, startService);
+router.patch("/service-finished/:id", requireAuth, serviceFinished);
 
 export default router;

@@ -1,6 +1,6 @@
-import express from 'express';
-import { validate, validationErrors } from '../middleware/validations.js';
-import requireAuth from '../middleware/requireAuth.js';
+import express from "express";
+import { validate, validationErrors } from "../middleware/validations.js";
+import requireAuth from "../middleware/requireAuth.js";
 const router = express.Router();
 
 import {
@@ -9,37 +9,44 @@ import {
   registerClient,
   logoutClient,
   verifyNumberOtpClient,
+  resendCodeClient,
   getDetails,
   loginAdmin,
-  editPassword
-} from '../controllers/authController.js';
+  editPassword,
+} from "../controllers/authController.js";
 
 //AUTH ROUTES
-router.get('/get-details', requireAuth, getDetails);
-router.post('/login', validate('login'), validationErrors, loginClient);
+router.get("/get-details", requireAuth, getDetails);
+router.post("/login", validate("login"), validationErrors, loginClient);
 router.post(
-  '/register',
-  validate('register'),
+  "/register",
+  validate("register"),
   validationErrors,
   registerClient
 );
 router.post(
-  '/verify-number',
-  validate('number'),
+  "/verify-number",
+  validate("number"),
   validationErrors,
   verifyNumberClient
 );
 router.post(
-  '/verify-number-otp',
-  validate('otp-number'),
+  "/resend-code",
+  validate("number"),
+  validationErrors,
+  resendCodeClient
+);
+router.post(
+  "/verify-number-otp",
+  validate("otp-number"),
   validationErrors,
   verifyNumberOtpClient
 );
-router.delete('/logout', logoutClient);
+router.delete("/logout", logoutClient);
 
-router.post('/edit-password', validationErrors, editPassword);
+router.post("/edit-password", validationErrors, editPassword);
 
 //ADMIN AUTH ROUTES
-router.post('/admin-login', validate('login'), validationErrors, loginAdmin);
+router.post("/admin-login", validate("login"), validationErrors, loginAdmin);
 
 export default router;

@@ -40,7 +40,7 @@ const monitorDBChanges = (server) => {
         fullDocument: "updateLookup",
       })
       .on("change", (data) => {
-        console.log(data);
+        // console.log(data);
       });
   });
 };

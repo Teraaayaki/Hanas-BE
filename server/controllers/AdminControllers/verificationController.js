@@ -50,7 +50,6 @@ export const getVerifications = async (req, res) => {
   } catch( error ){
     console.log(error);
   }
-  
 
 };
 
@@ -114,44 +113,49 @@ export const getSpecificVerification = async (req, res) => {
 };
 
 export const acceptVerification = async (req, res) => {
-
+  const options = {is_verified: true, pending_verification: false };
   try {
-    Verification.findOneAndUpdate(
+    await Verification.findOneAndUpdate(
       { user_id: req.params.id },
       { verify_status: "Accepted" },
       { new: true },
-      (error, updatedRecord) => {
-        if (error) {
-          console.log(error);
-        } else {
-          console.log(updatedRecord);
-          return res.status(200).json({ updatedRecord });
-        }
-      }
     ).select({ password: 0, __v: 0 });
+
+    await User.findOneAndUpdate(
+      { _id: req.params.id},
+      options,
+    ).select({ password: 0, __v: 0 });
+
+    return res.status(200);
+
   } catch (err) {
     console.log(err.message);
+    
+    return res.status(400);
   }
 };
 
 export const rejectVerification = async (req, res) => {
   try {
-    Verification.findOneAndUpdate(
+    await Verification.findOneAndUpdate(
       { user_id: req.params.id },
       { verify_status: "Rejected" },
       { new: true },
-      (error, updatedRecord) => {
-        if (error) {
-          console.log(error);
-        } else {
-          console.log(updatedRecord);
-          return res.status(200).json({ updatedRecord });
-        }
-      }
     ).select({ password: 0, __v: 0 });
+
+    await User.findOneAndUpdate(
+      { _id: req.params.id},
+      { pending_verification: false},
+    ).select({ password: 0, __v: 0 });
+
+    return res.status(200);
+
   } catch (err) {
     console.log(err.message);
+
+    return res.status(400);
   }
+
 };
 
 export const removeSpecificVerification = async (req, res) => {
