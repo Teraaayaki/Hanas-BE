@@ -26,6 +26,7 @@ export const getFeedback = async (req, res) => {
                   "$family_name",
                 ],
               },
+              profile_pic: 1,
             },
           },
         ],
