@@ -37,6 +37,7 @@ export const getConvFeeTransactions = async (req, res) => {
                 payments: 1,
                 updatedAt: 1,
                 worker: 1,
+                status: 1,
                 "workerData.name": 1,
             }
         },
@@ -51,7 +52,7 @@ export const setToPaid = async (req, res) => {
         const paymentDetails = { date: new Date(), amount: req.body.DATA.amount}
         ConvFeeTransaction.findOneAndUpdate(
             { _id: req.body.DATA.id},
-            { total_paid: req.body.DATA.amount, total_amount: 0, $push: { payments: paymentDetails} },
+            { total_paid: req.body.DATA.amount, total_amount: 0, status: "PAID" , $push: { payments: paymentDetails} },
             (error, updatedRecord) => {
                 if (error) {
                     console.log(error);
@@ -100,6 +101,7 @@ const convFeeDefault = async (req, res) => {
                 payments: 1,
                 updatedAt: 1,
                 worker: 1,
+                status: 1,
                 "workerData.name": 1,
             }
         },
@@ -143,6 +145,7 @@ const sortAscendingHelper = async (sortValue) => {
                 payments: 1,
                 updatedAt: 1,
                 worker: 1,
+                status: 1,
                 "workerData.name": 1,
             }
         },
@@ -233,6 +236,7 @@ const filterConvFeeHelper = async (filterValue) => {
                 payments: 1,
                 updatedAt: 1,
                 worker: 1,
+                status: 1,
                 "workerData.name": 1,
             }
         },
@@ -261,7 +265,7 @@ export const filterConvFee = async (req, res) => {
       case 'pending':
         try{
         
-          const convFeeTransactions = await filterConvFeeHelper({ $match: { total_amount: { $gt : 0 } } });
+          const convFeeTransactions = await filterConvFeeHelper({ $match: { status: "PENDING" } });
     
           return res.status(200).json({ convFeeTransactions });
       
@@ -273,7 +277,18 @@ export const filterConvFee = async (req, res) => {
   
       case 'paid':
         try{
-          const convFeeTransactions = await filterConvFeeHelper({ $match: { total_amount: { $eq : 0 } } });
+          const convFeeTransactions = await filterConvFeeHelper({ $match: { status: "PAID" } });
+    
+          return res.status(200).json({ convFeeTransactions });
+        } catch(error){
+          console.log(error);
+        }
+  
+        break;
+
+      case 'overdue':
+        try{
+          const convFeeTransactions = await filterConvFeeHelper({ $match: { status: "OVERDUE" } });
     
           return res.status(200).json({ convFeeTransactions });
         } catch(error){
@@ -287,3 +302,23 @@ export const filterConvFee = async (req, res) => {
     }
 };
 
+export const checkForOverdue = async (req, res) => {
+
+  try{
+    ConvFeeTransaction.updateMany(
+      { status: "PENDING" },
+      { status: "OVERDUE" },
+      (error, updatedRecord) => {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log(updatedRecord);
+          return res.status(200).json({ updatedRecord });
+        }
+      }
+    ).select({ password: 0, __v: 0 });
+  } catch (err) {
+    console.log(err.message);
+  }
+
+};
