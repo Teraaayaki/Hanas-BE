@@ -17,6 +17,12 @@ const convFeeTransactionModel = mongoose.Schema(
     total_amount: {
       type: Number,
     },
+    status: {
+      type: String,
+      enum: {
+        values: ["PAID", "PENDING", "OVERDUE"]
+      },
+    }
   },
   {
     timestamps: true
