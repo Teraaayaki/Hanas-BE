@@ -5,7 +5,6 @@ import Service from "../../models/serviceModel.js";
 import { ObjectId } from "mongodb";
 
 export const getTopRatedWorkers = async (req, res) => {
-  // console.log("Address is: ", req.params.address);
   const regEx = new RegExp(`${req.params.address}`);
 
   let top_rated_workers = await User.aggregate([
