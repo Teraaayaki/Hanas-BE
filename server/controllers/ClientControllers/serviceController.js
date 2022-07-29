@@ -76,6 +76,7 @@ export const getTopRatedWorkers = async (req, res) => {
               },
             },
           },
+          { $match: { is_certified: "Accepted" } },
         ],
       },
     },
@@ -259,8 +260,7 @@ export const getSkilledWorkerWithSpecificService = async (req, res) => {
   });
 
   let workers_with_specific_service = await MyService.aggregate([
-    { $match: { service: service_id } },
-    // { $group : { _id: "$worker", "hourly_rate": {$first: "$hourly_rate"}, "worker" : { $first: "$worker"}, "service_id" : {$first: "$_id"}}}, //ayaw lang ni i delete reference ni para unsaon pag display sa uban values pag mag gamit ug $group
+    { $match: { service: service_id, is_certified: "Accepted" } },
     {
       $lookup: {
         from: "users",
