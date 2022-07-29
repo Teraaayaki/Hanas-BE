@@ -37,16 +37,43 @@ export const getTopRatedWorkers = async (req, res) => {
               from: "feedbacks",
               localField: "_id",
               foreignField: "my_service_id",
-              as: "feedbackData",
+              as: "feedbacksAveragedData",
               pipeline: [
                 {
                   $group: {
                     _id: null,
-                    jobs: { $sum: 1 },
-                    rateAvg: { $avg: "$rate" },
+                    rating: { $avg: "$rate" },
                   },
                 },
               ],
+            },
+          },
+          {
+            $lookup: {
+              from: "bookings",
+              localField: "_id",
+              foreignField: "service_availed",
+              as: "bookingsAveragedData",
+              pipeline: [
+                {
+                  $match: {
+                    book_status: "Finished",
+                  },
+                },
+                {
+                  $count: "jobs",
+                },
+              ],
+            },
+          },
+          {
+            $addFields: {
+              feedbacksAveragedData: {
+                $arrayElemAt: ["$feedbacksAveragedData", 0],
+              },
+              bookingsAveragedData: {
+                $arrayElemAt: ["$bookingsAveragedData", 0],
+              },
             },
           },
         ],
@@ -59,7 +86,6 @@ export const getTopRatedWorkers = async (req, res) => {
         },
         profile_pic: 1,
         address: 1,
-        feedbackData: 1,
         serviceNameData: 1,
         myServicesData: 1,
       },
@@ -228,12 +254,12 @@ export const getSkilledWorkerWithSpecificService = async (req, res) => {
   const { service_type, address } = req.params;
   const regexpAddress = new RegExp(`${address}`);
 
-  const serviceType = await Service.findOne({
-    service_type,
+  const { _id: service_id } = await Service.findOne({
+    service_type: service_type,
   });
 
   let workers_with_specific_service = await MyService.aggregate([
-    { $match: { service: serviceType._id } },
+    { $match: { service: service_id } },
     // { $group : { _id: "$worker", "hourly_rate": {$first: "$hourly_rate"}, "worker" : { $first: "$worker"}, "service_id" : {$first: "$_id"}}}, //ayaw lang ni i delete reference ni para unsaon pag display sa uban values pag mag gamit ug $group
     {
       $lookup: {
@@ -265,14 +291,31 @@ export const getSkilledWorkerWithSpecificService = async (req, res) => {
         from: "feedbacks",
         localField: "_id",
         foreignField: "my_service_id",
-        as: "feedbackData",
+        as: "feedbacksAveragedData",
         pipeline: [
           {
             $group: {
               _id: null,
-              jobs: { $sum: 1 },
-              rateAvg: { $avg: "$rate" },
+              rating: { $avg: "$rate" },
             },
+          },
+        ],
+      },
+    },
+    {
+      $lookup: {
+        from: "bookings",
+        localField: "_id",
+        foreignField: "service_availed",
+        as: "bookingsAveragedData",
+        pipeline: [
+          {
+            $match: {
+              book_status: "Finished",
+            },
+          },
+          {
+            $count: "jobs",
           },
         ],
       },
@@ -284,6 +327,16 @@ export const getSkilledWorkerWithSpecificService = async (req, res) => {
         foreignField: "_id",
         as: "serviceNameData",
         pipeline: [{ $project: { service_type: 1 } }],
+      },
+    },
+    {
+      $addFields: {
+        feedbacksAveragedData: {
+          $arrayElemAt: ["$feedbacksAveragedData", 0],
+        },
+        bookingsAveragedData: {
+          $arrayElemAt: ["$bookingsAveragedData", 0],
+        },
       },
     },
     {
@@ -344,14 +397,31 @@ export const getWorkers = async (req, res) => {
         from: "feedbacks",
         localField: "_id",
         foreignField: "my_service_id",
-        as: "feedbackData",
+        as: "feedbacksAveragedData",
         pipeline: [
           {
             $group: {
               _id: null,
-              jobs: { $sum: 1 },
-              rateAvg: { $avg: "$rate" },
+              rating: { $avg: "$rate" },
             },
+          },
+        ],
+      },
+    },
+    {
+      $lookup: {
+        from: "bookings",
+        localField: "_id",
+        foreignField: "service_availed",
+        as: "bookingsAveragedData",
+        pipeline: [
+          {
+            $match: {
+              book_status: "Finished",
+            },
+          },
+          {
+            $count: "jobs",
           },
         ],
       },
@@ -369,7 +439,8 @@ export const getWorkers = async (req, res) => {
       $project: {
         hourly_rate: 1,
         workerDetails: { $arrayElemAt: ["$workerDetails", 0] },
-        feedbackData: { $arrayElemAt: ["$feedbackData", 0] },
+        feedbacksAveragedData: { $arrayElemAt: ["$feedbacksAveragedData", 0] },
+        bookingsAveragedData: { $arrayElemAt: ["$bookingsAveragedData", 0] },
         serviceNameData: { $arrayElemAt: ["$serviceNameData", 0] },
         is_certified: 1,
         keyword: {

@@ -92,16 +92,43 @@ const aggregateFavourites = (favorite_services) => {
           from: "feedbacks",
           localField: "_id",
           foreignField: "my_service_id",
-          as: "feedbackData",
+          as: "feedbacksAveragedData",
           pipeline: [
             {
               $group: {
                 _id: null,
-                jobs: { $sum: 1 },
-                rateAvg: { $avg: "$rate" },
+                rating: { $avg: "$rate" },
               },
             },
           ],
+        },
+      },
+      {
+        $lookup: {
+          from: "bookings",
+          localField: "_id",
+          foreignField: "service_availed",
+          as: "bookingsAveragedData",
+          pipeline: [
+            {
+              $match: {
+                book_status: "Finished",
+              },
+            },
+            {
+              $count: "jobs",
+            },
+          ],
+        },
+      },
+      {
+        $addFields: {
+          feedbacksAveragedData: {
+            $arrayElemAt: ["$feedbacksAveragedData", 0],
+          },
+          bookingsAveragedData: {
+            $arrayElemAt: ["$bookingsAveragedData", 0],
+          },
         },
       },
     ]);
