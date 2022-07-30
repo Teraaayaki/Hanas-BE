@@ -90,6 +90,9 @@ export const getTopRatedWorkers = async (req, res) => {
         myServicesData: 1,
       },
     },
+    {
+      $match: { "myServicesData.feedbacksAveragedData.rating": { $gt: 3.5 } },
+    },
   ]);
 
   // Filter workers with no My Service Data
