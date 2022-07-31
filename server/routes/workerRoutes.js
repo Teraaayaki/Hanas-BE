@@ -36,6 +36,8 @@ import {
   getOngoingService,
 } from "../controllers/WorkerControllers/dashboardController.js";
 
+import { getConvFee } from "../controllers/WorkerControllers/convenienceFeeController.js";
+
 // Worker Routes
 router.get("/get-feedback", requireAuth, getFeedback);
 
@@ -51,13 +53,13 @@ router.post(
   "/upload-image-service",
   requireAuth,
   multer.single("sample"),
-  uploadImageService,
+  uploadImageService
 );
 router.post(
   "/upload-image-certificate",
   requireAuth,
   multer.single("certificate"),
-  uploadImageCertificate,
+  uploadImageCertificate
 );
 router.post("/delete-image-service", requireAuth, deleteImageService);
 router.post("/delete-image-certificate", requireAuth, deleteImageCertificate);
@@ -65,7 +67,7 @@ router.post(
   "/create-verification-request",
   requireAuth,
   multer.fields([{ name: "validId" }, { name: "clearance" }]),
-  createVerificationRequest,
+  createVerificationRequest
 );
 
 //Booking Routes
@@ -78,5 +80,8 @@ router.get("/upcoming-services", requireAuth, getUpcomingServices);
 router.get("/ongoing-service", requireAuth, getOngoingService);
 router.patch("/start-service/:id", requireAuth, startService);
 router.patch("/service-finished/:id", requireAuth, serviceFinished);
+
+// conv fee
+router.get("/get-conv-fee", requireAuth, getConvFee);
 
 export default router;

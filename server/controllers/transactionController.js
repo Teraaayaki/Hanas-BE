@@ -20,7 +20,7 @@ export const getTransactions = async (req, res) => {
         path: "service",
       },
     })
-    .sort({ booked_dateTimeStart: "asc" });
+    .sort({ booked_dateTimeStart: -1 });
 
   return res.status(200).json({ transactions });
 };
