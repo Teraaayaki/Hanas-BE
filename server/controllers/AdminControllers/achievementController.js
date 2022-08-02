@@ -1,4 +1,5 @@
 import Achievement from "../../models/achievementModel.js";
+import User from "../../models/userModel.js";
 
 export const addToAchievement = async (req, res) => {
   if (!req.body.user_id)
@@ -14,4 +15,34 @@ export const addToAchievement = async (req, res) => {
     // console.log(err);
     return res.status(422).send({ Error: "Error inserting data" });
   }
+};
+
+export const getAllWorkerList = async (req, res) => {
+
+  try{
+    const achievementListData = await User.aggregate([
+      {$match: {is_worker: true}},
+      {
+        $project: {
+          _id: 1,
+          name: {
+            $concat: [
+              "$first_name",
+              " ",
+              "$middle_name",
+              " ",
+              "$family_name",
+              " ",
+              "$suffix",
+            ],
+          },
+          updatedAt: 1,
+        },
+      },
+    ]);
+    return res.status(200).json({achievementListData});
+  }catch (err){
+    return res.status(422).send("ERROR ENCOUNTERED");
+  }
+
 };
