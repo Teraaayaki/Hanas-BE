@@ -10,7 +10,8 @@ export const addToAchievement = async (req, res) => {
   const { item, _id } = req.body;
 
   try {
-    await Achievement.updateOne({ name: "main", [item]: _id }, { upsert: true });
+    if(Achievement.exists())
+    await Achievement.updateOne({ name: "main"}, { $exists: false }, { $push: { [item]: _id } });
 
     res.status(200).json({ message: "Successfully claimed achievement" });
   } catch (err) {
