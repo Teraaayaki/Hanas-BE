@@ -1,14 +1,16 @@
 import Achievement from "../../models/achievementModel.js";
 import User from "../../models/userModel.js";
+import { ObjectId } from "mongodb";
 
 export const addToAchievement = async (req, res) => {
-  if (!req.body.user_id)
+
+  if (!req.body._id)
     return res.status(422).send({ Error: "Error No data passed" });
 
-  const { item, user_id } = req.body;
+  const { item, _id } = req.body;
 
   try {
-    await Achievement.updateOne({ name: "main", [item]: user_id });
+    await Achievement.updateOne({ name: "main", [item]: _id }, { upsert: true });
 
     res.status(200).json({ message: "Successfully claimed achievement" });
   } catch (err) {

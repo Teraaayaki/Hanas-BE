@@ -123,7 +123,7 @@ router.patch("/filter-report", filterReport);
 router.patch("/sort-report", sortReport);
 
 /*ACHIEVEMENTS*/
-router.post("/add-to-achievement", addToAchievement);
+router.patch("/add-to-achievement", addToAchievement);
 router.get("/get-all-workers", getAllWorkerList);
 
 /*CONVENIENCE FEE*/
