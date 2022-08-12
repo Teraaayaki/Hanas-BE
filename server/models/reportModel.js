@@ -6,6 +6,9 @@ const reportModel = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
+    reported_user: {
+      type: mongoose.Schema.Types.ObjectId,
+    },
     concern: {
       type: String,
       required: true,

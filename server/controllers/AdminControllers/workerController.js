@@ -135,6 +135,28 @@ export const getWorker = async (req, res) => {
       },
       {
         $lookup: {
+          from: "verifications",
+          localField: "_id",
+          foreignField: "user_id",
+          as: "verificationData",
+          pipeline: [
+            {
+              $match: {
+                verify_status: "Accepted",
+              },
+            },
+            {
+              $project: {
+                verify_status: 1,
+                valid_id: 1,
+                nbi_brgy_clearance: 1,
+              },
+            },
+          ],
+        },
+      },
+      {
+        $lookup: {
           from: "myservices",
           localField: "_id",
           foreignField: "worker",
@@ -164,22 +186,6 @@ export const getWorker = async (req, res) => {
                     },
                   },
                 ],
-              },
-            },
-          ],
-        },
-      },
-      {
-        $lookup: {
-          from: "verification",
-          localField: "_id",
-          foreignField: "worker",
-          as: "verificationData",
-          pipeline: [
-            {
-              $project: {
-                valid_id: 1,
-                nbi_brgy_clearance: 1,
               },
             },
           ],
@@ -407,37 +413,35 @@ const sortAscendingHelper = async (sortValue) => {
       },
     },
     {
-      $sort : {[sortValue]: 1}
-    }
+      $sort: { [sortValue]: 1 },
+    },
   ]);
 };
 
 export const sortWorker = async (req, res) => {
   const choice = req.body.choice;
   switch (choice) {
-    case 'name':
-      try{
-        
-        const workerList = await sortAscendingHelper('name');
+    case "name":
+      try {
+        const workerList = await sortAscendingHelper("name");
 
-        return res.status(200).json({ workerList});
-    
-      } catch( error ){
+        return res.status(200).json({ workerList });
+      } catch (error) {
         console.log(error);
       }
 
       break;
 
-    case 'date':
-      try{
-        const workerList = await sortAscendingHelper('createdAt');
-  
+    case "date":
+      try {
+        const workerList = await sortAscendingHelper("createdAt");
+
         return res.status(200).json({ workerList });
-      } catch(error){
+      } catch (error) {
         console.log(error);
       }
 
-    break;
+      break;
 
     default:
       break;
@@ -450,7 +454,7 @@ const filterHelper = async (filterValue) => {
       $match: {
         is_verified: true,
         is_worker: true,
-        is_deactivated: filterValue
+        is_deactivated: filterValue,
       },
     },
     {
@@ -630,40 +634,38 @@ const filterDefault = async () => {
 export const filterWorker = async (req, res) => {
   const choice = req.body.choice;
   switch (choice) {
-    case 'active':
-      try{
-        
+    case "active":
+      try {
         const workerList = await filterHelper(false);
 
-        return res.status(200).json({ workerList});
-    
-      } catch( error ){
+        return res.status(200).json({ workerList });
+      } catch (error) {
         console.log(error);
       }
 
       break;
 
-    case 'deactivated':
-      try{
+    case "deactivated":
+      try {
         const workerList = await filterHelper(true);
-  
+
         return res.status(200).json({ workerList });
-      } catch(error){
+      } catch (error) {
         console.log(error);
       }
 
-    break;
-  
-    case 'all':
-      try{
+      break;
+
+    case "all":
+      try {
         const workerList = await filterDefault();
-  
+
         return res.status(200).json({ workerList });
-      } catch(error){
+      } catch (error) {
         console.log(error);
       }
 
-    break;
+      break;
 
     default:
       break;
