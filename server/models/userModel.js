@@ -78,6 +78,9 @@ const userSchema = mongoose.Schema(
       type: String,
       default: "none",
     },
+    push_token: {
+      type: String,
+    },
   },
   {
     timestamps: true,
