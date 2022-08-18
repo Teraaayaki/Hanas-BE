@@ -69,7 +69,7 @@ export const achievementChecker = async (req, res) => {
       },
     ]);
 
-    return res.status(200).json(achievementCheckerRsesult[0]);
+    return res.status(200).json(achievementCheckerResult[0]);
   } catch (error) {
     console.log(error);
     return res.status(422).send("Unable to get results");
