@@ -62,7 +62,7 @@ import {
   filterReport,
 } from "../controllers/AdminControllers/reportController.js";
 
-import { addToAchievement } from "../controllers/AdminControllers/achievementController.js";
+import { addToAchievement, achievementChecker } from "../controllers/AdminControllers/achievementController.js";
 
 import { getConvFeeTransactions, setToPaid, sortConvFee, filterConvFee, checkForOverdue} from "../controllers/AdminControllers/convFeeTransactionController.js";
 
@@ -125,6 +125,7 @@ router.patch("/sort-report", sortReport);
 /*ACHIEVEMENTS*/
 router.patch("/add-to-achievement", addToAchievement);
 router.get("/get-all-workers", getAllWorkerList);
+router.get("/achievement-check/:id", achievementChecker);
 
 /*CONVENIENCE FEE*/
 router.get("/get-conv-fee-list", getConvFeeTransactions);
