@@ -9,7 +9,7 @@ const monitorDBChanges = (server) => {
   socketConnection(io);
 
   mongoose.connection.once("open", () => {
-    console.log("Connected Change Stream");
+    console.log("Connected to Change Stream");
 
     mongoose.connection
       .collection("conversations")
@@ -40,7 +40,25 @@ const monitorDBChanges = (server) => {
         fullDocument: "updateLookup",
       })
       .on("change", (data) => {
-        // console.log(data);
+        io.of("/api/socket").emit("bookingUpdate", data.fullDocument);
+      });
+
+    mongoose.connection
+      .collection("bookings")
+      .watch([{ $match: { operationType: "insert" } }], {
+        fullDocument: "updateLookup",
+      })
+      .on("change", (data) => {
+        io.of("/api/socket").emit("newBooking", data.fullDocument);
+      });
+
+    mongoose.connection
+      .collection("notifications")
+      .watch([{ $match: { operationType: "insert" } }], {
+        fullDocument: "updateLookup",
+      })
+      .on("change", (data) => {
+        io.of("/api/socket").emit("newNotification", data.fullDocument);
       });
   });
 };
