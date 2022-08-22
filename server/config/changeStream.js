@@ -3,6 +3,7 @@ import { Server } from "socket.io";
 import socketConnection from "./socket.js";
 
 import Booking from "../models/bookingModel.js";
+import User from "../models/userModel.js";
 
 const monitorDBChanges = (server) => {
   const io = new Server(server);
@@ -57,8 +58,15 @@ const monitorDBChanges = (server) => {
       .watch([{ $match: { operationType: "insert" } }], {
         fullDocument: "updateLookup",
       })
-      .on("change", (data) => {
-        io.of("/api/socket").emit("newNotification", data.fullDocument);
+      .on("change", async (data) => {
+        const notifiedUser = await User.findById(data.fullDocument.notifiedUser).select(
+          "push_token",
+        );
+
+        io.of("/api/socket").emit("newNotification", {
+          data: data.fullDocument,
+          push_token: notifiedUser.push_token,
+        });
       });
   });
 };
