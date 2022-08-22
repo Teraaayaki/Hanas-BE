@@ -49,7 +49,7 @@ export const getNotifications = async (req, res) => {
 export const changeNotificationStatus = async (req, res) => {
   const response = await Notification.updateOne(
     { _id: req.params.id },
-    { isOpened: true }
+    { isOpened: true },
   );
 
   if (response.modifiedCount) {

@@ -1,4 +1,5 @@
 import Booking from "../../models/bookingModel.js";
+import ConvFeeTransaction from "../../models/convFeeTransactionModel.js";
 
 const getTotalIncome = (transactions) => {
   return transactions.reduce((total, curr) => {
@@ -104,6 +105,20 @@ export const serviceFinished = async (req, res) => {
     { _id: req.params.id },
     { book_status: "Finished" },
     { new: true },
+  );
+
+  const workerConvFee = await ConvFeeTransaction.find({ worker: req.user.id }).select(
+    "total_amount",
+  );
+
+  const total_amount = workerConvFee[0].total_amount
+    ? serviceFinished.conv_fee + workerConvFee[0].total_amount
+    : serviceFinished.conv_fee;
+
+  await ConvFeeTransaction.findOneAndUpdate(
+    { worker: req.user.id },
+    { total_amount },
+    { upsert: true },
   );
 
   return res.status(200).json({ serviceFinished });
