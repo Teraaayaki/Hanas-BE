@@ -70,7 +70,7 @@ export const registerPushNotifToken = async (req, res) => {
 
   const user = await User.findOne({ _id: req.user._id });
 
-  if (user.push_token) {
+  if (user.push_token === token) {
     return res.status(200).json({ message: "Already registered token" });
   }
 
