@@ -94,7 +94,7 @@ export const startService = async (req, res) => {
   const ongoingService = await Booking.findOneAndUpdate(
     { _id: req.params.id },
     { book_status: "Ongoing" },
-    { new: true },
+    { new: true }
   );
 
   return res.status(200).json({ ongoingService });
@@ -104,21 +104,24 @@ export const serviceFinished = async (req, res) => {
   const serviceFinished = await Booking.findOneAndUpdate(
     { _id: req.params.id },
     { book_status: "Finished" },
-    { new: true },
+    { new: true }
   );
 
-  const workerConvFee = await ConvFeeTransaction.find({ worker: req.user.id }).select(
-    "total_amount",
-  );
+  const workerConvFee = await ConvFeeTransaction.find({
+    worker: req.user.id,
+  }).select("total_amount");
 
-  const total_amount = workerConvFee[0].total_amount
-    ? serviceFinished.conv_fee + workerConvFee[0].total_amount
-    : serviceFinished.conv_fee;
+  console.log(workerConvFee);
+
+  const total_amount =
+    workerConvFee[0]?.total_amount === undefined
+      ? serviceFinished.conv_fee
+      : serviceFinished.conv_fee + workerConvFee[0].total_amount;
 
   await ConvFeeTransaction.findOneAndUpdate(
     { worker: req.user.id },
     { total_amount },
-    { upsert: true },
+    { upsert: true }
   );
 
   return res.status(200).json({ serviceFinished });
