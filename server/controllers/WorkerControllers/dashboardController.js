@@ -1,5 +1,6 @@
 import Booking from "../../models/bookingModel.js";
 import ConvFeeTransaction from "../../models/convFeeTransactionModel.js";
+import { createNotification } from "../notificationController.js";
 
 const getTotalIncome = (transactions) => {
   return transactions.reduce((total, curr) => {
@@ -123,6 +124,15 @@ export const serviceFinished = async (req, res) => {
     { total_amount },
     { upsert: true }
   );
+
+  if (serviceFinished) {
+    createNotification({
+      causer: req.user,
+      notifiedUserID: serviceFinished.client,
+      type: "Service has been finished",
+      route: "Calendar",
+    });
+  }
 
   return res.status(200).json({ serviceFinished });
 };
