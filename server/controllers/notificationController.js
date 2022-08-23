@@ -12,6 +12,8 @@ const getDescription = (name, type) => {
       return `Your booking request has been accepted`;
     case "Declined Booking Requests":
       return `Your booking request has been declined`;
+    case "Service Finished":
+      return `${name} has finished the service`;
   }
 };
 
@@ -70,7 +72,7 @@ export const registerPushNotifToken = async (req, res) => {
 
   const user = await User.findOne({ _id: req.user._id });
 
-  if (user.push_token) {
+  if (user.push_token === token) {
     return res.status(200).json({ message: "Already registered token" });
   }
 

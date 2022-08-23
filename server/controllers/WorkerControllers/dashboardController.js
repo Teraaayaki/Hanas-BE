@@ -1,4 +1,6 @@
 import Booking from "../../models/bookingModel.js";
+import ConvFeeTransaction from "../../models/convFeeTransactionModel.js";
+import { createNotification } from "../notificationController.js";
 
 const getTotalIncome = (transactions) => {
   return transactions.reduce((total, curr) => {
@@ -93,7 +95,7 @@ export const startService = async (req, res) => {
   const ongoingService = await Booking.findOneAndUpdate(
     { _id: req.params.id },
     { book_status: "Ongoing" },
-    { new: true },
+    { new: true }
   );
 
   return res.status(200).json({ ongoingService });
@@ -103,8 +105,34 @@ export const serviceFinished = async (req, res) => {
   const serviceFinished = await Booking.findOneAndUpdate(
     { _id: req.params.id },
     { book_status: "Finished" },
-    { new: true },
+    { new: true }
   );
+
+  const workerConvFee = await ConvFeeTransaction.find({
+    worker: req.user.id,
+  }).select("total_amount");
+
+  console.log(workerConvFee);
+
+  const total_amount =
+    workerConvFee[0]?.total_amount === undefined
+      ? serviceFinished.conv_fee
+      : serviceFinished.conv_fee + workerConvFee[0].total_amount;
+
+  await ConvFeeTransaction.findOneAndUpdate(
+    { worker: req.user.id },
+    { total_amount },
+    { upsert: true }
+  );
+
+  if (serviceFinished) {
+    createNotification({
+      causer: req.user,
+      notifiedUserID: serviceFinished.client,
+      type: "Service Finished",
+      route: "Calendar",
+    });
+  }
 
   return res.status(200).json({ serviceFinished });
 };

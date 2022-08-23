@@ -42,6 +42,7 @@ export const loginClient = async (req, res) => {
       is_verified: client.is_verified,
       profile_pic: client.profile_pic,
       pending_verification: client.pending_verification,
+      push_token: client.push_token,
     };
   }
 
@@ -51,7 +52,7 @@ export const loginClient = async (req, res) => {
     } else {
       const token = jwt.sign(
         { user_id: client.user_id },
-        process.env.MY_SECRET_ACCESS_TOKEN
+        process.env.MY_SECRET_ACCESS_TOKEN,
       );
       return res.status(200).json({
         token,
@@ -88,9 +89,7 @@ export const verifyNumberClient = async (req, res) => {
 
     return res.status(200).json({ success: true });
   } catch (error) {
-    return res
-      .status(422)
-      .send({ error: "Maximum allowable requests reached" });
+    return res.status(422).send({ error: "Maximum allowable requests reached" });
   }
 };
 
@@ -104,7 +103,7 @@ export const resendCodeClient = async (req, res) => {
     await OtpNumber.findOneAndUpdate(
       { number },
       { otp, expiresAt: new Date() },
-      { upsert: true }
+      { upsert: true },
     );
     await twilio.messages.create({
       body: `YOUR OTP CODE: ${otp}`,
@@ -159,10 +158,7 @@ export const registerClient = async (req, res) => {
       is_worker: data.isWorker,
       is_verified: false,
     });
-    const token = jwt.sign(
-      { user_id: uuid },
-      process.env.MY_SECRET_ACCESS_TOKEN
-    );
+    const token = jwt.sign({ user_id: uuid }, process.env.MY_SECRET_ACCESS_TOKEN);
     return res
       .status(200)
       .json({ token, is_verified: false, is_worker: data.isWorker });
@@ -172,9 +168,7 @@ export const registerClient = async (req, res) => {
 };
 
 export const logoutClient = async (req, res) => {
-  return res
-    .status(200)
-    .json({ message: `Logout user with ID: ${req.params.id}` });
+  return res.status(200).json({ message: `Logout user with ID: ${req.params.id}` });
 };
 
 export const getDetails = async (req, res) => {
@@ -193,6 +187,7 @@ export const getDetails = async (req, res) => {
       is_verified: req.user.is_verified,
       profile_pic: req.user.profile_pic,
       pending_verification: req.user.pending_verification,
+      push_token: req.user.push_token,
     };
     return res.status(200).json({ user });
   } else {
@@ -222,7 +217,7 @@ export const loginAdmin = async (req, res) => {
     } else {
       const token = jwt.sign(
         { admin_id: admin._id },
-        process.env.MY_SECRET_ACCESS_TOKEN
+        process.env.MY_SECRET_ACCESS_TOKEN,
       );
       return res.status(200).json({ admin_info, token });
     }
@@ -265,7 +260,7 @@ export const editPassword = async (req, res) => {
 
             const updatedUser = await User.findOneAndUpdate(
               { _id: _id },
-              { password: hashedPass }
+              { password: hashedPass },
             );
 
             transporter.sendMail(mailData, (error, info) => {

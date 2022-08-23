@@ -3,13 +3,14 @@ import { Server } from "socket.io";
 import socketConnection from "./socket.js";
 
 import Booking from "../models/bookingModel.js";
+import User from "../models/userModel.js";
 
 const monitorDBChanges = (server) => {
   const io = new Server(server);
   socketConnection(io);
 
   mongoose.connection.once("open", () => {
-    console.log("Connected Change Stream");
+    console.log("Connected to Change Stream");
 
     mongoose.connection
       .collection("conversations")
@@ -40,7 +41,32 @@ const monitorDBChanges = (server) => {
         fullDocument: "updateLookup",
       })
       .on("change", (data) => {
-        // console.log(data);
+        io.of("/api/socket").emit("bookingUpdate", data.fullDocument);
+      });
+
+    mongoose.connection
+      .collection("bookings")
+      .watch([{ $match: { operationType: "insert" } }], {
+        fullDocument: "updateLookup",
+      })
+      .on("change", (data) => {
+        io.of("/api/socket").emit("newBooking", data.fullDocument);
+      });
+
+    mongoose.connection
+      .collection("notifications")
+      .watch([{ $match: { operationType: "insert" } }], {
+        fullDocument: "updateLookup",
+      })
+      .on("change", async (data) => {
+        const notifiedUser = await User.findById(data.fullDocument.notifiedUser).select(
+          "push_token",
+        );
+
+        io.of("/api/socket").emit("newNotification", {
+          data: data.fullDocument,
+          push_token: notifiedUser.push_token,
+        });
       });
   });
 };
