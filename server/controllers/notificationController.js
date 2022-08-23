@@ -12,6 +12,8 @@ const getDescription = (name, type) => {
       return `Your booking request has been accepted`;
     case "Declined Booking Requests":
       return `Your booking request has been declined`;
+    case "Service Finished":
+      return `${name} has finished the service`;
   }
 };
 
@@ -49,7 +51,7 @@ export const getNotifications = async (req, res) => {
 export const changeNotificationStatus = async (req, res) => {
   const response = await Notification.updateOne(
     { _id: req.params.id },
-    { isOpened: true },
+    { isOpened: true }
   );
 
   if (response.modifiedCount) {

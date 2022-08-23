@@ -129,7 +129,7 @@ export const serviceFinished = async (req, res) => {
     createNotification({
       causer: req.user,
       notifiedUserID: serviceFinished.client,
-      type: "Service has been finished",
+      type: "Service Finished",
       route: "Calendar",
     });
   }
