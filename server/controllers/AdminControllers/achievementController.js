@@ -1,4 +1,5 @@
 import Achievement from "../../models/achievementModel.js";
+import Booking from "../../models/bookingModel.js";
 import User from "../../models/userModel.js";
 
 export const addToAchievement = async (req, res) => {
@@ -29,6 +30,25 @@ export const getAllWorkerList = async (req, res) => {
     const achievementListData = await User.aggregate([
       { $match: { is_worker: true } },
       {
+        $lookup: {
+          from: "bookings",
+          localField: "_id",
+          foreignField: "worker",
+          as: "bookingData",
+          pipeline: [
+            {
+              $match: { book_status: "Finished" },
+            },
+            {
+              $group: {
+                _id: null,
+                total_earnings: { $sum: "$total_cost" },
+              },
+            },
+          ],
+        },
+      },
+      {
         $project: {
           _id: 1,
           name: {
@@ -43,6 +63,7 @@ export const getAllWorkerList = async (req, res) => {
             ],
           },
           updatedAt: 1,
+          bookingData: 1,
         },
       },
     ]);
