@@ -60,7 +60,7 @@ router.post(
   validationErrors,
   forgotPassOtp
 );
-router.post(
+router.patch(
   "/forgot-pass-change",
   validate("forgot-pass-change"),
   validationErrors,

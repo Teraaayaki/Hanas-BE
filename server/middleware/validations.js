@@ -49,6 +49,7 @@ export const validate = (method) => {
       return [body("otp", "Invalid OTP").isInt().exists()];
     case "forgot-pass-change":
       return [
+        body("email", "Invalid Email").isEmail(),
         body("new_pass", "Password must be at least 8 characters").isLength({
           min: 8,
         }),
