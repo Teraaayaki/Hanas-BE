@@ -33,9 +33,28 @@ export const validate = (method) => {
       ];
     case "edit-password":
       return [
-        body("old_pass", "Password must be at least 8 characters").isLength({ min: 8,}),
-        body("new_pass", "Password must be at least 8 characters").isLength({ min: 8,}),
-        body("confirm_pass", "Password must be at least 8 characters").isLength({ min: 8,}),
+        body("old_pass", "Password must be at least 8 characters").isLength({
+          min: 8,
+        }),
+        body("new_pass", "Password must be at least 8 characters").isLength({
+          min: 8,
+        }),
+        body("confirm_pass", "Password must be at least 8 characters").isLength(
+          { min: 8 }
+        ),
+      ];
+    case "forgot-pass-email":
+      return [body("email", "Invalid Email").isEmail()];
+    case "forgot-pass-otp":
+      return [body("otp", "Invalid OTP").isInt().exists()];
+    case "forgot-pass-change":
+      return [
+        body("new_pass", "Password must be at least 8 characters").isLength({
+          min: 8,
+        }),
+        body("confirm_pass", "Password must be at least 8 characters").isLength(
+          { min: 8 }
+        ),
       ];
   }
 };
