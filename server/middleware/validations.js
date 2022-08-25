@@ -57,6 +57,12 @@ export const validate = (method) => {
           { min: 8 }
         ),
       ];
+    case "forgot-pass-admin":
+      return [
+        body("password", "Password must be atleast 8 characters").isLength({
+          min: 8,
+        }),
+      ];
   }
 };
 

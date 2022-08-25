@@ -1,5 +1,5 @@
 import { v4 } from "uuid";
-import bcrypt from "bcrypt";
+import bcrypt, { hash } from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
@@ -9,6 +9,7 @@ import OtpNumber from "../models/otpNumberModel.js";
 import OtpEmail from "../models/otpEmail.js";
 import twilio from "../helpers/twilio.js";
 import transporter from "../helpers/nodeEmailer.js";
+import { ObjectId } from "mongodb";
 
 dotenv.config();
 
@@ -231,6 +232,50 @@ export const loginAdmin = async (req, res) => {
       return res.status(200).json({ admin_info, token });
     }
   });
+};
+
+export const forgotPassAdmin = async (req, res) => {
+  const { password } = req.body;
+
+  const id = new ObjectId("624cfc3421411e228b249f14");
+  const admin = await Admin.findOne({ _id: id });
+
+  if (admin) {
+    try {
+      const hashedPass = await bcrypt.hash(password, 10);
+
+      const updatedUser = await Admin.findOneAndUpdate(
+        { _id: id },
+        { password: hashedPass }
+      );
+
+      const mailData = {
+        from: "hanas.app.services@gmail.com", // kinsa ang ga send
+        to: admin.email, // ang mga mu receive sa email
+        subject: "Password Change",
+        text: "Successful password change",
+        html: "<b>Good Day! </b> <br> This email is to notify you that the admin account has been successfully changed to a newer password. If this is not you, please contact the developers immediately as soon as possible.<br/>",
+      };
+
+      transporter.sendMail(mailData, (error, info) => {
+        if (error) {
+          return console.log(error);
+        }
+
+        res.status(200).send({
+          message: "Email sent",
+          message_id: info.messageId,
+          accepted: info.accepted,
+        });
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  return res
+    .status(200)
+    .json({ success: "Password has been successfully updated" });
 };
 
 export const editPassword = async (req, res) => {

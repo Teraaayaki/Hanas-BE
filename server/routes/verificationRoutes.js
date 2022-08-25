@@ -12,6 +12,7 @@ import {
   resendCodeClient,
   getDetails,
   loginAdmin,
+  forgotPassAdmin,
   editPassword,
   forgotPassEmail,
   forgotPassOtp,
@@ -69,5 +70,11 @@ router.patch(
 
 //ADMIN AUTH ROUTES
 router.post("/admin-login", validate("login"), validationErrors, loginAdmin);
+router.post(
+  "/admin-forgot-pass",
+  validate("forgot-pass-admin"),
+  validationErrors,
+  forgotPassAdmin
+);
 
 export default router;
