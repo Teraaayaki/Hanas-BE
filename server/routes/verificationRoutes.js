@@ -13,6 +13,9 @@ import {
   getDetails,
   loginAdmin,
   editPassword,
+  forgotPassEmail,
+  forgotPassOtp,
+  forgotPassChange,
 } from "../controllers/authController.js";
 
 //AUTH ROUTES
@@ -45,6 +48,24 @@ router.post(
 router.delete("/logout", logoutClient);
 
 router.post("/edit-password", validationErrors, editPassword);
+router.post(
+  "/forgot-pass-email",
+  validate("forgot-pass-email"),
+  validationErrors,
+  forgotPassEmail
+);
+router.post(
+  "/forgot-pass-otp",
+  validate("forgot-pass-otp"),
+  validationErrors,
+  forgotPassOtp
+);
+router.patch(
+  "/forgot-pass-change",
+  validate("forgot-pass-change"),
+  validationErrors,
+  forgotPassChange
+);
 
 //ADMIN AUTH ROUTES
 router.post("/admin-login", validate("login"), validationErrors, loginAdmin);

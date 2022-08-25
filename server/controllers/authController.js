@@ -1,12 +1,14 @@
 import { v4 } from "uuid";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import nodemailer from "nodemailer";
+import dotenv from "dotenv";
+
 import User from "../models/userModel.js";
 import Admin from "../models/adminModel.js";
 import OtpNumber from "../models/otpNumberModel.js";
+import OtpEmail from "../models/otpEmail.js";
 import twilio from "../helpers/twilio.js";
-import dotenv from "dotenv";
+import transporter from "../helpers/nodeEmailer.js";
 
 dotenv.config();
 
@@ -52,7 +54,7 @@ export const loginClient = async (req, res) => {
     } else {
       const token = jwt.sign(
         { user_id: client.user_id },
-        process.env.MY_SECRET_ACCESS_TOKEN,
+        process.env.MY_SECRET_ACCESS_TOKEN
       );
       return res.status(200).json({
         token,
@@ -89,7 +91,9 @@ export const verifyNumberClient = async (req, res) => {
 
     return res.status(200).json({ success: true });
   } catch (error) {
-    return res.status(422).send({ error: "Maximum allowable requests reached" });
+    return res
+      .status(422)
+      .send({ error: "Maximum allowable requests reached" });
   }
 };
 
@@ -103,7 +107,7 @@ export const resendCodeClient = async (req, res) => {
     await OtpNumber.findOneAndUpdate(
       { number },
       { otp, expiresAt: new Date() },
-      { upsert: true },
+      { upsert: true }
     );
     await twilio.messages.create({
       body: `YOUR OTP CODE: ${otp}`,
@@ -158,7 +162,10 @@ export const registerClient = async (req, res) => {
       is_worker: data.isWorker,
       is_verified: false,
     });
-    const token = jwt.sign({ user_id: uuid }, process.env.MY_SECRET_ACCESS_TOKEN);
+    const token = jwt.sign(
+      { user_id: uuid },
+      process.env.MY_SECRET_ACCESS_TOKEN
+    );
     return res
       .status(200)
       .json({ token, is_verified: false, is_worker: data.isWorker });
@@ -168,7 +175,9 @@ export const registerClient = async (req, res) => {
 };
 
 export const logoutClient = async (req, res) => {
-  return res.status(200).json({ message: `Logout user with ID: ${req.params.id}` });
+  return res
+    .status(200)
+    .json({ message: `Logout user with ID: ${req.params.id}` });
 };
 
 export const getDetails = async (req, res) => {
@@ -217,7 +226,7 @@ export const loginAdmin = async (req, res) => {
     } else {
       const token = jwt.sign(
         { admin_id: admin._id },
-        process.env.MY_SECRET_ACCESS_TOKEN,
+        process.env.MY_SECRET_ACCESS_TOKEN
       );
       return res.status(200).json({ admin_info, token });
     }
@@ -240,16 +249,6 @@ export const editPassword = async (req, res) => {
           try {
             const hashedPass = await bcrypt.hash(new_pass, 10);
 
-            const transporter = nodemailer.createTransport({
-              port: 465,
-              host: "smtp.gmail.com",
-              auth: {
-                user: "hanas.app.services@gmail.com",
-                pass: process.env.NODE_EMAILER_PASS,
-              },
-              secure: true,
-            });
-
             const mailData = {
               from: "hanas.app.services@gmail.com", // kinsa ang ga send
               to: email, // ang mga mu receive sa email
@@ -260,7 +259,7 @@ export const editPassword = async (req, res) => {
 
             const updatedUser = await User.findOneAndUpdate(
               { _id: _id },
-              { password: hashedPass },
+              { password: hashedPass }
             );
 
             transporter.sendMail(mailData, (error, info) => {
@@ -289,5 +288,108 @@ export const editPassword = async (req, res) => {
         return res.status(406).send({ error: "Old password is incorrect" });
       }
     });
+  }
+};
+
+export const forgotPassEmail = async (req, res) => {
+  const { email, resend } = req.body;
+
+  // if request is a not resend. which means first screen of forgot password.
+  // must return error if otp is present
+  if (!resend) {
+    const otpFound = await OtpEmail.findOne({ email });
+
+    if (otpFound) {
+      return res.status(400).send({
+        error:
+          "Maximum allowable requests made. Please try again in 5 minutes.",
+      });
+    }
+  }
+
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    return res.status(400).send({ error: "Email not registered." });
+  }
+
+  try {
+    const otp = Math.floor(Math.random() * 8999 + 1000);
+
+    await OtpEmail.findOneAndUpdate(
+      { email },
+      {
+        expiresAt: Date.now(),
+        otp,
+      },
+      { upsert: true }
+    );
+
+    const mailData = {
+      from: "hanas.app.services@gmail.com",
+      to: email,
+      subject: "Forgot Password",
+      text: "Requesting Password Change",
+      html: `<b>Good Day!</b>
+            <br>
+            <br>
+            You have requested to change your password.
+            Here is your OTP code to change your password <b>${otp}</b>. 
+            Do not share it with anyone else.
+            If this is not you please contact administration as soon as possible.
+            <br/>
+            <br>
+            \n
+            Hanas Team`,
+    };
+
+    await transporter.sendMail(mailData);
+
+    return res.status(200).json({ message: "OTP sent!" });
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send({ error: "Error sending OTP to email." });
+  }
+};
+
+export const forgotPassOtp = async (req, res) => {
+  let { otp, email } = req.body;
+  const verified = await OtpEmail.findOne({ otp, email });
+
+  // OTP does not match or not present
+  if (!verified) {
+    return res.status(401).send({ error: "Error Verifying OTP" });
+  }
+
+  // OTP Verified delete existing records of OTP
+  await OtpEmail.deleteOne({ otp, email });
+
+  return res.status(200).json({ message: "Successfully Verified OTP!" });
+};
+
+export const forgotPassChange = async (req, res) => {
+  const { email, new_pass, confirm_pass } = req.body;
+
+  const user = await User.findOne({ email });
+
+  // User does not exist
+  if (!user) {
+    return res.status(400).send({ error: "Email not registered." });
+  }
+
+  // Passwords do not match
+  if (new_pass !== confirm_pass) {
+    return res.status(422).send({ error: "Password Error" });
+  }
+
+  try {
+    const hashedPass = await bcrypt.hash(new_pass, 10);
+
+    await User.findOneAndUpdate({ email }, { password: hashedPass });
+
+    return res.status(200).json({ message: "Succesfully Changed Password!" });
+  } catch (err) {
+    console.log(err);
+    return res.status(422).send({ error: "Change Password Error" });
   }
 };
