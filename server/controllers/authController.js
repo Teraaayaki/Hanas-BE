@@ -316,15 +316,6 @@ export const forgotPassEmail = async (req, res) => {
   try {
     const otp = Math.floor(Math.random() * 8999 + 1000);
 
-    await OtpEmail.findOneAndUpdate(
-      { email },
-      {
-        expiresAt: Date.now(),
-        otp,
-      },
-      { upsert: true }
-    );
-
     const mailData = {
       from: "hanas.app.services@gmail.com",
       to: email,
@@ -344,6 +335,15 @@ export const forgotPassEmail = async (req, res) => {
     };
 
     await transporter.sendMail(mailData);
+
+    await OtpEmail.findOneAndUpdate(
+      { email },
+      {
+        expiresAt: Date.now(),
+        otp,
+      },
+      { upsert: true }
+    );
 
     return res.status(200).json({ message: "OTP sent!" });
   } catch (err) {
@@ -384,6 +384,25 @@ export const forgotPassChange = async (req, res) => {
 
   try {
     const hashedPass = await bcrypt.hash(new_pass, 10);
+
+    const mailData = {
+      from: "hanas.app.services@gmail.com",
+      to: email,
+      subject: "Password Change",
+      text: "Successful password change",
+      html: `<b>Good Day! </b> 
+            <br> 
+            <br>
+            This email is to notify you that your account has been 
+            successfully changed to a newer password. 
+            If this is not you please contact administration as soon as possible.
+            <br/>
+            <br>
+            \n
+            Hanas Team`,
+    };
+
+    await transporter.sendMail(mailData);
 
     await User.findOneAndUpdate({ email }, { password: hashedPass });
 
