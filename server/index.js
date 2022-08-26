@@ -43,4 +43,4 @@ app.use("/api/transactions", transactionRoutes);
 app.use("/api/reports", reportRoutes);
 app.use("/api/notifications", notificationRoutes);
 
-server.listen(process.env.PORT, () => console.log(`Server running on port ${port}`));
+server.listen(port, () => console.log(`Server running on port ${port}`));
