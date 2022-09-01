@@ -20,7 +20,6 @@ dotenv.config();
 connectDB();
 
 const port = process.env.PORT || 5000;
-const host = "0.0.0.0";
 const app = express();
 const server = http.createServer(app);
 monitorDBChanges(server);
@@ -44,6 +43,4 @@ app.use("/api/transactions", transactionRoutes);
 app.use("/api/reports", reportRoutes);
 app.use("/api/notifications", notificationRoutes);
 
-server.listen(port, host, () =>
-  console.log(`Server running on port ${host}:${port}`)
-);
+server.listen(port, () => console.log(`Server running on port ${port}`));
