@@ -109,6 +109,287 @@ export const getCertificationList = async (req, res) => {
   return res.status(200).json({ certificationList });
 };
 
+export const sortCertification = async (req, res) => {
+  const { sort } = req.params;
+  let sortPipeline;
+
+  switch (sort) {
+    case "name":
+      // console.log("name");
+      sortPipeline = {
+        $sort: {
+          "workerData.name": 1,
+        },
+      };
+      break;
+    case "date":
+      // console.log("date");
+      sortPipeline = {
+        $sort: {
+          "workerData.createdAt": 1,
+        },
+      };
+      break;
+    default:
+      // console.log("default");
+      sortPipeline = {
+        $sort: {
+          noField: 1,
+        },
+      };
+    // break;
+  }
+
+  let unfilteredCertificationList = await MyService.aggregate([
+    {
+      $project: {
+        _id: 1,
+        worker: 1,
+        service: 1,
+        updatedAt: 1,
+        is_certified: 1,
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "worker",
+        foreignField: "_id",
+        as: "workerData",
+        pipeline: [
+          {
+            $match: {
+              is_worker: true,
+            },
+          },
+          {
+            $project: {
+              profile_pic: 1,
+              name: {
+                $concat: [
+                  "$first_name",
+                  " ",
+                  "$middle_name",
+                  " ",
+                  "$family_name",
+                  " ",
+                  "$suffix",
+                ],
+              },
+              is_worker: 1,
+              createdAt: 1,
+            },
+          },
+          {
+            $lookup: {
+              from: "verifications",
+              localField: "_id",
+              foreignField: "user_id",
+              as: "verificationData",
+              pipeline: [
+                {
+                  $match: {
+                    verify_status: "Accepted",
+                  },
+                },
+                {
+                  $project: {
+                    verify_status: 1,
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      $lookup: {
+        from: "services",
+        localField: "service",
+        foreignField: "_id",
+        as: "serviceData",
+        pipeline: [
+          {
+            $project: {
+              service_type: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $lookup: {
+        from: "feedbacks",
+        localField: "_id",
+        foreignField: "my_service_id",
+        as: "feedbackData",
+        pipeline: [
+          {
+            $group: {
+              _id: null,
+              jobs: { $sum: 1 },
+              rateAvg: { $avg: "$rate" },
+            },
+          },
+        ],
+      },
+    },
+    sortPipeline,
+  ]);
+
+  const certificationList = unfilteredCertificationList.filter(
+    (cerificationItem) => {
+      return cerificationItem.workerData[0].verificationData[0] !== undefined;
+    }
+  );
+
+  return res.status(200).json({ certificationList });
+};
+
+export const filterCertification = async (req, res) => {
+  const { filter } = req.params;
+  let filterPipeline;
+
+  // console.log(filter);
+
+  switch (filter) {
+    case "Pending":
+      filterPipeline = {
+        $match: {
+          is_certified: "Pending",
+        },
+      };
+      break;
+    case "Accepted":
+      filterPipeline = {
+        $match: {
+          is_certified: "Accepted",
+        },
+      };
+      break;
+    case "Rejected":
+      filterPipeline = {
+        $match: {
+          is_certified: "Rejected",
+        },
+      };
+      break;
+    default:
+      filterPipeline = {
+        $sort: {
+          noField: 1,
+        },
+      };
+  }
+
+  let unfilteredCertificationList = await MyService.aggregate([
+    {
+      $project: {
+        _id: 1,
+        worker: 1,
+        service: 1,
+        updatedAt: 1,
+        is_certified: 1,
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "worker",
+        foreignField: "_id",
+        as: "workerData",
+        pipeline: [
+          {
+            $match: {
+              is_worker: true,
+            },
+          },
+          {
+            $project: {
+              profile_pic: 1,
+              name: {
+                $concat: [
+                  "$first_name",
+                  " ",
+                  "$middle_name",
+                  " ",
+                  "$family_name",
+                  " ",
+                  "$suffix",
+                ],
+              },
+              is_worker: 1,
+              createdAt: 1,
+            },
+          },
+          {
+            $lookup: {
+              from: "verifications",
+              localField: "_id",
+              foreignField: "user_id",
+              as: "verificationData",
+              pipeline: [
+                {
+                  $match: {
+                    verify_status: "Accepted",
+                  },
+                },
+                {
+                  $project: {
+                    verify_status: 1,
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      $lookup: {
+        from: "services",
+        localField: "service",
+        foreignField: "_id",
+        as: "serviceData",
+        pipeline: [
+          {
+            $project: {
+              service_type: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $lookup: {
+        from: "feedbacks",
+        localField: "_id",
+        foreignField: "my_service_id",
+        as: "feedbackData",
+        pipeline: [
+          {
+            $group: {
+              _id: null,
+              jobs: { $sum: 1 },
+              rateAvg: { $avg: "$rate" },
+            },
+          },
+        ],
+      },
+    },
+    filterPipeline,
+  ]);
+
+  const certificationList = unfilteredCertificationList.filter(
+    (cerificationItem) => {
+      return cerificationItem.workerData[0].verificationData[0] !== undefined;
+    }
+  );
+
+  return res.status(200).json({ certificationList });
+};
+
 export const getCertification = async (req, res) => {
   try {
     const unfilteredCertification = await MyService.aggregate([

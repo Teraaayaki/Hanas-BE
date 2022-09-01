@@ -26,6 +26,8 @@ import {
   acceptCertification,
   rejectCertification,
   reopenCertification,
+  sortCertification,
+  filterCertification,
 } from "../controllers/AdminControllers/certificationController.js";
 
 import {
@@ -99,7 +101,10 @@ router.get("/get-certification/:id", getCertification);
 router.get("/accept-certification/:id", acceptCertification);
 router.get("/reject-certification/:id", rejectCertification);
 router.get("/reopen-certification/:id", reopenCertification);
+router.get("/get-certification-list/:sort", sortCertification);
+router.get("/filter-certification/:filter", filterCertification);
 
+// filter - certification;
 /*CLIENT*/
 router.get("/get-client-list", getClientList);
 router.get("/get-client/:id", getClient);
