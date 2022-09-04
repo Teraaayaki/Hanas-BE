@@ -61,7 +61,10 @@ export const getConversations = async (req, res) => {
 
 export const getMessages = async (req, res) => {
   const conversation = await Conversation.find({
-    "participants.user": req.params.id,
+    $and: [
+      { "participants.user": req.params.id },
+      { "participants.user": req.user._id },
+    ],
   });
 
   return res.status(200).json({ messages: conversation[0]?.messages.reverse() });
