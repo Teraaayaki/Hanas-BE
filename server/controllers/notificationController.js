@@ -12,6 +12,8 @@ const getDescription = (name, type) => {
       return `Your booking request has been accepted`;
     case "Declined Booking Requests":
       return `Your booking request has been declined`;
+    case "Service Started":
+      return `${name} has started the service`;
     case "Service Finished":
       return `${name} has finished the service`;
   }
