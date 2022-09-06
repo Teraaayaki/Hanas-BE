@@ -12,7 +12,7 @@ export const getAcceptedBookings = async (req, res) => {
         path: "service",
       },
     })
-    .sort({ booked_dateTimeStart: "asc" });
+    .sort({ booked_dateTimeStart: "desc" });
 
   return res.status(200).json({ acceptedBookings });
 };

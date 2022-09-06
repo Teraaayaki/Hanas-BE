@@ -98,6 +98,15 @@ export const startService = async (req, res) => {
     { new: true }
   );
 
+  if (ongoingService) {
+    createNotification({
+      causer: req.user,
+      notifiedUserID: ongoingService.client,
+      type: "Service Started",
+      route: "Calendar",
+    });
+  }
+
   return res.status(200).json({ ongoingService });
 };
 
