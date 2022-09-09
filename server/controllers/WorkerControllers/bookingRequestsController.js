@@ -13,7 +13,7 @@ export const getBookingRequests = async (req, res) => {
         path: "service",
       },
     })
-    .sort({ booked_dateTimeStart: "asc" });
+    .sort({ booked_dateTimeStart: "desc" });
 
   return res.status(200).json({ bookingRequests });
 };
@@ -22,7 +22,7 @@ export const acceptBookingRequest = async (req, res) => {
   const bookingRequest = await Booking.findOneAndUpdate(
     { _id: req.params.id },
     { book_status: "Accepted" },
-    { new: true },
+    { new: true }
   );
 
   if (bookingRequest) {
@@ -43,7 +43,7 @@ export const declineBookingRequest = async (req, res) => {
   const bookingRequest = await Booking.findOneAndUpdate(
     { _id: req.params.id },
     { book_status: "Declined" },
-    { new: true },
+    { new: true }
   );
 
   if (bookingRequest) {
