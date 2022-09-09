@@ -416,6 +416,8 @@ const sortAscendingHelper = async (sortValue) => {
       $sort: { [sortValue]: 1 },
     },
   ]);
+
+  return Promise.all(workerList);
 };
 
 export const sortWorker = async (req, res) => {
