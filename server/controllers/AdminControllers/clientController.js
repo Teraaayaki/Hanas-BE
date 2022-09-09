@@ -244,7 +244,6 @@ const clientDefault = async () => {
 };
 
 const sortAscendingHelper = async (sortValue) => {
-  
   const client = await User.aggregate([
     {
       $match: {
@@ -272,56 +271,50 @@ const sortAscendingHelper = async (sortValue) => {
         createdAt: 1,
       },
     },
-    {$sort: {[sortValue]: 1}},
+    { $sort: { [sortValue]: 1 } },
   ]);
 
   return Promise.all(client);
 };
 
 export const sortClient = async (req, res) => {
-  
   const choice = req.body.choice;
   switch (choice) {
-    case 'all':
-      try{
-        
-        const clientList = await clientDefault('all');
+    case "all":
+      try {
+        const clientList = await clientDefault("all");
 
-        return res.status(200).json({ clientList});
-    
-      } catch( error ){
-        console.log(error);
-      }
-
-      break;
-    case 'name':
-      try{
-        
-        const clientList = await sortAscendingHelper('name');
-
-        return res.status(200).json({ clientList});
-    
-      } catch( error ){
-        console.log(error);
-      }
-
-      break;
-
-    case 'date':
-      try{
-        const clientList = await sortAscendingHelper('createdAt');
-  
         return res.status(200).json({ clientList });
-      } catch(error){
+      } catch (error) {
         console.log(error);
       }
 
-    break;
+      break;
+    case "name":
+      try {
+        const clientList = await sortAscendingHelper("name");
+
+        return res.status(200).json({ clientList });
+      } catch (error) {
+        console.log(error);
+      }
+
+      break;
+
+    case "date":
+      try {
+        const clientList = await sortAscendingHelper("createdAt");
+
+        return res.status(200).json({ clientList });
+      } catch (error) {
+        console.log(error);
+      }
+
+      break;
 
     default:
       break;
   }
-
 };
 
 const filterHelper = async (filterValue) => {
@@ -358,45 +351,41 @@ const filterHelper = async (filterValue) => {
   return Promise.all(client);
 };
 
-
 export const filterClient = async (req, res) => {
-
   const choice = req.body.choice;
   switch (choice) {
-    case 'active':
-      try{
-        
+    case "active":
+      try {
         const clientList = await filterHelper(false);
 
-        return res.status(200).json({ clientList});
-    
-      } catch( error ){
+        return res.status(200).json({ clientList });
+      } catch (error) {
         console.log(error);
       }
 
       break;
 
-    case 'deactivated':
-      try{
+    case "deactivated":
+      try {
         const clientList = await filterHelper(true);
-  
+
         return res.status(200).json({ clientList });
-      } catch(error){
+      } catch (error) {
         console.log(error);
       }
 
-    break;
-  
-    case 'all':
-      try{
+      break;
+
+    case "all":
+      try {
         const clientList = await clientDefault();
-  
+
         return res.status(200).json({ clientList });
-      } catch(error){
+      } catch (error) {
         console.log(error);
       }
 
-    break;
+      break;
 
     default:
       break;
