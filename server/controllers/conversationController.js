@@ -38,6 +38,7 @@ export const storeMessage = async (req, res) => {
   conversation
     .then((conversation) => {
       console.log("Conversation", conversation);
+      console.log("New Message", newMessage);
       conversation.messages.push(newMessage);
       conversation.save();
 
