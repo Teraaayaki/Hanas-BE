@@ -149,7 +149,7 @@ export const registerClient = async (req, res) => {
   const hashedPass = await bcrypt.hash(data.password, 10);
 
   try {
-    await User.create({
+    const newUser = await User.create({
       user_id: uuid,
       first_name: data.firstName,
       middle_name: data.middleName,
@@ -168,9 +168,12 @@ export const registerClient = async (req, res) => {
       { user_id: uuid },
       process.env.MY_SECRET_ACCESS_TOKEN
     );
-    return res
-      .status(200)
-      .json({ token, is_verified: false, is_worker: data.isWorker });
+    return res.status(200).json({
+      token,
+      is_verified: false,
+      is_worker: data.isWorker,
+      user_id: newUser._id,
+    });
   } catch (err) {
     return res.status(422).send({ error: "Error Creating User" });
   }
