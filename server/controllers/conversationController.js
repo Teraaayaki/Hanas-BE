@@ -10,6 +10,8 @@ const getConversation = async (senderID, receiverID) => {
       ],
     });
 
+    console.log("Existing Conversation", existingConversation);
+
     if (existingConversation.length > 0) {
       console.log("Has conversation");
       return existingConversation[0];
@@ -31,12 +33,11 @@ export const storeMessage = async (req, res) => {
 
   const conversation = getConversation(req.user._id, receiverID);
 
-  console.log("Conversation", conversation);
-
   delete newMessage._id;
 
   conversation
     .then((conversation) => {
+      console.log("Conversation", conversation);
       conversation.messages.push(newMessage);
       conversation.save();
 
