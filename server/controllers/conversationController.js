@@ -4,12 +4,17 @@ import { createNotification } from "./notificationController.js";
 const getConversation = async (senderID, receiverID) => {
   try {
     const existingConversation = await Conversation.find({
-      $and: [{ "participants.user": senderID }, { "participants.user": receiverID }],
+      $and: [
+        { "participants.user": senderID },
+        { "participants.user": receiverID },
+      ],
     });
 
     if (existingConversation.length > 0) {
+      console.log("Has conversation");
       return existingConversation[0];
     } else {
+      console.log("Has no conversation yet");
       const newConversation = await Conversation.create({
         participants: [{ user: senderID }, { user: receiverID }],
       });
@@ -26,6 +31,8 @@ export const storeMessage = async (req, res) => {
 
   const conversation = getConversation(req.user._id, receiverID);
 
+  console.log("Conversation", conversation);
+
   delete newMessage._id;
 
   conversation
@@ -40,7 +47,9 @@ export const storeMessage = async (req, res) => {
         route: "Messages",
       });
 
-      return res.status(200).json({ message: "Successfully inserted new message" });
+      return res
+        .status(200)
+        .json({ message: "Successfully inserted new message" });
     })
     .catch((err) => {
       console.log("error inserting new mesage");
@@ -67,5 +76,7 @@ export const getMessages = async (req, res) => {
     ],
   });
 
-  return res.status(200).json({ messages: conversation[0]?.messages.reverse() });
+  return res
+    .status(200)
+    .json({ messages: conversation[0]?.messages.reverse() });
 };
