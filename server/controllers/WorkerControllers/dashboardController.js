@@ -130,7 +130,7 @@ export const serviceFinished = async (req, res) => {
 
   await ConvFeeTransaction.findOneAndUpdate(
     { worker: req.user.id },
-    { total_amount },
+    { total_amount, status: "PENDING" },
     { upsert: true }
   );
 
