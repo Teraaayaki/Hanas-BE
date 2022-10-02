@@ -74,6 +74,96 @@ export const getClient = async (req, res) => {
           createdAt: 1,
         },
       },
+      {
+        $lookup: {
+          from: "reports",
+          localField: "_id",
+          foreignField: "reporter",
+          as: "countReports",
+          pipeline: [
+            {
+              $count: "Count",
+            },
+          ],
+        },
+      },
+      {
+        $lookup: {
+          from: "reports",
+          localField: "_id",
+          foreignField: "reporter",
+          as: "countPendingReports",
+          pipeline: [
+            {
+              $match: {
+                status: "Pending",
+              },
+            },
+            {
+              $count: "Count",
+            },
+          ],
+        },
+      },
+      {
+        $lookup: {
+          from: "reports",
+          localField: "_id",
+          foreignField: "reporter",
+          as: "countResolvedReports",
+          pipeline: [
+            {
+              $match: {
+                status: "Resolved",
+              },
+            },
+            {
+              $project: {
+                status: 1,
+              },
+            },
+            {
+              $count: "Count",
+            },
+          ],
+        },
+      },
+      {
+        $lookup: {
+          from: "reports",
+          localField: "_id",
+          foreignField: "reporter",
+          as: "countRejectedReports",
+          pipeline: [
+            {
+              $match: {
+                status: "Rejected",
+              },
+            },
+            {
+              $count: "Count",
+            },
+          ],
+        },
+      },
+      {
+        $lookup: {
+          from: "reports",
+          localField: "_id",
+          foreignField: "reporter",
+          as: "reportsData",
+          pipeline: [
+            {
+              $project: {
+                message: 0,
+                attachedImages: 0,
+                updatedAt: 0,
+                __v: 0,
+              },
+            },
+          ],
+        },
+      },
     ]);
 
     return res.status(200).json({ client });
