@@ -49,6 +49,29 @@ export const getReportList = async (req, res) => {
   return res.status(200).json({ reportList });
 };
 
+export const getReporterReportsList = async (req, res) => {
+  try {
+    const reporterReportsList = await Report.aggregate([
+      {
+        $match: {
+          reporter: new ObjectId(req.params.id),
+        },
+      },
+      {
+        $project: {
+          attached_images: 0,
+          message: 0,
+          __v: 0,
+        },
+      },
+    ]);
+
+    return res.status(200).json({ reporterReportsList });
+  } catch (err) {
+    console.log(err.message);
+  }
+};
+
 export const getReport = async (req, res) => {
   try {
     const reports = await Report.aggregate([

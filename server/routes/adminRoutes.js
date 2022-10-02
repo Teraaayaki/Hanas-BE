@@ -56,6 +56,7 @@ import {
 
 import {
   getReportList,
+  getReporterReportsList,
   getReport,
   resolveReport,
   rejectReport,
@@ -128,6 +129,7 @@ router.patch("/sort-transaction", sortTransaction);
 
 /*REPORTS*/
 router.get("/get-report-list", getReportList);
+router.get("/get-reporter-reports-list/:id", getReporterReportsList);
 router.get("/get-report/:id", getReport);
 router.get("/get-type-of-users", percentageOnTypeOfUsers);
 router.get("/resolve-report/:id", resolveReport);
