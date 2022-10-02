@@ -20,6 +20,7 @@ dotenv.config();
 connectDB();
 
 const port = process.env.PORT || 5000;
+// const host = "0.0.0.0";
 const app = express();
 const server = http.createServer(app);
 monitorDBChanges(server);

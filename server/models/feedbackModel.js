@@ -23,7 +23,6 @@ const feedbackModel = mongoose.Schema(
     },
     comment: {
       type: String,
-      required: true,
     },
   },
   {

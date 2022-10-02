@@ -5,7 +5,7 @@ export const getSkilledWorkerDetails = async (req, res) => {
   let { worker_id, service_id } = req.params;
 
   let skilled_worker_details = await User.aggregate([
-    { $match: { _id: new ObjectId(worker_id) } },
+    { $match: { _id: ObjectId(worker_id) } },
     {
       $lookup: {
         from: "myservices", // other table name
@@ -13,7 +13,41 @@ export const getSkilledWorkerDetails = async (req, res) => {
         foreignField: "worker", // foreign key niya sa other table nga need i join
         as: "myServicesData", // nickname sa results
         pipeline: [
-          { $match: { _id: new ObjectId(service_id) } },
+          { $match: { _id: ObjectId(service_id) } },
+          {
+            $lookup: {
+              from: "feedbacks",
+              localField: "_id",
+              foreignField: "my_service_id",
+              as: "feedbacksAveragedData",
+              pipeline: [
+                {
+                  $group: {
+                    _id: null,
+                    rating: { $avg: "$rate" },
+                  },
+                },
+              ],
+            },
+          },
+          {
+            $lookup: {
+              from: "bookings",
+              localField: "_id",
+              foreignField: "service_availed",
+              as: "bookingsAveragedData",
+              pipeline: [
+                {
+                  $match: {
+                    book_status: "Finished",
+                  },
+                },
+                {
+                  $count: "jobs",
+                },
+              ],
+            },
+          },
           {
             $lookup: {
               from: "feedbacks", // other table name
@@ -40,6 +74,7 @@ export const getSkilledWorkerDetails = async (req, res) => {
                             ],
                           },
                           profile_pic: 1,
+                          address: 1,
                         },
                       },
                     ],
@@ -64,6 +99,16 @@ export const getSkilledWorkerDetails = async (req, res) => {
                   },
                 },
               ],
+            },
+          },
+          {
+            $addFields: {
+              feedbacksAveragedData: {
+                $arrayElemAt: ["$feedbacksAveragedData", 0],
+              },
+              bookingsAveragedData: {
+                $arrayElemAt: ["$bookingsAveragedData", 0],
+              },
             },
           },
         ],
