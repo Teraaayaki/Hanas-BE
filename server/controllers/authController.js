@@ -84,11 +84,11 @@ export const verifyNumberClient = async (req, res) => {
       number,
     });
 
-    await twilio.messages.create({
-      body: `YOUR OTP CODE: ${otp}`,
-      messagingServiceSid: process.env.TWILIO_MESSAGING_SERVICE_SID,
-      to: `+63${number}`,
-    });
+    // await twilio.messages.create({
+    //   body: `YOUR OTP CODE: ${otp}`,
+    //   messagingServiceSid: process.env.TWILIO_MESSAGING_SERVICE_SID,
+    //   to: `+63${number}`,
+    // });
 
     return res.status(200).json({ success: true });
   } catch (error) {
@@ -111,11 +111,11 @@ export const resendCodeClient = async (req, res) => {
       { upsert: true }
     );
 
-    await twilio.messages.create({
-      body: `YOUR OTP CODE: ${otp}`,
-      messagingServiceSid: process.env.TWILIO_MESSAGING_SERVICE_SID,
-      to: `+63${number}`,
-    });
+    // await twilio.messages.create({
+    //   body: `YOUR OTP CODE: ${otp}`,
+    //   messagingServiceSid: process.env.TWILIO_MESSAGING_SERVICE_SID,
+    //   to: `+63${number}`,
+    // });
 
     return res.status(200).json({ success: true });
   } catch (error) {
