@@ -535,6 +535,7 @@ const reporterReportsFilterHelper = async (filterValue, id) => {
         __v: 0,
       },
     },
+    { $sort: { createdAt: -1 } },
   ]);
   return Promise.all(reporterReportsList);
 };
