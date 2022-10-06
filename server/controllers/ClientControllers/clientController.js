@@ -10,7 +10,7 @@ export const removeScheduleClient = async (req, res) => {
   try {
     let schedule_details = await Booking.updateOne(
       { _id: req.body.DATA._id },
-      { $set: { isRemovedClient: "true" } },
+      { $set: { isRemovedClient: "true" } }
     );
     return res.status(200).json("Successful update");
   } catch (err) {
@@ -26,7 +26,7 @@ export const removeCancelledBooking = async (req, res) => {
   try {
     let cancelled_details = await Booking.updateOne(
       { _id: req.body.DATA._id },
-      { $set: { isRemovedClient: "true" } },
+      { $set: { isRemovedClient: "true" } }
     );
     return res.status(200).json("Successful update");
   } catch (err) {
@@ -42,7 +42,7 @@ export const cancelBookingSchedule = async (req, res) => {
   try {
     let cancelled_schedule = await Booking.updateOne(
       { _id: req.body.DATA._id },
-      { $set: { book_status: "Declined" } },
+      { $set: { book_status: "Declined" } }
     );
     return res.status(200).json("Successful cancellation");
   } catch (err) {
@@ -154,7 +154,13 @@ export const getFeedback = async (req, res) => {
           {
             $project: {
               name: {
-                $concat: ["$first_name", " ", "$middle_name", " ", "$family_name"],
+                $concat: [
+                  "$first_name",
+                  " ",
+                  "$middle_name",
+                  " ",
+                  "$family_name",
+                ],
               },
             },
           },
@@ -217,7 +223,7 @@ export const giveFeedback = async (req, res) => {
 
   const booking = await Booking.findOneAndUpdate(
     { _id: data._id },
-    { isFeedbacked: "true" },
+    { isFeedbacked: "true" }
   );
 
   if (!feedback || !booking) {

@@ -56,12 +56,15 @@ import {
 
 import {
   getReportList,
+  getReporterReportsList,
   getReport,
   resolveReport,
   rejectReport,
   reopenReport,
   sortReport,
+  sortReporterReports,
   filterReport,
+  filterReporterReports,
 } from "../controllers/AdminControllers/reportController.js";
 
 import {
@@ -128,6 +131,7 @@ router.patch("/sort-transaction", sortTransaction);
 
 /*REPORTS*/
 router.get("/get-report-list", getReportList);
+router.get("/get-reporter-reports-list/:id", getReporterReportsList);
 router.get("/get-report/:id", getReport);
 router.get("/get-type-of-users", percentageOnTypeOfUsers);
 router.get("/resolve-report/:id", resolveReport);
@@ -135,6 +139,8 @@ router.get("/reject-report/:id", rejectReport);
 router.get("/reopen-report/:id", reopenReport);
 router.patch("/filter-report", filterReport);
 router.patch("/sort-report", sortReport);
+router.patch("/sort-reporter-reports", sortReporterReports);
+router.patch("/filter-reporter-reports", filterReporterReports);
 
 /*ACHIEVEMENTS*/
 router.patch("/add-to-achievement", addToAchievement);
