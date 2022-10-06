@@ -64,6 +64,7 @@ export const getReporterReportsList = async (req, res) => {
           __v: 0,
         },
       },
+      { $sort: { createdAt: -1 } },
     ]);
 
     return res.status(200).json({ reporterReportsList });
@@ -278,6 +279,27 @@ const reportDefault = async () => {
   return Promise.all(reportList);
 };
 
+const reporterReportsDefault = async (id) => {
+  const reporterReportsList = await Report.aggregate([
+    {
+      $match: {
+        reporter: new ObjectId(id),
+        status: { $in: ["Resolved", "Pending", "Rejected"] },
+      },
+    },
+    {
+      $project: {
+        attached_images: 0,
+        message: 0,
+        __v: 0,
+      },
+    },
+    { $sort: { createdAt: -1 } },
+  ]);
+
+  return Promise.all(reporterReportsList);
+};
+
 export const sortReport = async (req, res) => {
   const choice = req.body.choice;
   switch (choice) {
@@ -315,6 +337,88 @@ export const sortReport = async (req, res) => {
       break;
 
     default:
+      break;
+  }
+};
+
+const sortReporterReportsAscendingHelper = async (sortValue, id) => {
+  const reporterReportsList = await Report.aggregate([
+    {
+      $match: {
+        reporter: new ObjectId(id),
+      },
+    },
+    {
+      $project: {
+        attached_images: 0,
+        message: 0,
+        __v: 0,
+      },
+    },
+    { $sort: { [sortValue]: 1 } },
+  ]);
+
+  return Promise.all(reporterReportsList);
+};
+
+const sortReporterReportsDescendingHelper = async (sortValue, id) => {
+  const reporterReportsList = await Report.aggregate([
+    {
+      $match: {
+        reporter: new ObjectId(id),
+      },
+    },
+    {
+      $project: {
+        attached_images: 0,
+        message: 0,
+        __v: 0,
+      },
+    },
+    { $sort: { [sortValue]: -1 } },
+  ]);
+
+  return Promise.all(reporterReportsList);
+};
+
+export const sortReporterReports = async (req, res) => {
+  const choice = req.body.choice;
+  const clientID = req.body.clientID;
+  switch (choice) {
+    case "createdAt":
+      try {
+        const reporterReportsList = await reporterReportsDefault(clientID);
+
+        return res.status(200).json({ reporterReportsList });
+      } catch (error) {
+        console.log(error);
+      }
+
+      break;
+    case "updatedAt":
+      try {
+        const reporterReportsList = await sortReporterReportsDescendingHelper(
+          choice,
+          clientID
+        );
+
+        return res.status(200).json({ reporterReportsList });
+      } catch (error) {
+        console.log(error);
+      }
+
+      break;
+    default:
+      try {
+        const reporterReportsList = await sortReporterReportsAscendingHelper(
+          choice,
+          clientID
+        );
+
+        return res.status(200).json({ reporterReportsList });
+      } catch (error) {
+        console.log(error);
+      }
       break;
   }
 };
@@ -370,7 +474,7 @@ export const filterReport = async (req, res) => {
   switch (choice) {
     case "all":
       try {
-        const reportList = await reportDefault();
+        const reportList = await reportDefault(req.params.id);
 
         return res.status(200).json({ reportList });
       } catch (error) {
@@ -412,6 +516,54 @@ export const filterReport = async (req, res) => {
       break;
 
     default:
+      break;
+  }
+};
+
+const reporterReportsFilterHelper = async (filterValue, id) => {
+  const reporterReportsList = await Report.aggregate([
+    {
+      $match: {
+        reporter: new ObjectId(id),
+        status: filterValue,
+      },
+    },
+    {
+      $project: {
+        attached_images: 0,
+        message: 0,
+        __v: 0,
+      },
+    },
+    { $sort: { createdAt: -1 } },
+  ]);
+  return Promise.all(reporterReportsList);
+};
+
+export const filterReporterReports = async (req, res) => {
+  const choice = req.body.choice;
+  const clientID = req.body.clientID;
+  switch (choice) {
+    case "All":
+      try {
+        const reporterReportsList = await reporterReportsDefault(clientID);
+
+        return res.status(200).json({ reporterReportsList });
+      } catch (error) {
+        console.log(error);
+      }
+      break;
+    default:
+      try {
+        const reporterReportsList = await reporterReportsFilterHelper(
+          choice,
+          clientID
+        );
+
+        return res.status(200).json({ reporterReportsList });
+      } catch (error) {
+        console.log(error);
+      }
       break;
   }
 };

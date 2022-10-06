@@ -62,7 +62,9 @@ import {
   rejectReport,
   reopenReport,
   sortReport,
+  sortReporterReports,
   filterReport,
+  filterReporterReports,
 } from "../controllers/AdminControllers/reportController.js";
 
 import {
@@ -137,6 +139,8 @@ router.get("/reject-report/:id", rejectReport);
 router.get("/reopen-report/:id", reopenReport);
 router.patch("/filter-report", filterReport);
 router.patch("/sort-report", sortReport);
+router.patch("/sort-reporter-reports", sortReporterReports);
+router.patch("/filter-reporter-reports", filterReporterReports);
 
 /*ACHIEVEMENTS*/
 router.patch("/add-to-achievement", addToAchievement);
