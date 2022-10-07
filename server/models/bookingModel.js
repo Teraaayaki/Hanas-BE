@@ -62,6 +62,13 @@ const bookingModel = mongoose.Schema(
       },
       required: true,
     },
+    payment_method: {
+      type: String,
+      default: "Cash",
+    },
+    reference_no: {
+      type: Number,
+    },
     conv_fee: {
       type: Number,
       required: true,
@@ -78,7 +85,7 @@ const bookingModel = mongoose.Schema(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 export default mongoose.model("Booking", bookingModel);
