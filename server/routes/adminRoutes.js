@@ -52,6 +52,7 @@ import {
   getTransactions,
   getSpecificTransaction,
   sortTransaction,
+  filterTransaction,
 } from "../controllers/AdminControllers/transactionController.js";
 
 import {
@@ -128,6 +129,7 @@ router.patch("/filter-worker", filterWorker);
 router.get("/get-transactions", getTransactions);
 router.get("/get-transaction/:id", getSpecificTransaction);
 router.patch("/sort-transaction", sortTransaction);
+router.patch("/filter-transaction", filterTransaction);
 
 /*REPORTS*/
 router.get("/get-report-list", getReportList);
